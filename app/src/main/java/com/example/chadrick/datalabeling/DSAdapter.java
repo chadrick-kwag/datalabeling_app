@@ -8,7 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
@@ -37,12 +39,14 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
     public ImageView storeiv;
 
     public CircularProgressBar downloadpgb;
+    public RelativeLayout mainclickarea;
 
     public DSViewHolder(View view){
       super(view);
       name = (TextView) view.findViewById(R.id.name);
       storeiv = (ImageView) view.findViewById(R.id.storeActionImageView);
       downloadpgb = (CircularProgressBar) view.findViewById(R.id.progressBar);
+      mainclickarea = (RelativeLayout) view.findViewById(R.id.mainclickarea);
     }
   }
 
@@ -55,6 +59,10 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
   @Override
   public DSViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
     View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.dslist_row,parent,false);
+    //dynamically set the width of mainclickarea width
+    int totalWidth = itemView.getWidth();
+    RelativeLayout mainclickarea = (RelativeLayout) itemView.findViewById(R.id.mainclickarea);
+    mainclickarea.setMinimumWidth(totalWidth);
     return new DSViewHolder(itemView);
   }
 
@@ -67,48 +75,54 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
     // if exists, then display the delete icon instead
     if(ds.getDirexist()){
       switchstaticon(holder,statoptions.DELETE,ds);
-//      holder.storeiv.setBackgroundResource(R.drawable.ic_delete_black_24dp);
-//      // in this case, we need to add a different clicklistener
-//      holder.storeiv.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View view) {
-//
-//          File dir = new File(mContext.getFilesDir(),Integer.toString(ds.getId()));
-//          Log.d(TAG,"dir:"+dir.toString());
-//          if(dir.exists()){
-//            Log.d(TAG,"dir exists. deleting.");
-//            dir.delete();
-//            // after deleting, then change the icon and the clicklistener
-//          }
-//          else{
-//            Log.d(TAG,"dir does not exist");
-//          }
-//        }
-//      });
     }
     else{
       // download icon. add appropriate click listener
-
       switchstaticon(holder,statoptions.DOWNLOAD,ds);
-
-//      holder.storeiv.setOnClickListener(new View.OnClickListener() {
-//        @Override
-//        public void onClick(View view) {
-//          Log.d(TAG,"will download");
-//
-//          DownloadTask downloadTask = new DownloadTask(mContext, new CustomCallbackInterface(){
-//            @Override
-//            public void execute(){
-//              holder.storeiv.setBackgroundResource(R.drawable.ic_delete_black_24dp);
-//            }
-//          });
-//          downloadTask.execute("http://13.124.175.119:4001/dszips/1.zip");
-//
-//
-//        }
-//      });
-
     }
+
+
+    // set clicklistener to mainclickarea
+    holder.mainclickarea.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        // check if the dataset exists;
+        // we determine this by examining if the dir exists and the zip file does not exist.
+        File testzipfile = new File(mContext.getFilesDir()+"/"+Integer.toString(ds.getId())+"/"+Integer.toString(ds.getId())+".zip");
+        File targetdir = new File(mContext.getFilesDir()+"/"+Integer.toString(ds.getId()));
+        Boolean isproperdir=false;
+
+        if( targetdir.exists() || !testzipfile.exists()){
+          // see if there are any .png files
+          File[] files = targetdir.listFiles();
+          for(File listitem : files){
+            String pathstr = listitem.toString();
+            String extension = pathstr.substring(pathstr.lastIndexOf(".")+1,pathstr.length());
+            if(extension.equals("png") || extension.equals("jpg")){
+              Log.d(TAG,"png or jpg file found!");
+              // now we can set the clicklistener to proceed to the next stage.
+              isproperdir = true;
+              break;
+
+            }
+          }
+
+        }
+
+        // if no dataset, then inform the user to download first
+        if(isproperdir){
+          // if true then go to next fragment
+          Log.d(TAG,"going to next fragment");
+        }
+        else{
+          Log.d(TAG,"dataset not exist. alert the user.");
+          Toast.makeText(mContext,"download first",Toast.LENGTH_SHORT).show();
+
+        }
+
+
+      }
+    });
 
 
   }
@@ -136,9 +150,10 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
           // show progressbar
           holder.downloadpgb.setVisibility(View.VISIBLE);
 
-          DownloadTask downloadTask = new DownloadTask(mContext, holder.downloadpgb, new CustomCallbackInterface(){
+          DownloadTask downloadTask = new DownloadTask(mContext, holder, new CustomCallbackInterface(){
             @Override
             public void execute(){
+
               switchstaticon(holder,statoptions.DELETE,ds);
             }
           });

@@ -31,11 +31,13 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
   private Context mContext;
   private final String TAG = "DownloadTask";
   private DSAdapter.CustomCallbackInterface mCallback;
-  private CircularProgressBar mProgressBar;
+  private DSAdapter.DSViewHolder mholder;
 
-  public DownloadTask(Context context, CircularProgressBar progressBar, DSAdapter.CustomCallbackInterface callback){
+  private String zipfilepath;
+
+  public DownloadTask(Context context, DSAdapter.DSViewHolder holder, DSAdapter.CustomCallbackInterface callback){
     this.mContext = context;
-    this.mProgressBar = progressBar;
+    this.mholder = holder;
     this.mCallback = callback;
   }
 
@@ -79,11 +81,11 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
       input = connection.getInputStream();
       File outputpath;
       try{
-        String temppath = mContext.getFilesDir()+"/1/1.zip";
-        Log.d(TAG,"temppath: "+temppath);
+        zipfilepath = mContext.getFilesDir()+"/1/1.zip";
+        Log.d(TAG,"temppath: "+zipfilepath);
 
 
-        outputpath = new File(temppath);
+        outputpath = new File(zipfilepath);
         outputpath.getParentFile().mkdirs();
         outputpath.createNewFile();
       }
@@ -140,7 +142,8 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
   protected void onProgressUpdate(Integer... progress){
     super.onProgressUpdate(progress);
     Log.d(TAG,"setting progress to "+Integer.toString(progress[0]));
-    mProgressBar.setProgress(progress[0]);
+    mholder.downloadpgb.setProgress(progress[0]);
+
   }
 
   @Override
@@ -148,10 +151,35 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
     Log.d(TAG,"inside postexecute");
     Toast.makeText(mContext,"download finished",Toast.LENGTH_SHORT).show();
     // need to change the store icon
-    mProgressBar.setVisibility(View.INVISIBLE);
-    mProgressBar.setProgress(0);
+    mholder.downloadpgb.setVisibility(View.INVISIBLE);
+    mholder.downloadpgb.setProgress(0);
 
-    mCallback.execute();
+
+    // unzip the file
+    File zipfile = new File(zipfilepath);
+    Log.d(TAG,"parent: "+zipfile.getParent() + ", filename: "+ zipfile.getName());
+    new AsyncTask<Void,Void,Integer>(){
+
+      @Override
+      protected Integer doInBackground(Void... v){
+        Unzip.unpackZip(zipfile);
+        return 0;
+      }
+
+      @Override
+      protected void onPostExecute(Integer i){
+        // now that zipping is finished, we are ready to set the icon to delete icon
+
+        if(i==0){
+          mCallback.execute();
+        }
+
+      }
+
+    }.execute();
+
+
+    return;
 
   }
 }

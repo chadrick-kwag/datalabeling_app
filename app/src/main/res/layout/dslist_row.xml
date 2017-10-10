@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+  <TextView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:id="@+id/name"
+      android:layout_marginLeft="30dp"
+      android:layout_marginBottom="10dp"
+  />
+  <ImageView
+      android:layout_width="24dp"
+      android:layout_height="24dp" app:srcCompat="@drawable/ic_file_download_black_24dp"
+       android:layout_alignParentEnd="true"
+      android:layout_marginEnd="20dp" android:id="@+id/storeActionImageView"/>
+
+  <com.mikhaellopez.circularprogressbar.CircularProgressBar
+      android:id="@+id/progressBar"
+      android:layout_width="24dp"
+      android:layout_height="24dp"
+      android:layout_toStartOf="@+id/storeActionImageView"
+      app:cpb_background_progressbar_color="@android:color/darker_gray"
+      app:cpb_background_progressbar_width="2dp"
+      app:cpb_progressbar_color="@android:color/black"
+      app:cpb_progressbar_width="5dp"
+      android:visibility="invisible"
+  />
+
+</RelativeLayout>

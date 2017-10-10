@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,55 +35,69 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG="datalabel";
     private TextView mTextView;
     private Button testbtn;
+    private FragmentManager fragmentManager;
+    private FragmentTransaction fragmentTransaction;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
         queue = Volley.newRequestQueue(this);
-        mTextView = (TextView) findViewById(R.id.mtextView);
-        testbtn = (Button) findViewById(R.id.testbutton);
+        setContentView(R.layout.activity_main);
 
-        testbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                JSONObject jsonObject = new JSONObject();
-                try{
-                    jsonObject.put("any","thing");
-                }
-                catch(JSONException e){
-                    e.printStackTrace();
-                }
+//        mTextView = (TextView) findViewById(R.id.mtextView);
 
-                JsonObjectRequest jsonRequest = new JsonObjectRequest(baseurl+"/dslist",
-                        jsonObject,
-                        (JSONObject response) -> {
-                            // parse the response and populate listview
-
-                            try{
-                                JSONArray jsonArray = response.getJSONArray("dslist");
-                                mTextView.setText(jsonArray.toString());
-
-                                for(int i=0;i<jsonArray.length();i++){
-                                    Log.d(TAG,jsonArray.getJSONObject(i).get("name").toString());
-                                }
-
-                            }
-                            catch (JSONException e){
-                                e.printStackTrace();
-                            }
+        fragmentManager = getSupportFragmentManager();
+        fragmentTransaction = fragmentManager.beginTransaction();
 
 
+//        testbtn = (Button) findViewById(R.id.testbutton);
 
-                        },(error) ->{mTextView.setText("post failed to get dslist");}
-                        );
+//        testbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                JSONObject jsonObject = new JSONObject();
+//                try{
+//                    jsonObject.put("any","thing");
+//                }
+//                catch(JSONException e){
+//                    e.printStackTrace();
+//                }
+//
+//                JsonObjectRequest jsonRequest = new JsonObjectRequest(baseurl+"/dslist",
+//                        jsonObject,
+//                        (JSONObject response) -> {
+//                            // parse the response and populate listview
+//
+//                            try{
+//                                JSONArray jsonArray = response.getJSONArray("dslist");
+//                                mTextView.setText(jsonArray.toString());
+//
+//                                for(int i=0;i<jsonArray.length();i++){
+//                                    Log.d(TAG,jsonArray.getJSONObject(i).get("name").toString());
+//                                }
+//
+//                            }
+//                            catch (JSONException e){
+//                                e.printStackTrace();
+//                            }
+//
+//
+//
+//                        },(error) ->{mTextView.setText("post failed to get dslist");}
+//                        );
+//
+//                queue.add(jsonRequest);
+//            }
+//        });
 
-                queue.add(jsonRequest);
-            }
-        });
-
-
-
+        Log.d(TAG,"fragment created");
+        DatasetSelectFragment fragment = new DatasetSelectFragment();
+//        TestFragment testFragment = new TestFragment();
+        fragmentTransaction.add(R.id.fragmentcontainer,fragment);
+        Log.d(TAG,"right before fragmentransaction commit");
+        fragmentTransaction.commit();
 
 
     }
@@ -104,22 +120,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //send request
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, baseurl,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        mTextView.setText("Response is: "+ response.toString());
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                mTextView.setText("That didn't work!");
-            }
-        });
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
+
+
+
 
     }
 }

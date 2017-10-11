@@ -107,7 +107,7 @@ public class DatasetSelectFragment extends Fragment {
                 Log.d(TAG,filename+"not exists");
               }
 
-              DataSet ds = new DataSet(object.getInt("id"), object.getString("name"),direxist);
+              DataSet ds = new DataSet(object.getInt("id"), object.getString("name"),direxist, getContext().getFilesDir().toString());
 
               dslist.add(ds);
             }

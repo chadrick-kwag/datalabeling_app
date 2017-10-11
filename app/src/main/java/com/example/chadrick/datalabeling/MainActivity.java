@@ -46,51 +46,8 @@ public class MainActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         setContentView(R.layout.activity_main);
 
-//        mTextView = (TextView) findViewById(R.id.mtextView);
-
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-
-
-//        testbtn = (Button) findViewById(R.id.testbutton);
-
-//        testbtn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                JSONObject jsonObject = new JSONObject();
-//                try{
-//                    jsonObject.put("any","thing");
-//                }
-//                catch(JSONException e){
-//                    e.printStackTrace();
-//                }
-//
-//                JsonObjectRequest jsonRequest = new JsonObjectRequest(baseurl+"/dslist",
-//                        jsonObject,
-//                        (JSONObject response) -> {
-//                            // parse the response and populate listview
-//
-//                            try{
-//                                JSONArray jsonArray = response.getJSONArray("dslist");
-//                                mTextView.setText(jsonArray.toString());
-//
-//                                for(int i=0;i<jsonArray.length();i++){
-//                                    Log.d(TAG,jsonArray.getJSONObject(i).get("name").toString());
-//                                }
-//
-//                            }
-//                            catch (JSONException e){
-//                                e.printStackTrace();
-//                            }
-//
-//
-//
-//                        },(error) ->{mTextView.setText("post failed to get dslist");}
-//                        );
-//
-//                queue.add(jsonRequest);
-//            }
-//        });
 
         Log.d(TAG,"fragment created");
         DatasetSelectFragment fragment = new DatasetSelectFragment();

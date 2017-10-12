@@ -3,6 +3,7 @@ package com.example.chadrick.datalabeling;
 import android.os.Bundle;
 import android.service.autofill.Dataset;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -74,6 +75,14 @@ public class DatasetProgressFragment extends Fragment {
             public void onClick(View view) {
                 Log.d(TAG,"continue btn clicked.");
 
+                ImageViewerFragment imageViewerFragment = new ImageViewerFragment();
+                Bundle b = new Bundle();
+                b.putString("ds",dataset.serialize());
+                imageViewerFragment.setArguments(b);
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction().add(R.id.fragmentcontainer,imageViewerFragment)
+                        .addToBackStack(null).commit();
+
             }
         });
 
@@ -105,22 +114,7 @@ public class DatasetProgressFragment extends Fragment {
 
         File dir = new File(dataset.getDirstr());
 
-        //sanity check
-        if(!dir.exists()){
-            Log.d(TAG,"ds dir doesn't exist");
-            return;
-        }
-
-        File[] files = dir.listFiles();
-        ArrayList<File> imagefilelist = new ArrayList<>();
-        for(File itemfile: files){
-            String pathstr = itemfile.toString();
-            String extension = pathstr.substring(pathstr.lastIndexOf(".") + 1, pathstr.length());
-            if (extension.equals("png") || extension.equals("jpg")) {
-                Log.d(TAG, files.toString() + " -> png or jpg file added to list");
-                imagefilelist.add(itemfile);
-            }
-        }
+        ArrayList<File> imagefilelist = Util.getImageFileList(dir);
 
         // get the size of list and calcalate the progresspercentage
         // and the number of labeling finished images.

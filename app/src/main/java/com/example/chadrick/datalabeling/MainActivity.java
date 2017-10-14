@@ -3,6 +3,7 @@ package com.example.chadrick.datalabeling;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private Button testbtn;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+    private boolean firstentry=true;
 
 
     @Override
@@ -52,22 +54,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-        // check network connectivity
-//        ConnectivityManager cm =
-//                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-//
-//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-//        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-//        if(isConnected){
-//            Toast.makeText(getApplicationContext(),"network connected", Toast.LENGTH_LONG).show();
-//        }
-//        else{
-//            Toast.makeText(getApplicationContext(),"network not available", Toast.LENGTH_LONG).show();
-//        }
+
+        final Handler handler = new Handler();
+
+        if(firstentry){
+            firstentry=false;
+            SplashScreenFragment splashScreenFragment = new SplashScreenFragment();
+            fragmentManager.beginTransaction().add(R.id.fragmentcontainer,splashScreenFragment).commit();
+            handler.postDelayed(new Runnable(){
+                @Override
+                public void run(){
 
 
+                    checkinternetandAction();
+                    Log.d(TAG,"end of handler delayed run");
+                }
+            },500);
 
+        }else{
+            checkinternetandAction();
+        }
+    }
 
+    protected RequestQueue getQueue(){
+        return this.queue;
+    }
+
+    private void checkinternetandAction(){
         String url = "http://www.google.com";
         StringRequest stringRequest = new StringRequest(Request.Method.GET,url,
                 new Response.Listener<String>() {
@@ -92,11 +105,6 @@ public class MainActivity extends AppCompatActivity {
         });
         queue.add(stringRequest);
 
-
-    }
-
-    protected RequestQueue getQueue(){
-        return this.queue;
     }
 
 

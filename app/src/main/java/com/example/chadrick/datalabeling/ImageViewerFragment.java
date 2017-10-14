@@ -23,7 +23,7 @@ import static com.android.volley.VolleyLog.TAG;
 
 public class ImageViewerFragment extends Fragment {
 
-    private ViewPager viewPager;
+    private CustomViewPager customviewPager;
     private DataSet dataSet;
     private final String TAG = this.getClass().getSimpleName();
 
@@ -32,7 +32,7 @@ public class ImageViewerFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         View root = inflater.inflate(R.layout.imageviewerfrag_layout,container, false);
-        viewPager = (ViewPager) root.findViewById(R.id.viewpager);
+        customviewPager = (CustomViewPager) root.findViewById(R.id.customviewpager);
 
 
         // get dataset
@@ -61,8 +61,8 @@ public class ImageViewerFragment extends Fragment {
 
 
 
-        FullScreenImageAdapter adapter = new FullScreenImageAdapter(getContext(),imagefiles);
-        viewPager.setAdapter(adapter);
+        FullScreenImageAdapter adapter = new FullScreenImageAdapter(getContext(),imagefiles,customviewPager);
+        customviewPager.setAdapter(adapter);
 
 
 

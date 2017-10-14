@@ -25,10 +25,12 @@ public class FullScreenImageAdapter extends PagerAdapter {
     private Context context;
 
     private ArrayList<File> imagefiles;
+    private CustomViewPager customViewPager;
 
-    public FullScreenImageAdapter(Context context, ArrayList<File> imagefiles){
+    public FullScreenImageAdapter(Context context, ArrayList<File> imagefiles, CustomViewPager customViewPager){
         this.context = context;
         this.imagefiles = imagefiles;
+        this.customViewPager = customViewPager;
 
     }
 
@@ -44,7 +46,8 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        ImageView imgDisplay;
+//        ImageView imgDisplay;
+        TouchImageView touchimageview;
 
 
         LayoutInflater inflater = (LayoutInflater) context
@@ -52,13 +55,16 @@ public class FullScreenImageAdapter extends PagerAdapter {
         View viewLayout = inflater.inflate(R.layout.layout_fullscreen_image, container,
                 false);
 
-        imgDisplay = (ImageView) viewLayout.findViewById(R.id.imgDisplay);
+        //imgDisplay = (ImageView) viewLayout.findViewById(R.id.imgDisplay);
+        touchimageview = (TouchImageView) viewLayout.findViewById(R.id.touchimageview);
+        touchimageview.setCustomViewPager(customViewPager);
 
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         Bitmap bitmap = BitmapFactory.decodeFile(imagefiles.get(position).toString(), options);
-        imgDisplay.setImageBitmap(bitmap);
+//        imgDisplay.setImageBitmap(bitmap);
+        touchimageview.setImageBitmap(bitmap);
 
 
         ((ViewPager) container).addView(viewLayout);

@@ -28,7 +28,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     PointF last = new PointF();
     PointF start = new PointF();
     float minScale = 1f;
-    float maxScale = 3f;
+    float maxScale = 5f;
     float[] m;
 
     int viewWidth, viewHeight;
@@ -40,6 +40,9 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     ScaleGestureDetector mScaleDetector;
 
     Context context;
+
+    private CustomViewPager customViewPager;
+    private final String TAG = this.getClass().getSimpleName();
 
     public TouchImageView(Context context) {
         super(context);
@@ -132,6 +135,21 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
             } else if (saveScale < minScale) {
                 saveScale = minScale;
                 mScaleFactor = minScale / origScale;
+            }
+
+            // if saveScale is minScale, then we enable viewpager swipe
+            // if not, (which would be when the slightset zoom in has occured,
+            // then we disable the swipe of viewpager.
+
+            if(customViewPager!=null){
+                if(saveScale==minScale){
+                    Log.i(TAG,"enable swipe");
+                    customViewPager.enableSwipe();
+                }
+                else{
+                    Log.i(TAG,"disable swipe");
+                    customViewPager.disableSwipe();
+                }
             }
 
             if (origWidth * saveScale <= viewWidth
@@ -233,5 +251,9 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
             setImageMatrix(matrix);
         }
         fixTrans();
+    }
+
+    public void setCustomViewPager(CustomViewPager input){
+        this.customViewPager = input;
     }
 }

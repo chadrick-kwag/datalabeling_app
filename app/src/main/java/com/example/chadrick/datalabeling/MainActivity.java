@@ -45,17 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
         queue = Volley.newRequestQueue(this);
         setContentView(R.layout.activity_main);
-
         fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-
-        Log.d(TAG,"fragment created");
-        DatasetSelectFragment fragment = new DatasetSelectFragment();
-//        TestFragment testFragment = new TestFragment();
-        fragmentTransaction.add(R.id.fragmentcontainer,fragment);
-        Log.d(TAG,"right before fragmentransaction commit");
-        fragmentTransaction.commit();
-
 
     }
 
@@ -63,23 +53,51 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
         // check network connectivity
-        ConnectivityManager cm =
-                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
-        if(isConnected){
-            Toast.makeText(getApplicationContext(),"network connected", Toast.LENGTH_LONG).show();
-        }
-        else{
-            Toast.makeText(getApplicationContext(),"network not available", Toast.LENGTH_LONG).show();
-        }
-
-
+//        ConnectivityManager cm =
+//                (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+//
+//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//        boolean isConnected = activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+//        if(isConnected){
+//            Toast.makeText(getApplicationContext(),"network connected", Toast.LENGTH_LONG).show();
+//        }
+//        else{
+//            Toast.makeText(getApplicationContext(),"network not available", Toast.LENGTH_LONG).show();
+//        }
 
 
 
+
+        String url = "http://www.google.com";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d(TAG, "internet available");
+
+
+
+                        DatasetSelectFragment fragment = new DatasetSelectFragment();
+                        fragmentManager.beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
+
+
+                    }
+                }, new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError e){
+                Toast.makeText(getApplicationContext(),"no internet connection",Toast.LENGTH_SHORT).show();
+                NoInternetFragment noInternetFragment = new NoInternetFragment();
+                fragmentManager.beginTransaction().add(R.id.fragmentcontainer,noInternetFragment).commit();
+            }
+        });
+        queue.add(stringRequest);
 
 
     }
+
+    protected RequestQueue getQueue(){
+        return this.queue;
+    }
+
+
 }

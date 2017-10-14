@@ -2,6 +2,7 @@ package com.example.chadrick.datalabeling;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -34,6 +35,7 @@ public class DatasetSelectFragment extends Fragment {
   private static String baseurl = "http://13.124.175.119:4001";
   private RequestQueue queue;
   private List<DataSet> dslist;
+  private SwipeRefreshLayout swipeRefreshLayout;
 
   @Override
   public void onCreate(Bundle savedinstance) {
@@ -42,6 +44,7 @@ public class DatasetSelectFragment extends Fragment {
     queue = Volley.newRequestQueue(getContext());
     dslist = new ArrayList<>();
     mDSAdapter = new DSAdapter(getContext(), dslist);
+
     Log.d(TAG, "oncreate finished");
 
   }
@@ -59,6 +62,15 @@ public class DatasetSelectFragment extends Fragment {
     RecyclerView.LayoutManager mDSLayoutManager = new LinearLayoutManager(getContext());
     dsrcv.setLayoutManager(mDSLayoutManager);
 
+    swipeRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.swiperefreshlayout);
+    swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        Log.d(TAG,"refreshing recycler view");
+        populateRecyclerView(true);
+      }
+    });
+
     Log.d(TAG, "oncreateview end");
 
     return v;
@@ -67,8 +79,12 @@ public class DatasetSelectFragment extends Fragment {
   @Override
   public void onResume() {
     super.onResume();
+    populateRecyclerView(false);
+
+  }
 
 
+  private void populateRecyclerView(boolean calledfromRefresh){
     // fetch ds data from server
     //clear dslist
     dslist.clear();
@@ -81,48 +97,56 @@ public class DatasetSelectFragment extends Fragment {
     }
 
     JsonObjectRequest jsonRequest = new JsonObjectRequest(baseurl + "/dslist",
-        jsonObject,
-        (JSONObject response) -> {
-          // parse the response and populate listview
+            jsonObject,
+            (JSONObject response) -> {
+              // parse the response and populate listview
 
-          try {
-            JSONArray jsonArray = response.getJSONArray("dslist");
-
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-              Log.d(TAG, jsonArray.getJSONObject(i).get("name").toString());
-              JSONObject object = jsonArray.getJSONObject(i);
+              try {
+                JSONArray jsonArray = response.getJSONArray("dslist");
 
 
-              //check for storage
-              Boolean direxist=false;
-              String filename = object.get("id").toString();
-              File file = new File(getContext().getFilesDir(), filename);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                  Log.d(TAG, jsonArray.getJSONObject(i).get("name").toString());
+                  JSONObject object = jsonArray.getJSONObject(i);
 
-              if(file.exists()){
-                Log.d(TAG,filename+"exists");
-                direxist=true;
+
+                  //check for storage
+                  Boolean direxist=false;
+                  String filename = object.get("id").toString();
+                  File file = new File(getContext().getFilesDir(), filename);
+
+                  if(file.exists()){
+                    Log.d(TAG,filename+"exists");
+                    direxist=true;
+                  }
+                  else{
+                    Log.d(TAG,filename+"not exists");
+                  }
+
+                  DataSet ds = new DataSet(object.getInt("id"), object.getString("name"),direxist, getContext().getFilesDir().toString());
+
+                  dslist.add(ds);
+                }
+
+              } catch (JSONException e) {
+                e.printStackTrace();
               }
-              else{
-                Log.d(TAG,filename+"not exists");
+
+              mDSAdapter.notifyDataSetChanged();
+              Log.d(TAG, "response finished");
+
+              //
+              if(calledfromRefresh){
+                swipeRefreshLayout.setRefreshing(false);
               }
 
-              DataSet ds = new DataSet(object.getInt("id"), object.getString("name"),direxist, getContext().getFilesDir().toString());
 
-              dslist.add(ds);
-            }
-
-          } catch (JSONException e) {
-            e.printStackTrace();
-          }
-
-          mDSAdapter.notifyDataSetChanged();
-          Log.d(TAG, "response finished");
-
-
-        }, (error) -> {
+            }, (error) -> {
       Log.d(TAG, "post failed to get dslist");
       Toast.makeText(getContext(),"failed to fetch dslist",Toast.LENGTH_SHORT).show();
+      if(calledfromRefresh){
+        swipeRefreshLayout.setRefreshing(false);
+      }
     }
     );
 

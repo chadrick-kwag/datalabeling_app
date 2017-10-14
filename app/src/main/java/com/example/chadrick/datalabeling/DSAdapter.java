@@ -67,7 +67,7 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
         //dynamically set the width of mainclickarea width
         int totalWidth = itemView.getWidth();
         RelativeLayout mainclickarea = (RelativeLayout) itemView.findViewById(R.id.mainclickarea);
-        mainclickarea.setMinimumWidth(totalWidth);
+
         return new DSViewHolder(itemView);
     }
 

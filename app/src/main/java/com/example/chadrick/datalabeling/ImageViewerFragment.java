@@ -2,9 +2,11 @@ package com.example.chadrick.datalabeling;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -24,6 +26,7 @@ import static com.android.volley.VolleyLog.TAG;
 public class ImageViewerFragment extends Fragment {
 
     private CustomViewPager customviewPager;
+  private Button drawButton;
     private DataSet dataSet;
     private final String TAG = this.getClass().getSimpleName();
 
@@ -33,6 +36,25 @@ public class ImageViewerFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.imageviewerfrag_layout,container, false);
         customviewPager = (CustomViewPager) root.findViewById(R.id.customviewpager);
+      drawButton = (Button) root.findViewById(R.id.drawbtn);
+      drawButton.setOnTouchListener(new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+          switch(motionEvent.getAction()){
+            case MotionEvent.ACTION_DOWN:
+              Log.d(TAG,"draw button pressed");
+              drawButton.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.buttonpressedcolor));
+              break;
+            case MotionEvent.ACTION_UP:
+              Log.d(TAG,"draw button released");
+              drawButton.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.buttonreleasedcolor));
+              break;
+            default:
+              break;
+          }
+          return false;
+        }
+      });
 
 
         // get dataset

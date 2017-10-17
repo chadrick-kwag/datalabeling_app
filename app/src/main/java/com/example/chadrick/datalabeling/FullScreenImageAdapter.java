@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.Layout;
@@ -26,6 +28,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     private ArrayList<File> imagefiles;
     private CustomViewPager customViewPager;
+  private Canvas canvas;
 
     public FullScreenImageAdapter(Context context, ArrayList<File> imagefiles, CustomViewPager customViewPager){
         this.context = context;
@@ -62,9 +65,16 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+      options.inMutable=true;
         Bitmap bitmap = BitmapFactory.decodeFile(imagefiles.get(position).toString(), options);
 //        imgDisplay.setImageBitmap(bitmap);
-        touchimageview.setImageBitmap(bitmap);
+//        touchimageview.setImageBitmap(bitmap);
+      Bitmap tempbitmap = Bitmap.createBitmap(bitmap.getWidth(),bitmap.getHeight(),Bitmap.Config.ARGB_8888);
+      canvas = new Canvas(tempbitmap);
+      canvas.drawBitmap(bitmap,0,0,null);
+      touchimageview.setImageBitmap(tempbitmap);
+
+
 
 
         ((ViewPager) container).addView(viewLayout);

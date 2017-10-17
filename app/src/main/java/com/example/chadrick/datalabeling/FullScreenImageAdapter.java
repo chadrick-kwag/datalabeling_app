@@ -24,68 +24,72 @@ import java.util.ArrayList;
  */
 
 public class FullScreenImageAdapter extends PagerAdapter {
-    private Context context;
+  private Context context;
 
-    private ArrayList<File> imagefiles;
-    private CustomViewPager customViewPager;
+  private ArrayList<File> imagefiles;
+  private CustomViewPager customViewPager;
+  private Callback drawBtnpressedcallback;
   private Canvas canvas;
 
-    public FullScreenImageAdapter(Context context, ArrayList<File> imagefiles, CustomViewPager customViewPager){
-        this.context = context;
-        this.imagefiles = imagefiles;
-        this.customViewPager = customViewPager;
+  public FullScreenImageAdapter(Context context, ArrayList<File> imagefiles, CustomViewPager customViewPager, Callback drawBtnpressedcallback) {
+    this.context = context;
+    this.imagefiles = imagefiles;
+    this.customViewPager = customViewPager;
+    this.drawBtnpressedcallback = drawBtnpressedcallback;
 
-    }
+  }
 
-    @Override
-    public int getCount(){
-        return this.imagefiles.size();
-    }
+  @Override
+  public int getCount() {
+    return this.imagefiles.size();
+  }
 
-    @Override
-    public boolean isViewFromObject(View view, Object object) {
-        return view == ((RelativeLayout) object);
-    }
+  @Override
+  public boolean isViewFromObject(View view, Object object) {
+    return view == ((RelativeLayout) object);
+  }
 
-    @Override
-    public Object instantiateItem(ViewGroup container, int position) {
+  @Override
+  public Object instantiateItem(ViewGroup container, int position) {
 //        ImageView imgDisplay;
-        TouchImageView touchimageview;
+    TouchImageView touchimageview;
 
 
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View viewLayout = inflater.inflate(R.layout.layout_fullscreen_image, container,
-                false);
+    LayoutInflater inflater = (LayoutInflater) context
+        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    View viewLayout = inflater.inflate(R.layout.layout_fullscreen_image, container,
+        false);
 
-        //imgDisplay = (ImageView) viewLayout.findViewById(R.id.imgDisplay);
-        touchimageview = (TouchImageView) viewLayout.findViewById(R.id.touchimageview);
-        touchimageview.setCustomViewPager(customViewPager);
+    //imgDisplay = (ImageView) viewLayout.findViewById(R.id.imgDisplay);
+    touchimageview = (TouchImageView) viewLayout.findViewById(R.id.touchimageview);
+    touchimageview.setCustomViewPager(customViewPager);
+    touchimageview.setdrawBtnpressedcallback(drawBtnpressedcallback);
 
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-      options.inMutable=true;
-        Bitmap bitmap = BitmapFactory.decodeFile(imagefiles.get(position).toString(), options);
+    BitmapFactory.Options options = new BitmapFactory.Options();
+    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+    options.inMutable = true;
+    Bitmap bitmap = BitmapFactory.decodeFile(imagefiles.get(position).toString(), options);
 //        imgDisplay.setImageBitmap(bitmap);
 //        touchimageview.setImageBitmap(bitmap);
-      Bitmap tempbitmap = Bitmap.createBitmap(bitmap.getWidth(),bitmap.getHeight(),Bitmap.Config.ARGB_8888);
-      canvas = new Canvas(tempbitmap);
-      canvas.drawBitmap(bitmap,0,0,null);
-      touchimageview.setImageBitmap(tempbitmap);
+    Bitmap tempbitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+    canvas = new Canvas(tempbitmap);
+    canvas.drawBitmap(bitmap, 0, 0, null);
+    touchimageview.setImageBitmap(tempbitmap);
+    touchimageview.passCanvas(canvas);
 
 
 
 
-        ((ViewPager) container).addView(viewLayout);
+    ((ViewPager) container).addView(viewLayout);
 
 
-        return viewLayout;
-    }
+    return viewLayout;
+  }
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        ((ViewPager) container).removeView((RelativeLayout) object);
-    }
+  @Override
+  public void destroyItem(ViewGroup container, int position, Object object) {
+    ((ViewPager) container).removeView((RelativeLayout) object);
+  }
 
 }

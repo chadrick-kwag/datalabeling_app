@@ -29,6 +29,7 @@ public class ImageViewerFragment extends Fragment {
   private Button drawButton;
     private DataSet dataSet;
     private final String TAG = this.getClass().getSimpleName();
+  private boolean drawBtnpressed=false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -43,9 +44,11 @@ public class ImageViewerFragment extends Fragment {
           switch(motionEvent.getAction()){
             case MotionEvent.ACTION_DOWN:
               Log.d(TAG,"draw button pressed");
+              drawBtnpressed=true;
               drawButton.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.buttonpressedcolor));
               break;
             case MotionEvent.ACTION_UP:
+              drawBtnpressed=false;
               Log.d(TAG,"draw button released");
               drawButton.setBackgroundColor(ContextCompat.getColor(getContext(),R.color.buttonreleasedcolor));
               break;
@@ -82,8 +85,13 @@ public class ImageViewerFragment extends Fragment {
         Collections.sort(imagefiles);
 
 
-
-        FullScreenImageAdapter adapter = new FullScreenImageAdapter(getContext(),imagefiles,customviewPager);
+        Callback drawbtnpressedcallback = new Callback() {
+          @Override
+          public boolean getBoolean() {
+            return drawBtnpressed;
+          }
+        };
+        FullScreenImageAdapter adapter = new FullScreenImageAdapter(getContext(),imagefiles,customviewPager, drawbtnpressedcallback);
         customviewPager.setAdapter(adapter);
 
 

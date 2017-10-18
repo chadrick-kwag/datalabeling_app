@@ -1,5 +1,7 @@
 package com.example.chadrick.datalabeling;
 
+import android.graphics.PointF;
+import android.graphics.Rect;
 import android.util.Log;
 
 import java.io.File;
@@ -32,6 +34,31 @@ public class Util {
 
         return imagefilelist;
     }
+
+
+  public static Rect convertToRect(PointF start, PointF last){
+    int x1,x2,y1,y2;
+    if(start.x>last.x){
+      x1 = (int) last.x;
+      x2 = (int) start.x;
+    }
+    else{
+      x2 = (int) last.x;
+      x1 = (int) start.x;
+    }
+
+    if(start.y>last.y){
+      y1=(int)last.y;
+      y2=(int)start.y;
+    }
+    else{
+      y2=(int)last.y;
+      y1=(int)start.y;
+    }
+
+    Rect rect = new Rect(x1,y1,x2,y2);
+    return rect;
+  }
 
 
 

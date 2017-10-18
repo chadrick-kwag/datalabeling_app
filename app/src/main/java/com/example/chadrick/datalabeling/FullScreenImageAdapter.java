@@ -12,7 +12,9 @@ import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -30,12 +32,17 @@ public class FullScreenImageAdapter extends PagerAdapter {
   private CustomViewPager customViewPager;
   private Callback drawBtnpressedcallback;
   private Canvas canvas;
+  private Canvas subcanvas;
+  private int screenwidth;
+  private int screenheight;
 
-  public FullScreenImageAdapter(Context context, ArrayList<File> imagefiles, CustomViewPager customViewPager, Callback drawBtnpressedcallback) {
+  public FullScreenImageAdapter(Context context, ArrayList<File> imagefiles, CustomViewPager customViewPager, Callback drawBtnpressedcallback, int screenwidth, int screenheight) {
     this.context = context;
     this.imagefiles = imagefiles;
     this.customViewPager = customViewPager;
     this.drawBtnpressedcallback = drawBtnpressedcallback;
+    this.screenwidth = screenwidth;
+    this.screenheight = screenheight;
 
   }
 
@@ -46,13 +53,14 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
   @Override
   public boolean isViewFromObject(View view, Object object) {
-    return view == ((RelativeLayout) object);
+    return view == ((FrameLayout) object);
   }
 
   @Override
   public Object instantiateItem(ViewGroup container, int position) {
 //        ImageView imgDisplay;
     TouchImageView touchimageview;
+    MaskImageView tempdrawarea;
 
 
     LayoutInflater inflater = (LayoutInflater) context
@@ -65,6 +73,16 @@ public class FullScreenImageAdapter extends PagerAdapter {
     touchimageview.setCustomViewPager(customViewPager);
     touchimageview.setdrawBtnpressedcallback(drawBtnpressedcallback);
 
+    tempdrawarea = (MaskImageView) viewLayout.findViewById(R.id.tempdrawarea);
+
+    tempdrawarea.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+      @Override
+      public void onGlobalLayout() {
+
+        tempdrawarea.passWH(tempdrawarea.getWidth(), tempdrawarea.getHeight());
+      }
+    });
+
 
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -75,9 +93,12 @@ public class FullScreenImageAdapter extends PagerAdapter {
     Bitmap tempbitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
     canvas = new Canvas(tempbitmap);
     canvas.drawBitmap(bitmap, 0, 0, null);
+
     touchimageview.setImageBitmap(tempbitmap);
     touchimageview.passCanvas(canvas);
 
+
+    tempdrawarea.setdrawBtnpressedcallback(drawBtnpressedcallback);
 
 
 

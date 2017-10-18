@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
-    <!--<ImageView-->
-        <!--android:id="@+id/imgDisplay"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="fill_parent"-->
-        <!--android:scaleType="fitCenter" />-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:layout_width="match_parent" android:layout_height="match_parent">
+  <!--<ImageView-->
+  <!--android:id="@+id/imgDisplay"-->
+  <!--android:layout_width="fill_parent"-->
+  <!--android:layout_height="fill_parent"-->
+  <!--android:scaleType="fitCenter" />-->
 
-    <com.example.chadrick.datalabeling.TouchImageView
-        android:id="@+id/touchimageview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="fitCenter"/>
+  <com.example.chadrick.datalabeling.TouchImageView
+      android:id="@+id/touchimageview"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:scaleType="fitCenter"/>
+
+  <com.example.chadrick.datalabeling.MaskImageView
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:background="@android:color/transparent"
+      android:id="@+id/tempdrawarea"
+  />
 
 
-</RelativeLayout>
+</FrameLayout>

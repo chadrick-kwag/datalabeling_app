@@ -6,4 +6,6 @@ package com.example.chadrick.datalabeling;
 
 public interface Callback {
   boolean getBoolean();
+
+
 }

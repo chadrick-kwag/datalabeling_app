@@ -26,5 +26,24 @@
           android:text="hold press to draw"
   />
 
+  <Button android:layout_width="50dp" android:layout_height="50dp"
+          android:id="@+id/nobtn"
+          android:elevation="2dp"
+          android:layout_gravity="bottom"
+          android:layout_marginLeft="140dp"
+          android:background="@color/buttonreleasedcolor"
+          android:visibility="gone"
+          android:text="X"
+  />
+  <Button android:layout_width="50dp" android:layout_height="50dp"
+          android:id="@+id/yesbtn"
+          android:elevation="2dp"
+          android:layout_gravity="bottom"
+          android:layout_marginLeft="190dp"
+          android:background="@color/buttonreleasedcolor"
+          android:visibility="gone"
+          android:text="O"
+  />
+
 
 </FrameLayout>

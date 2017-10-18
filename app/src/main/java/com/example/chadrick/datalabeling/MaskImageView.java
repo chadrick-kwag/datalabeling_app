@@ -25,8 +25,13 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
   private Canvas canvas;
   private Bitmap bitmap;
   private Callback drawBtnpressedcallback;
+  private CallbackWithRect RectReadyCallback;
+
   private PointF start, last;
   private boolean isdown = false;
+  private boolean isMove = false;
+  private boolean touchEnable = true;
+  private TouchImageView mainiv;
 
   private final String TAG = this.getClass().getSimpleName();
 
@@ -55,6 +60,13 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
       @Override
       public boolean onTouch(View view, MotionEvent motionEvent) {
 
+        Log.d(TAG,"ontouch in maskIV");
+
+        // if touch is disabled, do nothing.
+        if(!touchEnable){
+          return true;
+        }
+
         // what we need is get the x,y of event.
         // set start, last and draw on the canvas
         // but there is difference in the size of canvas and the IV's size
@@ -71,14 +83,14 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
 
         // deal with the event only when drawbtn is pressed.
 
-        if (drawbtnpressed == false) {
+        if (drawbtnpressed == false && isMove == false) {
           return false;
         }
 
         // prepare the adjusted x,y coordinates
         PointF curr = new PointF();
-        Log.d(TAG,"view left: "+getLeft() + ", view top: "+getTop());
-        curr.set((int)motionEvent.getX() - getLeft(), (int)motionEvent.getY() - getTop());
+        curr.set(motionEvent.getX(),motionEvent.getY());
+
 
         switch (motionEvent.getAction()) {
           case MotionEvent.ACTION_DOWN:
@@ -90,12 +102,18 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
             last.set(start);
             break;
           case MotionEvent.ACTION_MOVE:
+            isMove = true;
 
 //            Log.d(TAG,"action move detected");
 
 
 
-            if (isdown == false) {
+            if (drawbtnpressed == false) {
+              // probably fall in here when the user released the drawbtn
+              // while dragging the rectangle.
+              // we just want to quit the drawing of the rectangle
+              bitmap.eraseColor(Color.TRANSPARENT);
+
               break;
             }
 
@@ -113,11 +131,20 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
           case MotionEvent.ACTION_UP:
 
 //            Log.d(TAG,"action up detected");
+            isMove=false;
+            isdown = false;
 
+            // erase the rect draw in move case.
             bitmap.eraseColor(Color.TRANSPARENT);
 
-            isdown = false;
-            // do nothing.
+            // draw the rectangle. and then ask the user if this rectangle is going to be saved or not.
+            Rect rect2 = Util.convertToRect(start,last);
+            canvas.drawRect(rect2,paint);
+
+            // call the RectReadycallback
+//            RectReadyCallback.run();
+            RectReadyCallback.doit(rect2);
+
             break;
           default:
         }
@@ -127,31 +154,12 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
 
         // indicate that touch event is still no handled. we need this event to go down
         // to the lower level.
+
         return true;
       }
     });
   }
 
-
-
-
-  @Override
-  public boolean post(Runnable action) {
-    // by now, the width and height of the IV should have been decided. obtain it.
-    width = getWidth();
-    height = getHeight();
-    Log.d(TAG, "maskimageview width:" + width + ", height:" + height);
-
-    // init the canvas and bitmap
-    // the bitmap will have the same size as the IV
-    bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-    canvas = new Canvas(bitmap);
-
-    this.setImageBitmap(bitmap);
-    Log.d(TAG, "finished setting the maskIV bitmap and canvas");
-
-    return super.post(action);
-  }
 
 
   public void setdrawBtnpressedcallback(Callback callback) {
@@ -175,6 +183,26 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
     this.setImageBitmap(bitmap);
     Log.d(TAG, "passWH: finished setting the maskIV bitmap and canvas");
 
+  }
+
+  // we need the touchimageview in order to draw the final rectangle to it.
+  public void passMainIV(TouchImageView mainiv){
+    this.mainiv = mainiv;
+  }
+
+
+
+  public void passRectReadyCallback(CallbackWithRect callback){
+    this.RectReadyCallback = callback;
+  }
+
+
+  public void setTouchEnable(boolean value){
+    this.touchEnable = value;
+  }
+
+  public void eraseall(){
+    bitmap.eraseColor(Color.TRANSPARENT);
   }
 
 

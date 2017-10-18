@@ -15,6 +15,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 
+
 /**
  * Created by chadrick on 17. 10. 12.
  */
@@ -32,7 +33,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
   // Remember some things for zooming
   PointF last = new PointF();
   PointF start = new PointF();
-  PointF start_screencoordinates = new PointF();
   float minScale = 1f;
   float maxScale = 5f;
   float[] m;
@@ -50,9 +50,10 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
   private CustomViewPager customViewPager;
   private Callback drawBtnpressedcallback;
   private Canvas canvas;
-  private Canvas subcanvas;
-  private ImageView subcanvasIV;
   private Paint paint;
+  private boolean touchEnable = true;
+  private Rect savedrect;
+
   private final String TAG = this.getClass().getSimpleName();
 
   public TouchImageView(Context context) {
@@ -84,6 +85,14 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
       @Override
       public boolean onTouch(View v, MotionEvent event) {
+
+        Log.d(TAG,"touch handler of touchIV");
+
+        // if touch is disabled, do nothing.
+        if (!touchEnable) {
+          return true;
+        }
+
         mScaleDetector.onTouchEvent(event);
         PointF curr = new PointF(event.getX(), event.getY());
 
@@ -99,26 +108,23 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
         switch (event.getAction()) {
           case MotionEvent.ACTION_DOWN:
-            if(drawbtnpressed){
-//
-//              // update start_screencoordinates value. will be needed for drawing
-//              // temp rectangles.
-//
-//
-//              // calcuate the inversematrix
-//              inverseMatrix = new Matrix(matrix);
-//              inverseMatrix.invert(inverseMatrix);
-//
-//              // then get the absolute x,y values
-//              event.transform(inverseMatrix);
-//
-//              last.set(event.getX(),event.getY());
-//              start.set(last);
-//              mode = DRAG;
-              // do nothing
+            if (drawbtnpressed) {
 
-            }
-            else{
+
+
+              // calcuate the inversematrix
+              inverseMatrix = new Matrix(matrix);
+              inverseMatrix.invert(inverseMatrix);
+
+              // then get the absolute x,y values
+              event.transform(inverseMatrix);
+
+              last.set(event.getX(),event.getY());
+              start.set(last);
+              mode = DRAG;
+
+
+            } else {
               last.set(curr);
               start.set(last);
               mode = DRAG;
@@ -130,18 +136,8 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
             if (mode == DRAG) {
 
               if (drawbtnpressed) {
-//                // delete the previously drawn rectangle.
-//                subcanvas.drawColor(Color.TRANSPARENT);
-//
-//                // then get the absolute x,y values
-//                event.transform(inverseMatrix);
-//
-//                last.set(event.getX(),event.getY());
-//
-//                Rect temprect = Util.convertToRect(start,last);
-//                subcanvas.drawRect(temprect,paint);
+                // we are not drawing temp rects here. so do nothing.
 
-                // do nothing.
 
               } else {
                 float deltaX = curr.x - last.x;
@@ -162,23 +158,15 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
           case MotionEvent.ACTION_UP:
             mode = NONE;
             if (drawbtnpressed) {
-//              Log.d(TAG,"draw btn pressed and button up");
-//
-//              // delete the temp rectangle
-//              subcanvas.drawColor(Color.TRANSPARENT);
-//
-//              event.transform(inverseMatrix);
-//
-//              last.set(event.getX(),event.getY());
-//
-//
-//              // draw final rectangle on the canvas
-//              Rect rect = Util.convertToRect(start,last);
-//
-//              canvas.drawRect(rect,paint);
 
-              // do nothing.
+              event.transform(inverseMatrix);
+              last.set(event.getX(),event.getY());
 
+              // get the final rect
+              // but don't draw it yet. just keep it.
+              // the drawing will be done when the user clicks yes.
+              savedrect = Util.convertToRect(start,last);
+              Log.d(TAG,"savedrect updated");
 
 
             } else {
@@ -193,6 +181,8 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
           case MotionEvent.ACTION_POINTER_UP:
             mode = NONE;
             break;
+          default:
+            Log.d(TAG,"touch event falling to default");
         }
 
         setImageMatrix(matrix);
@@ -351,54 +341,17 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     this.drawBtnpressedcallback = callback;
   }
 
-  public void passCanvas(Canvas canvas){
+  public void passCanvas(Canvas canvas) {
     this.canvas = canvas;
   }
 
-  public void passsubCanvas(Canvas canvas){
-    this.subcanvas = canvas;
+
+
+  public void setTouchEnable(boolean value) {
+    this.touchEnable = value;
   }
 
-  public void passsubCanvasIV(ImageView iv){
-    this.subcanvasIV = iv;
+  public void drawRect(Rect rect) {
+    canvas.drawRect(savedrect, paint);
   }
-
-
-//   private Rect convertToRect(PointF start, PointF last){
-//     int x1,x2,y1,y2;
-//     if(start.x>last.x){
-//       x1 = (int) last.x;
-//       x2 = (int) start.x;
-//     }
-//     else{
-//       x2 = (int) last.x;
-//       x1 = (int) start.x;
-//     }
-//
-//     if(start.y>last.y){
-//       y1=(int)last.y;
-//       y2=(int)start.y;
-//     }
-//     else{
-//       y2=(int)last.y;
-//       y1=(int)start.y;
-//     }
-//
-//     Rect rect = new Rect(x1,y1,x2,y2);
-//     return rect;
-//   }
-
-   private void adjustSubCanvasFactors(){
-     int bmpw,bmph;
-
-     bmpw = subcanvas.getWidth();
-     bmph = subcanvas.getHeight();
-
-     int ivw, ivh; // imageview widht, height. by now, I assume it has been measured.
-     ivw = subcanvasIV.getWidth();
-     ivh = subcanvasIV.getHeight();
-
-
-
-   }
 }

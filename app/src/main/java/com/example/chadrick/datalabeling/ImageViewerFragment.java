@@ -1,10 +1,12 @@
 package com.example.chadrick.datalabeling;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.method.Touch;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -29,12 +31,18 @@ import static com.android.volley.VolleyLog.TAG;
 public class ImageViewerFragment extends Fragment {
 
   private CustomViewPager customviewPager;
-  private Button drawButton;
+  private Button drawButton, yesbtn, nobtn;
 
 
   private DataSet dataSet;
   private final String TAG = this.getClass().getSimpleName();
   private boolean drawBtnpressed = false;
+  private FullScreenImageAdapter adapter;
+
+  private CallbackWithRect RectReadycallback;
+
+  private int viewpager_currentposition;
+  private Rect receivedRect;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -64,6 +72,39 @@ public class ImageViewerFragment extends Fragment {
         return false;
       }
     });
+
+    yesbtn = (Button) root.findViewById(R.id.yesbtn);
+    yesbtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        //enable the touch events in the two main IVs
+        View pageview = adapter.getPage(viewpager_currentposition);
+
+        // fetch the two IVs
+        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
+        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
+
+        // disable the touch of these two IVs
+        mainIV.setTouchEnable(true);
+        maskIV.setTouchEnable(true);
+
+        // hide yes and no btn from layout
+        yesbtn.setVisibility(View.GONE);
+        nobtn.setVisibility(View.GONE);
+
+        // enable draw btn
+        drawButton.setVisibility(View.VISIBLE);
+
+        // actually draw rectangle in mainIV
+        mainIV.drawRect(receivedRect);
+
+        // clear the temp rectangle in maskIV
+        maskIV.eraseall();
+      }
+    });
+
+
+    nobtn = (Button) root.findViewById(R.id.nobtn);
 
 
     // get dataset
@@ -102,12 +143,67 @@ public class ImageViewerFragment extends Fragment {
     int screenwidth = size.x;
     int screenheight = size.y;
 
-    FullScreenImageAdapter adapter = new FullScreenImageAdapter(getContext(), imagefiles, customviewPager, drawbtnpressedcallback, screenwidth, screenheight);
+    adapter = new FullScreenImageAdapter(getContext(), imagefiles, customviewPager, drawbtnpressedcallback, screenwidth, screenheight);
+
+    customviewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+      @Override
+      public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+      }
+
+      @Override
+      public void onPageSelected(int position) {
+        // update the page position
+
+        viewpager_currentposition = position;
+
+      }
+
+      @Override
+      public void onPageScrollStateChanged(int state) {
+
+      }
+    });
+
     customviewPager.setAdapter(adapter);
 
 
+    RectReadycallback = new CallbackWithRect() {
+      @Override
+      public void doit(Rect rect) {
+        Log.d(TAG,"inside testcallback");
+
+        // set the receivedRect
+        receivedRect = rect;
+
+        // disable the touch handler in the two IVs
+
+        // first access the appropriate page
+        View pageview = adapter.getPage(viewpager_currentposition);
+
+        // fetch the two IVs
+        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
+        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
+
+        // disable the touch of these two IVs
+        mainIV.setTouchEnable(false);
+        maskIV.setTouchEnable(false);
+
+        // show yes/no btns
+        yesbtn.setVisibility(View.VISIBLE);
+        nobtn.setVisibility(View.VISIBLE);
 
 
+
+        // release and disable the drawbtn
+
+        drawButton.setVisibility(View.INVISIBLE);
+
+
+      }
+    };
+
+    adapter.passRectReadyCallback(RectReadycallback);
 
 
     return root;

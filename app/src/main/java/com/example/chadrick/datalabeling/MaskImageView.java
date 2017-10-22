@@ -119,6 +119,7 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
             }
 
             //remove the previous drawn rectangle
+            Log.d(TAG,"maskIV erase in action_move");
             bitmap.eraseColor(Color.TRANSPARENT);
 
             last.set(curr.x, curr.y);
@@ -140,12 +141,14 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
             last.set(curr.x, curr.y);
             // draw the rectangle. and then ask the user if this rectangle is going to be saved or not.
             Rect rect2 = Util.convertToRect(start,last);
-            canvas.drawRect(rect2,paint);
+
 //            invalidate();
 
             // call the RectReadycallback
 //            RectReadyCallback.run();
             RectReadyCallback.doit(rect2);
+
+            canvas.drawRect(rect2,paint);
             Log.d(TAG,"maskIV end of action_up");
 
             break;
@@ -205,6 +208,7 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
   }
 
   public void eraseall(){
+    Log.d(TAG,"maskiv erase in eraseall method");
     bitmap.eraseColor(Color.TRANSPARENT);
   }
 

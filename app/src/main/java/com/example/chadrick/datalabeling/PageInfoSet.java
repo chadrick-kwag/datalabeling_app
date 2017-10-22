@@ -70,6 +70,11 @@ public class PageInfoSet {
 
     mainIV.setImageBitmap(mainBitmap);
     mainIV.passCanvas(mainCanvas);
+    // we create the canvas that is used by the mainIV here because
+    // the mainIV's canvas needs to draw the original bitmap
+    // but the mainIV's constructor does not do this automatically. (or I have not yet found a way to do so)
+    // therefore, this job is done manually and the canvas is passed on to mainIV
+    // so that in the future, mainIV can draw stuff with it.
 
 
     // maskIV has its own canvas

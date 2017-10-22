@@ -89,8 +89,8 @@ public class ImageViewerFragment extends Fragment {
         maskIV.setTouchEnable(true);
 
         // hide yes and no btn from layout
-        yesbtn.setVisibility(View.INVISIBLE);
-        nobtn.setVisibility(View.INVISIBLE);
+        yesbtn.setVisibility(View.GONE);
+        nobtn.setVisibility(View.GONE);
 
         // enable draw btn
         drawButton.setVisibility(View.VISIBLE);
@@ -105,35 +105,6 @@ public class ImageViewerFragment extends Fragment {
 
 
     nobtn = (Button) root.findViewById(R.id.nobtn);
-
-    nobtn.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-
-        //enable the touch events in the two main IVs
-        View pageview = adapter.getPage(viewpager_currentposition);
-
-        // fetch the two IVs
-        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
-        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
-
-        // disable the touch of these two IVs
-        mainIV.setTouchEnable(true);
-        maskIV.setTouchEnable(true);
-
-        // hide yes and no btn from layout
-        yesbtn.setVisibility(View.INVISIBLE);
-        nobtn.setVisibility(View.INVISIBLE);
-
-        // enable draw btn
-        drawButton.setVisibility(View.VISIBLE);
-
-        //erase maskIV
-        maskIV.eraseall();
-
-
-      }
-    });
 
 
     // get dataset
@@ -230,7 +201,7 @@ public class ImageViewerFragment extends Fragment {
 
 
         // force draw in maskIV
-//        maskIV.forcedrawRect(receivedRect);
+        maskIV.forcedrawRect(receivedRect);
 
 
       }

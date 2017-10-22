@@ -86,7 +86,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
       @Override
       public boolean onTouch(View v, MotionEvent event) {
 
-        Log.d(TAG,"touch handler of touchIV");
+//        Log.d(TAG,"touch handler of touchIV");
 
         // if touch is disabled, do nothing.
         if (!touchEnable) {
@@ -108,6 +108,9 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
         switch (event.getAction()) {
           case MotionEvent.ACTION_DOWN:
+
+            Log.d(TAG,"mainIV x:"+event.getX()+", y:"+event.getY());
+
             if (drawbtnpressed) {
 
 

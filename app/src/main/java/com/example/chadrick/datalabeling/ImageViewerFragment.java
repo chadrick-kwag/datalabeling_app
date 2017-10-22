@@ -200,6 +200,10 @@ public class ImageViewerFragment extends Fragment {
         drawButton.setVisibility(View.INVISIBLE);
 
 
+        // force draw in maskIV
+        maskIV.forcedrawRect(receivedRect);
+
+
       }
     };
 

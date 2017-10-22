@@ -60,7 +60,7 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
       @Override
       public boolean onTouch(View view, MotionEvent motionEvent) {
 
-        Log.d(TAG,"ontouch in maskIV");
+//        Log.d(TAG,"ontouch in maskIV");
 
         // if touch is disabled, do nothing.
         if(!touchEnable){
@@ -94,11 +94,12 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
 
         switch (motionEvent.getAction()) {
           case MotionEvent.ACTION_DOWN:
+            Log.d(TAG,"maskIV x:"+motionEvent.getX()+",y:"+motionEvent.getY());
 
 //            Log.d(TAG,"action down detected");
 
             isdown = true;
-            start.set(curr.x, curr.y);
+            start.set(motionEvent.getX(), motionEvent.getY());
             last.set(start);
             break;
           case MotionEvent.ACTION_MOVE:
@@ -135,15 +136,17 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
             isdown = false;
 
             // erase the rect draw in move case.
-            bitmap.eraseColor(Color.TRANSPARENT);
-
+//            bitmap.eraseColor(Color.TRANSPARENT);
+            last.set(curr.x, curr.y);
             // draw the rectangle. and then ask the user if this rectangle is going to be saved or not.
             Rect rect2 = Util.convertToRect(start,last);
             canvas.drawRect(rect2,paint);
+//            invalidate();
 
             // call the RectReadycallback
 //            RectReadyCallback.run();
             RectReadyCallback.doit(rect2);
+            Log.d(TAG,"maskIV end of action_up");
 
             break;
           default:
@@ -173,7 +176,7 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
     this.width = width;
     this.height = height;
 
-    Log.d(TAG, "maskimageview width:" + width + ", height:" + height);
+//    Log.d(TAG, "maskimageview width:" + width + ", height:" + height);
 
     // init the canvas and bitmap
     // the bitmap will have the same size as the IV
@@ -181,7 +184,7 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
     canvas = new Canvas(bitmap);
 
     this.setImageBitmap(bitmap);
-    Log.d(TAG, "passWH: finished setting the maskIV bitmap and canvas");
+//    Log.d(TAG, "passWH: finished setting the maskIV bitmap and canvas");
 
   }
 
@@ -203,6 +206,11 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
 
   public void eraseall(){
     bitmap.eraseColor(Color.TRANSPARENT);
+  }
+
+  public void forcedrawRect(Rect rect){
+    canvas.drawRect(rect,paint);
+    invalidate();
   }
 
 

@@ -60,6 +60,16 @@ public class Util {
     return rect;
   }
 
+  public static String getOnlyFilename(String filenamewithext){
+    int pos = filenamewithext.lastIndexOf(".");
+    if(pos>0){
+      return filenamewithext.substring(0,pos);
+    }
+    else{
+      return null;
+    }
+  }
+
 
 
 }

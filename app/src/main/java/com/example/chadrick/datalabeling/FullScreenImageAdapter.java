@@ -42,6 +42,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
   private int screenheight;
 
   private HashMap<Integer,View> savedpages = new HashMap<Integer,View>();
+  private HashMap<Integer, PageInfoSet> pageInfoSetHashMap = new HashMap<Integer, PageInfoSet>();
 
   private final String TAG = this.getClass().getSimpleName();
 
@@ -49,6 +50,8 @@ public class FullScreenImageAdapter extends PagerAdapter {
     this.context = context;
     this.imagefiles = imagefiles;
     this.customViewPager = customViewPager;
+
+    // drawbtnpressedcallback is used for checking if the drawbtn is pressed or not.
     this.drawBtnpressedcallback = drawBtnpressedcallback;
     this.screenwidth = screenwidth;
     this.screenheight = screenheight;
@@ -72,8 +75,8 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     Log.d(TAG,"instantiating position: "+position);
 //        ImageView imgDisplay;
-    TouchImageView touchimageview;
-    MaskImageView tempdrawarea;
+    TouchImageView mainIV;
+    MaskImageView maskIV;
     PageFrameLayout pageframelayout;
 
 
@@ -82,46 +85,53 @@ public class FullScreenImageAdapter extends PagerAdapter {
     View viewLayout = inflater.inflate(R.layout.layout_fullscreen_image, container,
         false);
 
-    touchimageview = (TouchImageView) viewLayout.findViewById(R.id.touchimageview);
-    tempdrawarea = (MaskImageView) viewLayout.findViewById(R.id.tempdrawarea);
+
+
+
+    mainIV = (TouchImageView) viewLayout.findViewById(R.id.touchimageview);
+    maskIV = (MaskImageView) viewLayout.findViewById(R.id.tempdrawarea);
     pageframelayout = (PageFrameLayout) viewLayout.findViewById(R.id.pageFramelayout);
-    pageframelayout.registerIVs(touchimageview,tempdrawarea);
 
+    PageInfoSet pageInfoSet = new PageInfoSet(mainIV, maskIV, pageframelayout, customViewPager,
+        drawBtnpressedcallback, callback2, imagefiles.get(position));
 
-
-
-    touchimageview.setCustomViewPager(customViewPager);
-    touchimageview.setdrawBtnpressedcallback(drawBtnpressedcallback);
-
-
-
-    tempdrawarea.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-      @Override
-      public void onGlobalLayout() {
-
-        tempdrawarea.passWH(tempdrawarea.getWidth(), tempdrawarea.getHeight());
-      }
-    });
-
-
-    BitmapFactory.Options options = new BitmapFactory.Options();
-    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-    options.inMutable = true;
-    Bitmap bitmap = BitmapFactory.decodeFile(imagefiles.get(position).toString(), options);
-//        imgDisplay.setImageBitmap(bitmap);
-//        touchimageview.setImageBitmap(bitmap);
-    Bitmap tempbitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-    canvas = new Canvas(tempbitmap);
-    canvas.drawBitmap(bitmap, 0, 0, null);
-
-    touchimageview.setImageBitmap(tempbitmap);
-    touchimageview.passCanvas(canvas);
-
-
-    tempdrawarea.setdrawBtnpressedcallback(drawBtnpressedcallback);
-    tempdrawarea.passMainIV(touchimageview);
-
-    tempdrawarea.passRectReadyCallback(callback2);
+//    pageframelayout.registerIVs(touchimageview,tempdrawarea);
+//
+//
+//
+//
+//    touchimageview.setCustomViewPager(customViewPager);
+//    touchimageview.setdrawBtnpressedcallback(drawBtnpressedcallback);
+//
+//
+//    // we need this in order to dynamically get the width and height of tempdrawarea
+//    tempdrawarea.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+//      @Override
+//      public void onGlobalLayout() {
+//
+//        tempdrawarea.passWH(tempdrawarea.getWidth(), tempdrawarea.getHeight());
+//      }
+//    });
+//
+//
+//    BitmapFactory.Options options = new BitmapFactory.Options();
+//    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+//    options.inMutable = true;
+//    Bitmap bitmap = BitmapFactory.decodeFile(imagefiles.get(position).toString(), options);
+////        imgDisplay.setImageBitmap(bitmap);
+////        touchimageview.setImageBitmap(bitmap);
+//    Bitmap tempbitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+//    canvas = new Canvas(tempbitmap);
+//    canvas.drawBitmap(bitmap, 0, 0, null);
+//
+//    touchimageview.setImageBitmap(tempbitmap);
+//    touchimageview.passCanvas(canvas);
+//
+//
+//    tempdrawarea.setdrawBtnpressedcallback(drawBtnpressedcallback);
+//
+//
+//    tempdrawarea.passRectReadyCallback(callback2);
 
 
 
@@ -129,6 +139,8 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     // save this object in the hashmap
     savedpages.put(position,viewLayout);
+    pageInfoSetHashMap.put(position,pageInfoSet);
+    Log.d(TAG,"pageinfoset of position: "+ position + " is added to hashmap");
 
     return viewLayout;
   }

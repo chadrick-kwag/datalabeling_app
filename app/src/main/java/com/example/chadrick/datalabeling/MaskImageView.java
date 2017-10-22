@@ -191,10 +191,7 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
 
   }
 
-  // we need the touchimageview in order to draw the final rectangle to it.
-  public void passMainIV(TouchImageView mainiv){
-    this.mainiv = mainiv;
-  }
+
 
 
 

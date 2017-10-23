@@ -54,6 +54,8 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
   private boolean touchEnable = true;
   private Rect savedrect;
 
+  private PageInfoSet pageInfoSet;
+
   private final String TAG = this.getClass().getSimpleName();
 
   public TouchImageView(Context context) {
@@ -354,7 +356,19 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     this.touchEnable = value;
   }
 
-  public void drawRect(Rect rect) {
+  public void passPageInfoSet(PageInfoSet pageInfoSet){
+    this.pageInfoSet = pageInfoSet;
+  }
+
+  public void drawRect() {
     canvas.drawRect(savedrect, paint);
+
+    // send the savedrect to the pageinfoset so that it can update the rectarraylist
+    // and save the updated info to labelfile
+
+    pageInfoSet.addRect(savedrect);
+    pageInfoSet.saveLabelFile();
+    Log.d(TAG,"call savedlabelfile from mainIV");
+
   }
 }

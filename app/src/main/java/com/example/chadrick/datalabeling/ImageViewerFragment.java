@@ -96,7 +96,7 @@ public class ImageViewerFragment extends Fragment {
         drawButton.setVisibility(View.VISIBLE);
 
         // actually draw rectangle in mainIV
-        mainIV.drawRect(receivedRect);
+        mainIV.drawRect();
 
         // clear the temp rectangle in maskIV
         maskIV.eraseall();

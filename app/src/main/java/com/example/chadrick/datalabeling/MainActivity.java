@@ -1,10 +1,12 @@
 package com.example.chadrick.datalabeling;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +31,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private RequestQueue queue;
@@ -48,6 +52,21 @@ public class MainActivity extends AppCompatActivity {
         queue = Volley.newRequestQueue(this);
         setContentView(R.layout.activity_main);
         fragmentManager = getSupportFragmentManager();
+      fragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+
+        @Override
+        public void onBackStackChanged() {
+          FragmentManager fragmentManager = getSupportFragmentManager();
+          if(fragmentManager!=null){
+            // see if there is a DatasetProgressFragment
+
+            int lastindex = fragmentManager.getBackStackEntryCount();
+
+
+
+          }
+        }
+      });
 
     }
 

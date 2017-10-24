@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
   <color name="buttonpressedcolor">#595959</color>
   <color name="buttonreleasedcolor">#afafaf</color>
+
+  <color name="dsprogressfrag_btn_disable_color">#595959</color>
+  <color name="dsprogressfrag_btn_enable_color">#ffffff</color>
 </resources>

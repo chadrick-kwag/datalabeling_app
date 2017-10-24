@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,129 +24,156 @@ import java.util.ArrayList;
 
 public class DatasetProgressFragment extends Fragment {
 
-    private TextView mdstitle;
-    private TextView mprogresspercentage;
-    private TextView mtotaltextview;
-    private TextView mdonetextview;
-    private Button muploadbtn, mcontinuebtn;
-    private DataSet dataset;
+  private TextView mdstitle;
+  private TextView mprogresspercentage;
+  private TextView mtotaltextview;
+  private TextView mdonetextview;
+  private Button muploadbtn, mcontinuebtn;
+  private DataSet dataset;
+  private Runnable updateStatsRunnable;
+  private LinearLayout upload_layout;
+
+  private final String TAG = "DatasetProgressFrag";
 
 
-    private final String TAG = "DatasetProgressFrag";
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
+    updateStatsRunnable = new Runnable() {
+      @Override
+      public void run() {
+        Log.d(TAG,"update stat runnable executed");
+        updateStats();
+      }
+    };
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-
-        // get data from caller. the data should include ds object.
-        dataset = new DataSet();
-        try{
-            dataset= DataSet.deserialize(getArguments().getString("ds"));
-        }
-        catch(JSONException e){
-            e.printStackTrace();
-            Log.d(TAG,"failed to recreate dataset");
-            dataset = null;
-        }
-
-        //now init ui elements
-
-        View root = inflater.inflate(R.layout.datasetinfofrag_layout,container, false);
-        mdstitle = (TextView) root.findViewById(R.id.dstitle);
-        mprogresspercentage = (TextView) root.findViewById(R.id.progresspercentage);
-        mtotaltextview =(TextView) root.findViewById(R.id.total_textview);
-        mdonetextview = (TextView) root.findViewById(R.id.done_textview);
-        muploadbtn = (Button) root.findViewById(R.id.uploadbtn);
-        mcontinuebtn = (Button) root.findViewById(R.id.continuebtn);
-
-
-
-
-        // attach clicklisteners
-        muploadbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG,"upload clicked");
-            }
-        });
-
-
-        mcontinuebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG,"continue btn clicked.");
-
-                ImageViewerFragment imageViewerFragment = new ImageViewerFragment();
-                Bundle b = new Bundle();
-                b.putString("ds",dataset.serialize());
-                imageViewerFragment.setArguments(b);
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager.beginTransaction().add(R.id.fragmentcontainer,imageViewerFragment)
-                        .addToBackStack(null).commit();
-
-            }
-        });
-
-
-
-
-
-
-        return root;
+    // get data from caller. the data should include ds object.
+    dataset = new DataSet();
+    try {
+      dataset = DataSet.deserialize(getArguments().getString("ds"));
+    } catch (JSONException e) {
+      e.printStackTrace();
+      Log.d(TAG, "failed to recreate dataset");
+      dataset = null;
     }
 
-    @Override
-    public void onResume(){
-        // update values of textview
+    //now init ui elements
 
-        if(dataset==null){
-            Log.d(TAG,"dataset is null");
-            Toast.makeText(getContext(),"dataset is null",Toast.LENGTH_SHORT).show();
-
-            super.onResume();
-            return;
-        }
-
-        // reach here, then dataset is valid
-        mdstitle.setText(Integer.toString(dataset.getId()));
-
-        // get number of image files in the dataset dir
-        Log.d(TAG,"ds getdirstr result: "+ dataset.getDirstr());
-
-        File dir = new File(dataset.getDirstr());
-
-        ArrayList<File> imagefilelist = Util.getImageFileList(dir);
-
-        // get the size of list and calcalate the progresspercentage
-        // and the number of labeling finished images.
-
-        int num_finisedimages =1;
-        int sizeofds = imagefilelist.size();
-        int percentage;
-        if(sizeofds>0){
-            percentage =num_finisedimages *100 / sizeofds;
-        }
-        else{
-            percentage = 0;
-        }
+    View root = inflater.inflate(R.layout.datasetinfofrag_layout, container, false);
+    mdstitle = (TextView) root.findViewById(R.id.dstitle);
+    mprogresspercentage = (TextView) root.findViewById(R.id.progresspercentage);
+    mtotaltextview = (TextView) root.findViewById(R.id.total_textview);
+    mdonetextview = (TextView) root.findViewById(R.id.done_textview);
+    muploadbtn = (Button) root.findViewById(R.id.uploadbtn);
+    mcontinuebtn = (Button) root.findViewById(R.id.continuebtn);
+    upload_layout = (LinearLayout) root.findViewById(R.id.uploadbtn_wrapping_layout);
 
 
-        mprogresspercentage.setText(Integer.toString(percentage)+"%");
-        mtotaltextview.setText("total images: "+Integer.toString(sizeofds));
-        mdonetextview.setText("labeled images: "+Integer.toString(num_finisedimages));
+    // attach clicklisteners
+    muploadbtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Log.d(TAG, "upload clicked");
+
+      }
+    });
 
 
-        super.onResume();
+    mcontinuebtn.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Log.d(TAG, "continue btn clicked.");
+
+        ImageViewerFragment imageViewerFragment = new ImageViewerFragment();
+        imageViewerFragment.passUpdateStatCallback(updateStatsRunnable);
+        Bundle b = new Bundle();
+        b.putString("ds", dataset.serialize());
+
+        imageViewerFragment.setArguments(b);
+        FragmentManager fragmentManager = getFragmentManager();
+        fragmentManager.beginTransaction().add(R.id.fragmentcontainer, imageViewerFragment)
+            .addToBackStack(null).commit();
+
+      }
+    });
 
 
 
+    return root;
 
+  }
+
+  @Override
+  public void onResume() {
+    // update values of textview
+
+    if (dataset == null) {
+      Log.d(TAG, "dataset is null");
+      Toast.makeText(getContext(), "dataset is null", Toast.LENGTH_SHORT).show();
+
+      super.onResume();
+      return;
+    }
+
+    // reach here, then dataset is valid
+    mdstitle.setText(Integer.toString(dataset.getId()));
+
+    // get number of image files in the dataset dir
+    Log.d(TAG, "ds getdirstr result: " + dataset.getDirstr());
+
+    updateStats();
+
+
+    super.onResume();
+
+  }
+
+  private int getFinishedImageNum(ArrayList<File> imagefiles) {
+    int count = 0;
+    for (int i = 0; i < imagefiles.size(); i++) {
+
+      File labelfile = Util.getLabelFilefromImageFile(imagefiles.get(i));
+      if (labelfile.exists()) {
+        count++;
+      }
+    }
+
+    return count;
+  }
+
+
+  private void updateStats() {
+
+    File dir = new File(dataset.getDirstr());
+
+    ArrayList<File> imagefilelist = Util.getImageFileList(dir);
+
+    int num_finishedimages = getFinishedImageNum(imagefilelist);
+    int sizeofds = imagefilelist.size();
+    int percentage;
+    if (sizeofds > 0) {
+      percentage = num_finishedimages * 100 / sizeofds;
+    } else {
+      percentage = 0;
     }
 
 
+    mprogresspercentage.setText(Integer.toString(percentage) + "%");
+    mtotaltextview.setText("total images: " + Integer.toString(sizeofds));
+    mdonetextview.setText("labeled images: " + Integer.toString(num_finishedimages));
 
+    // check and update upload btn status
+    if(num_finishedimages == sizeofds){
+      // enable upload btn
+      upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_enable_color);
+      muploadbtn.setEnabled(true);
+    }
+    else{
+      upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_disable_color);
+      muploadbtn.setEnabled(false);
+    }
 
-
+  }
 
 
 }

@@ -71,5 +71,14 @@ public class Util {
   }
 
 
+  public static File getLabelFilefromImageFile(File imagefile){
+    String imagefilename = Util.getOnlyFilename( imagefile.getName() );
+    String parentpath = imagefile.getParent();
+
+    return new File(parentpath + File.separator + imagefilename + ".json");
+
+  }
+
+
 
 }

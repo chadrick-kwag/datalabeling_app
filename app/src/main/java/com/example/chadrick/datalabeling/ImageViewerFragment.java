@@ -40,6 +40,7 @@ public class ImageViewerFragment extends Fragment {
   private FullScreenImageAdapter adapter;
 
   private CallbackWithRect RectReadycallback;
+  private Runnable updateStatCallback;
 
   private int viewpager_currentposition;
   private Rect receivedRect;
@@ -47,6 +48,7 @@ public class ImageViewerFragment extends Fragment {
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+
 
     View root = inflater.inflate(R.layout.imageviewerfrag_layout, container, false);
     customviewPager = (CustomViewPager) root.findViewById(R.id.customviewpager);
@@ -240,5 +242,17 @@ public class ImageViewerFragment extends Fragment {
 
 
     return root;
+  }
+
+  @Override
+  public void onPause(){
+    // update the label finished values
+    updateStatCallback.run();
+
+    super.onPause();
+  }
+
+  public void passUpdateStatCallback(Runnable callback){
+    this.updateStatCallback = callback;
   }
 }

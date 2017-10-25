@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -161,12 +162,34 @@ public class Util {
         new Response.Listener<NetworkResponse>() {
       @Override
       public void onResponse(NetworkResponse response) {
-        Log.d("whatup","response:"+response.toString());
+
         if(response.statusCode==200){
           Log.d("whatup","statcode=200");
         }
 
-        Log.d("whatup",response.data.toString());
+
+        try{
+          String result = new String(response.data,"UTF-8");
+          JSONObject resultobj = new JSONObject(result);
+
+          int resultint = resultobj.getInt("result");
+          if(resultint==1){
+            Log.d("whatup","successfully uploaded");
+          }
+          else{
+            Log.d("whatup","statuscode 200 but upload error");
+          }
+
+        }
+        catch(UnsupportedEncodingException e){
+          e.printStackTrace();
+
+        }
+        catch(JSONException e){
+          e.printStackTrace();
+        }
+
+
 //        String resultResponse = new String(response.data);
 //        try {
 //          JSONObject result = new JSONObject(resultResponse);

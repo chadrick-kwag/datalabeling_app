@@ -13,10 +13,21 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+
 import org.json.JSONException;
 
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by chadrick on 17. 10. 11.
@@ -75,7 +86,59 @@ public class DatasetProgressFragment extends Fragment {
       public void onClick(View view) {
         Log.d(TAG, "upload clicked");
 
-      }
+        // gather the imagefiles
+        // there are several ways to do this. but for simplicity, let's just gather the .json files
+        // and check the number of files and see if they match with the number of image files
+
+        // gathering .json files
+        File dir = new File(dataset.getDirstr());
+        ArrayList<File> jsonfiles = Util.getJsonFileList(dir);
+
+        // check if number matches with imagefiles
+        if(jsonfiles.size() != Util.getImageFileList(dir).size()){
+          Log.d(TAG,"jsonfiles number doesn't match with image files number. abort");
+          return;
+        }
+
+        Log.d(TAG,"jsonfiles number match");
+
+        // if any zip file exists(probably with older date in name), delete it.
+
+
+        // create output zip file
+        String date = new SimpleDateFormat("yyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        String outputzipfile_path = dir.getPath() + File.separator + dataset.getName() + "-" + date + ".zip";
+        File outputzipfile = new File(outputzipfile_path);
+
+
+        // zip the json files into the output zip file
+
+        if( Util.createZipFilefromFiles(jsonfiles, outputzipfile)){
+          Log.d(TAG,"zipping success");
+          Log.d(TAG,"output zip file name: "+outputzipfile.getPath());
+          Log.d(TAG,"output zip file size: "+outputzipfile.length());
+        }
+        else{
+          Log.d(TAG,"zipping failed");
+        }
+
+        // send to server
+        // first create multipart request
+        VolleyMultipartRequest request = Util.createRequestFileUpload(outputzipfile,"http://13.124.175.119:4001/upload/labelzip");
+
+        RequestQueue queue = ((MainActivity) getActivity()).getQueue();
+
+        if(queue!=null){
+          queue.add(request);
+        }
+        else{
+          Log.d(TAG,"queue is null");
+          return;
+        }
+
+
+
+    }
     });
 
 

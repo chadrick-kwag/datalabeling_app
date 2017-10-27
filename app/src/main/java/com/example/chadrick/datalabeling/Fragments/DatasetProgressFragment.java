@@ -1,7 +1,6 @@
-package com.example.chadrick.datalabeling;
+package com.example.chadrick.datalabeling.Fragments;
 
 import android.os.Bundle;
-import android.service.autofill.Dataset;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
@@ -14,17 +13,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
+import com.example.chadrick.datalabeling.Models.DataSet;
+import com.example.chadrick.datalabeling.MainActivity;
+import com.example.chadrick.datalabeling.R;
+import com.example.chadrick.datalabeling.Util;
+import com.example.chadrick.datalabeling.VolleyMultipartRequest;
 
 import org.json.JSONException;
 
-import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;

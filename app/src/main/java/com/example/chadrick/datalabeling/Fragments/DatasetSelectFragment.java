@@ -1,4 +1,4 @@
-package com.example.chadrick.datalabeling;
+package com.example.chadrick.datalabeling.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +14,9 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.chadrick.datalabeling.DSAdapter;
+import com.example.chadrick.datalabeling.Models.DataSet;
+import com.example.chadrick.datalabeling.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

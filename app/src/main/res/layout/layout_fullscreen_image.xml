@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.chadrick.datalabeling.PageFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:id="@+id/pageFramelayout"
@@ -10,13 +10,13 @@
   <!--android:layout_height="fill_parent"-->
   <!--android:scaleType="fitCenter" />-->
 
-  <com.example.chadrick.datalabeling.TouchImageView
+  <com.example.chadrick.datalabeling.CustomComponents.TouchImageView
       android:id="@+id/touchimageview"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:scaleType="fitCenter"/>
 
-  <com.example.chadrick.datalabeling.MaskImageView
+  <com.example.chadrick.datalabeling.CustomComponents.MaskImageView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@android:color/transparent"
@@ -26,4 +26,4 @@
 
 
 
-</com.example.chadrick.datalabeling.PageFrameLayout>
+</com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout>

@@ -1,9 +1,7 @@
-package com.example.chadrick.datalabeling;
+package com.example.chadrick.datalabeling.CustomComponents;
 
 import android.content.Context;
-import android.text.method.Touch;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 

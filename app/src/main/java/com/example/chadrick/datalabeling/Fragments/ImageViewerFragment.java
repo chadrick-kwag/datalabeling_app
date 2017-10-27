@@ -1,4 +1,4 @@
-package com.example.chadrick.datalabeling;
+package com.example.chadrick.datalabeling.Fragments;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.text.method.Touch;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -14,15 +13,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
+
+import com.example.chadrick.datalabeling.Callback;
+import com.example.chadrick.datalabeling.CallbackWithRect;
+import com.example.chadrick.datalabeling.CustomComponents.MaskImageView;
+import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
+import com.example.chadrick.datalabeling.CustomViewPager;
+import com.example.chadrick.datalabeling.Models.DataSet;
+import com.example.chadrick.datalabeling.FullScreenImageAdapter;
+import com.example.chadrick.datalabeling.R;
+import com.example.chadrick.datalabeling.Util;
 
 import org.json.JSONException;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-
-import static com.android.volley.VolleyLog.TAG;
 
 /**
  * Created by chadrick on 17. 10. 11.

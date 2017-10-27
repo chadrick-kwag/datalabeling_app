@@ -1,4 +1,4 @@
-package com.example.chadrick.datalabeling;
+package com.example.chadrick.datalabeling.Models;
 
 import android.util.Log;
 

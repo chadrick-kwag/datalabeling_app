@@ -1,4 +1,4 @@
-package com.example.chadrick.datalabeling;
+package com.example.chadrick.datalabeling.CustomComponents;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -13,7 +13,11 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.ImageView;
+
+import com.example.chadrick.datalabeling.Callback;
+import com.example.chadrick.datalabeling.CustomViewPager;
+import com.example.chadrick.datalabeling.Models.PageInfoSet;
+import com.example.chadrick.datalabeling.Util;
 
 
 /**

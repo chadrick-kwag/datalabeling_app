@@ -1,4 +1,4 @@
-package com.example.chadrick.datalabeling;
+package com.example.chadrick.datalabeling.Fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +16,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.example.chadrick.datalabeling.MainActivity;
+import com.example.chadrick.datalabeling.R;
 
 /**
  * Created by chadrick on 17. 10. 15.

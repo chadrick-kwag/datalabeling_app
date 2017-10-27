@@ -1,4 +1,4 @@
-package com.example.chadrick.datalabeling;
+package com.example.chadrick.datalabeling.CustomComponents;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,7 +11,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
+
+import com.example.chadrick.datalabeling.Callback;
+import com.example.chadrick.datalabeling.CallbackWithRect;
+import com.example.chadrick.datalabeling.Util;
 
 /**
  * Created by chadrick on 17. 10. 18.

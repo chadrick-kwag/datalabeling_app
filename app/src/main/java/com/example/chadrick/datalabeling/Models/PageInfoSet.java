@@ -1,4 +1,4 @@
-package com.example.chadrick.datalabeling;
+package com.example.chadrick.datalabeling.Models;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -6,9 +6,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.text.method.Touch;
 import android.util.Log;
 import android.view.ViewTreeObserver;
+
+import com.example.chadrick.datalabeling.Callback;
+import com.example.chadrick.datalabeling.CallbackWithRect;
+import com.example.chadrick.datalabeling.CustomComponents.MaskImageView;
+import com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout;
+import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
+import com.example.chadrick.datalabeling.CustomViewPager;
+import com.example.chadrick.datalabeling.Util;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -17,7 +24,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;

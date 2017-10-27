@@ -10,6 +10,8 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.chadrick.datalabeling.Models.DownloadTaskManager;
+import com.example.chadrick.datalabeling.Tasks.UnzipTask;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.io.File;
@@ -32,6 +34,9 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
   private final String TAG = "DownloadTask";
   private DSAdapter.CustomCallbackInterface mCallback;
   private DSAdapter.DSViewHolder mholder;
+  private UnzipTask unzipTask=null;
+
+
 
   private String zipfilepath;
 
@@ -158,28 +163,37 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
     // unzip the file
     File zipfile = new File(zipfilepath);
     Log.d(TAG,"parent: "+zipfile.getParent() + ", filename: "+ zipfile.getName());
-    new AsyncTask<Void,Void,Integer>(){
 
-      @Override
-      protected Integer doInBackground(Void... v){
-        Unzip.unpackZip(zipfile);
-        return 0;
-      }
+//    Unzip.unpackZip(zipfile);
+//    mCallback.execute();
 
-      @Override
-      protected void onPostExecute(Integer i){
-        // now that zipping is finished, we are ready to set the icon to delete icon
 
-        if(i==0){
-          mCallback.execute();
-        }
+    // hmm.. could there be another way to deal with this properly?
 
-      }
-
-    }.execute();
+    unzipTask = new UnzipTask(zipfile, mCallback);
+    unzipTask.execute();
 
 
     return;
 
+  }
+
+  public boolean isFinished(){
+    // just because this asynctask(DownloadTask) is finished(onPostExecute finished)
+    // doesn't mean that the actuall downloading and unzipping process is finished
+    // this is all finished when the unzipTask is finished for good.
+
+    if(unzipTask == null){
+      // the fact that unzipTask is not even created means that this downloadtask
+      // hasn't even reached onPostExecute phase. Therefore it is safe to say
+      // that the entire process is not finished.
+      return false;
+    }
+
+    if(unzipTask.getStatus()==Status.FINISHED){
+      return true;
+    }
+
+    return false;
   }
 }

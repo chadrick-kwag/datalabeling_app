@@ -1,8 +1,6 @@
 package com.example.chadrick.datalabeling;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -12,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment;
+import com.example.chadrick.datalabeling.Models.DataSet;
+import com.example.chadrick.datalabeling.Models.DownloadTaskManager;
 import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.io.File;
@@ -40,6 +40,7 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
 
 
   public class DSViewHolder extends RecyclerView.ViewHolder {
+
     public TextView name;
     public ImageView storeiv;
 
@@ -63,7 +64,8 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
 
   @Override
   public DSViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-    View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.dslist_row, parent, false);
+    View itemView = LayoutInflater.from(parent.getContext())
+        .inflate(R.layout.dslist_row, parent, false);
     //dynamically set the width of mainclickarea width
     int totalWidth = itemView.getWidth();
     RelativeLayout mainclickarea = (RelativeLayout) itemView.findViewById(R.id.mainclickarea);
@@ -85,14 +87,15 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
       switchstaticon(holder, statoptions.DOWNLOAD, ds);
     }
 
-
     // set clicklistener to mainclickarea
     holder.mainclickarea.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         // check if the dataset exists;
         // we determine this by examining if the dir exists and the zip file does not exist.
-        File testzipfile = new File(mContext.getFilesDir() + "/" + Integer.toString(ds.getId()) + "/" + Integer.toString(ds.getId()) + ".zip");
+        File testzipfile = new File(
+            mContext.getFilesDir() + "/" + Integer.toString(ds.getId()) + "/" + Integer
+                .toString(ds.getId()) + ".zip");
         File targetdir = new File(mContext.getFilesDir() + "/" + Integer.toString(ds.getId()));
         Boolean isproperdir = false;
 
@@ -118,13 +121,15 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
           // if true then go to next fragment
           Log.d(TAG, "going to next fragment");
 
-          FragmentManager fragmentManager = ((AppCompatActivity) mContext).getSupportFragmentManager();
+          FragmentManager fragmentManager = ((AppCompatActivity) mContext)
+              .getSupportFragmentManager();
           DatasetProgressFragment newfrag = new DatasetProgressFragment();
           Bundle pass = new Bundle();
           Log.d(TAG, "test print of ds serialize before adding to bundle:" + ds.serialize());
           pass.putString("ds", ds.serialize());
           newfrag.setArguments(pass);
-          fragmentManager.beginTransaction().add(R.id.fragmentcontainer, newfrag).addToBackStack("name1").commit();
+          fragmentManager.beginTransaction().add(R.id.fragmentcontainer, newfrag)
+              .addToBackStack("name1").commit();
           Log.d(TAG, "fragment changed to DatasetProgressFragment");
 
 
@@ -148,30 +153,57 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
 
 
   // interfaces
-  interface CustomCallbackInterface {
+  public interface CustomCallbackInterface {
+
     void execute();
   }
 
   public void switchstaticon(DSViewHolder holder, statoptions newstat, DataSet ds) {
     if (newstat == statoptions.DOWNLOAD) {
 
-
       holder.storeiv.setBackgroundResource(R.drawable.ic_file_download_black_24dp);
       holder.storeiv.setOnClickListener(new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-          Log.d(TAG, "will download");
-          // show progressbar
-          holder.downloadpgb.setVisibility(View.VISIBLE);
 
-          DownloadTask downloadTask = new DownloadTask(mContext, holder, new CustomCallbackInterface() {
-            @Override
-            public void execute() {
 
-              switchstaticon(holder, statoptions.DELETE, ds);
+
+          // check if downloadtask is created for the same ds , thedownload. if created
+          // then do not launch another task.
+
+          DownloadTaskManager downloadTaskManager = DownloadTaskManager.getInstance();
+
+          synchronized (downloadTaskManager){
+            if(!downloadTaskManager.isAlreadyRegistered(ds)){
+
+
+              // create download task
+
+              DownloadTask downloadTask = new DownloadTask(mContext, holder,
+                  new CustomCallbackInterface() {
+                    @Override
+                    public void execute() {                                                                                                     
+
+                      switchstaticon(holder, statoptions.DELETE, ds);
+                    }
+                  });
+
+              // add the downloadtask to downloadtaskmanager
+              downloadTaskManager.addDownloadTask(ds,downloadTask);
+
+              // show progressbar
+              holder.downloadpgb.setVisibility(View.VISIBLE);
+              holder.storeiv.setBackground(null);
+              downloadTask.execute("http://13.124.175.119:4001/dszips/1.zip");
+
             }
-          });
-          downloadTask.execute("http://13.124.175.119:4001/dszips/1.zip");
+            else{
+              Log.d(TAG,"download already exist!!");
+            }
+          }
+
+
+
 
         }
       });
@@ -190,11 +222,10 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
             Log.d(TAG, "dir exists. deleting.");
             // assume that all children are files and not dir.
             File[] containfiles = dir.listFiles();
-            for(int i=0;i<containfiles.length;i++){
-              Log.d(TAG,"deleting "+containfiles[i].getPath());
+            for (int i = 0; i < containfiles.length; i++) {
+              Log.d(TAG, "deleting " + containfiles[i].getPath());
               containfiles[i].delete();
             }
-
 
             // after deleting, then change the icon and the clicklistener
             switchstaticon(holder, statoptions.DOWNLOAD, ds);

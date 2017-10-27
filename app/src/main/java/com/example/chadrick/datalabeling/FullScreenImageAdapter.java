@@ -1,24 +1,19 @@
 package com.example.chadrick.datalabeling;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.pdf.PdfDocument;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
+
+import com.example.chadrick.datalabeling.CustomComponents.MaskImageView;
+import com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout;
+import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
+import com.example.chadrick.datalabeling.Models.PageInfoSet;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "873694293520",
+    "project_id": "firebase-datalabeling"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:873694293520:android:a5432c87a88d59bf",
+        "android_client_info": {
+          "package_name": "com.example.chadrick.datalabeling"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "873694293520-sv45itaru86hk2h9cekk3o39pcbhc21s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chadrick.datalabeling",
+            "certificate_hash": "92412d8e87f1220aebf8e91ccd825c47fc77928b"
+          }
+        },
+        {
+          "client_id": "873694293520-q047egbt95605dlh2t9vv8ijd65j8i9i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuVrRBH_CBkwwgmCumarp4OOnSN9m4BIM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

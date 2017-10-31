@@ -85,6 +85,9 @@ public class ImageViewerFragment extends Fragment {
     yesbtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
+
+        Log.d(TAG,"inside yesbtn onclick listener");
+
         //enable the touch events in the two main IVs
         View pageview = adapter.getPage(viewpager_currentposition);
 
@@ -102,6 +105,7 @@ public class ImageViewerFragment extends Fragment {
 
         // enable draw btn
         drawButton.setVisibility(View.VISIBLE);
+
 
         // actually draw rectangle in mainIV
         mainIV.drawRect();
@@ -210,6 +214,13 @@ public class ImageViewerFragment extends Fragment {
       public void doit(Rect rect) {
         Log.d(TAG,"inside testcallback");
 
+
+        // make sure that drawbtnpressed is reset to false
+        // so that subsequent draws can be processed
+        drawBtnpressed=false;
+        // just to make sure the ui of draw btn is restored
+        drawButton.setBackgroundResource(R.color.buttonreleasedcolor);
+
         // set the receivedRect
         receivedRect = rect;
 
@@ -230,15 +241,7 @@ public class ImageViewerFragment extends Fragment {
         yesbtn.setVisibility(View.VISIBLE);
         nobtn.setVisibility(View.VISIBLE);
 
-
-
-        // release and disable the drawbtn
-
         drawButton.setVisibility(View.INVISIBLE);
-
-
-        // force draw in maskIV
-//        maskIV.forcedrawRect(receivedRect);
 
 
       }

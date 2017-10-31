@@ -106,6 +106,10 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
             last.set(start);
             break;
           case MotionEvent.ACTION_MOVE:
+            if(isMove==false){
+              Log.d(TAG,"maskIV, motion move event started");
+            }
+
             isMove = true;
 
 //            Log.d(TAG,"action move detected");
@@ -135,7 +139,7 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
             break;
           case MotionEvent.ACTION_UP:
 
-//            Log.d(TAG,"action up detected");
+            Log.d(TAG,"maskiv, action up detected");
             isMove=false;
             isdown = false;
 
@@ -145,10 +149,7 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
             // draw the rectangle. and then ask the user if this rectangle is going to be saved or not.
             Rect rect2 = Util.convertToRect(start,last);
 
-//            invalidate();
 
-            // call the RectReadycallback
-//            RectReadyCallback.run();
             RectReadyCallback.doit(rect2);
 
             canvas.drawRect(rect2,paint);

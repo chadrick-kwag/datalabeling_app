@@ -14,11 +14,11 @@ import com.example.chadrick.datalabeling.R;
 
 public class SplashScreenFragment extends Fragment {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View root = inflater.inflate(R.layout.loadingscreen,container,false);
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
+    View root = inflater.inflate(R.layout.loadingscreen, container, false);
 
-        return root;
-    }
+    return root;
+  }
 }

@@ -86,7 +86,7 @@ public class ImageViewerFragment extends Fragment {
       @Override
       public void onClick(View view) {
 
-        Log.d(TAG,"inside yesbtn onclick listener");
+        Log.d(TAG, "inside yesbtn onclick listener");
 
         //enable the touch events in the two main IVs
         View pageview = adapter.getPage(viewpager_currentposition);
@@ -212,12 +212,12 @@ public class ImageViewerFragment extends Fragment {
     RectReadycallback = new CallbackWithRect() {
       @Override
       public void doit(Rect rect) {
-        Log.d(TAG,"inside testcallback");
+        Log.d(TAG, "inside testcallback");
 
 
         // make sure that drawbtnpressed is reset to false
         // so that subsequent draws can be processed
-        drawBtnpressed=false;
+        drawBtnpressed = false;
         // just to make sure the ui of draw btn is restored
         drawButton.setBackgroundResource(R.color.buttonreleasedcolor);
 
@@ -254,14 +254,14 @@ public class ImageViewerFragment extends Fragment {
   }
 
   @Override
-  public void onPause(){
+  public void onPause() {
     // update the label finished values
     updateStatCallback.run();
 
     super.onPause();
   }
 
-  public void passUpdateStatCallback(Runnable callback){
+  public void passUpdateStatCallback(Runnable callback) {
     this.updateStatCallback = callback;
   }
 }

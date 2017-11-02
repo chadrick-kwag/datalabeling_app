@@ -50,7 +50,7 @@ public class DatasetProgressFragment extends Fragment {
     updateStatsRunnable = new Runnable() {
       @Override
       public void run() {
-        Log.d(TAG,"update stat runnable executed");
+        Log.d(TAG, "update stat runnable executed");
         updateStats();
       }
     };
@@ -92,12 +92,12 @@ public class DatasetProgressFragment extends Fragment {
         ArrayList<File> jsonfiles = Util.getJsonFileList(dir);
 
         // check if number matches with imagefiles
-        if(jsonfiles.size() != Util.getImageFileList(dir).size()){
-          Log.d(TAG,"jsonfiles number doesn't match with image files number. abort");
+        if (jsonfiles.size() != Util.getImageFileList(dir).size()) {
+          Log.d(TAG, "jsonfiles number doesn't match with image files number. abort");
           return;
         }
 
-        Log.d(TAG,"jsonfiles number match");
+        Log.d(TAG, "jsonfiles number match");
 
         // if any zip file exists(probably with older date in name), delete it.
 
@@ -110,32 +110,29 @@ public class DatasetProgressFragment extends Fragment {
 
         // zip the json files into the output zip file
 
-        if( Util.createZipFilefromFiles(jsonfiles, outputzipfile)){
-          Log.d(TAG,"zipping success");
-          Log.d(TAG,"output zip file name: "+outputzipfile.getPath());
-          Log.d(TAG,"output zip file size: "+outputzipfile.length());
-        }
-        else{
-          Log.d(TAG,"zipping failed");
+        if (Util.createZipFilefromFiles(jsonfiles, outputzipfile)) {
+          Log.d(TAG, "zipping success");
+          Log.d(TAG, "output zip file name: " + outputzipfile.getPath());
+          Log.d(TAG, "output zip file size: " + outputzipfile.length());
+        } else {
+          Log.d(TAG, "zipping failed");
         }
 
         // send to server
         // first create multipart request
-        VolleyMultipartRequest request = Util.createRequestFileUpload(outputzipfile,"http://13.124.175.119:4001/upload/labelzip");
+        VolleyMultipartRequest request = Util.createRequestFileUpload(outputzipfile, "http://13.124.175.119:4001/upload/labelzip");
 
         RequestQueue queue = ((MainActivity) getActivity()).getQueue();
 
-        if(queue!=null){
+        if (queue != null) {
           queue.add(request);
-        }
-        else{
-          Log.d(TAG,"queue is null");
+        } else {
+          Log.d(TAG, "queue is null");
           return;
         }
 
 
-
-    }
+      }
     });
 
 
@@ -156,7 +153,6 @@ public class DatasetProgressFragment extends Fragment {
 
       }
     });
-
 
 
     return root;
@@ -223,12 +219,11 @@ public class DatasetProgressFragment extends Fragment {
     mdonetextview.setText("labeled images: " + Integer.toString(num_finishedimages));
 
     // check and update upload btn status
-    if(num_finishedimages == sizeofds){
+    if (num_finishedimages == sizeofds) {
       // enable upload btn
       upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_enable_color);
       muploadbtn.setEnabled(true);
-    }
-    else{
+    } else {
       upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_disable_color);
       muploadbtn.setEnabled(false);
     }

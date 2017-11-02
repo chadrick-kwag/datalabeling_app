@@ -186,7 +186,8 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
 
                       switchstaticon(holder, statoptions.DELETE, ds);
                     }
-                  });
+                  },
+              ds);
 
               // add the downloadtask to downloadtaskmanager
               downloadTaskManager.addDownloadTask(ds,downloadTask);

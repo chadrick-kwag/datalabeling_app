@@ -6,6 +6,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 
 import android.content.Intent;
 import android.os.Handler;
@@ -20,16 +22,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.chadrick.datalabeling.Fragments.DatasetSelectFragment;
 import com.example.chadrick.datalabeling.Fragments.NoInternetFragment;
 import com.example.chadrick.datalabeling.Fragments.SignInFragment;
 import com.example.chadrick.datalabeling.Fragments.SplashScreenFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,36 +78,44 @@ public class MainActivity extends AppCompatActivity {
 
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
+        .requestIdToken(getString(R.string.server_client_id))
         .build();
 
     googleApiClient = new GoogleApiClient.Builder(this)
         .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
           @Override
           public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-            Log.d(TAG,"googleapiclient onconnectionfailed" + connectionResult);
+            Log.d(TAG, "googleapiclient onconnectionfailed" + connectionResult);
             SignInFragment fragment = new SignInFragment();
+
 
             fragmentManager.beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
           }
         })
         .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+
+          // when connected, do what?
+
           @Override
           public void onConnected(@Nullable Bundle bundle) {
-            Log.d(TAG,"googleapiclient connected!!");
+            Log.d(TAG, "googleapiclient connected!!");
 
-            DatasetSelectFragment fragment = new DatasetSelectFragment();
-            fragmentManager.beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
+            return;
+//
 
+
+            //            DatasetSelectFragment fragment = new DatasetSelectFragment();
+//            fragmentManager.beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
           }
+
 
           @Override
           public void onConnectionSuspended(int i) {
-
+            Log.d(TAG, "googleapi connection suspended");
           }
         })
         .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
         .build();
-
 
 
     final Handler handler = new Handler();
@@ -133,10 +149,33 @@ public class MainActivity extends AppCompatActivity {
   }
 
   @Override
-  public void onStart(){
+  public void onStart() {
     super.onStart();
 
     googleApiClient.connect();
+    OptionalPendingResult<GoogleSignInResult> pendingResult = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+
+    if (pendingResult.isDone()) {
+      Log.d(TAG, "immediate result available");
+
+      GoogleSignInResult googleSignInResult = pendingResult.get();
+
+      checksigninresult(googleSignInResult);
+
+
+    } else {
+      Log.d(TAG, "no immediate result available");
+      pendingResult.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+        @Override
+        public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
+          Log.d(TAG, "pending result onresult callback");
+
+          checksigninresult(googleSignInResult);
+        }
+      });
+    }
+
+
   }
 
   public RequestQueue getQueue() {
@@ -157,7 +196,6 @@ public class MainActivity extends AppCompatActivity {
             // test signin frag
 
 
-
           }
         }, new Response.ErrorListener() {
       @Override
@@ -171,24 +209,62 @@ public class MainActivity extends AppCompatActivity {
 
   }
 
-//  @Override
-//  public void onActivityResult(int requestCode, int resultCode, Intent data){
-//    super.onActivityResult(requestCode,resultCode,data);
-//    Log.d(TAG,"insdie activity result");
-//
-//    if(requestCode == RC_SIGN_IN){
-//      GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-//
-//      //handle signin result
-//      if(result.isSuccess()){
-//        GoogleSignInAccount acct = result.getSignInAccount();
-//        Log.d(TAG,"sign in account ="+ acct.getDisplayName());
-//      }
-//      else{
-//        Log.d(TAG,"sign in failed");
-//      }
-//    }
-//  }
+
+  private void checksigninresult(GoogleSignInResult result) {
+    if (result.isSuccess()) {
+      Log.d(TAG, "googlesigninresult is success");
+
+      Log.d(TAG, "idtoken=" + result.getSignInAccount().getIdToken());
+      authwithserver(result.getSignInAccount().getIdToken());
+    } else {
+      Log.d(TAG, "googlesigninresult failed");
+      Log.d(TAG, "fail detail: " + result.getStatus().getStatusMessage());
+      Log.d(TAG, "fail code: " + result.getStatus().getStatusCode());
+    }
+  }
+
+  private void authwithserver(String idtoken) {
+
+    // send token to server
+    String url = baseurl + "/tokensignin";
+    JSONObject bodyjson = new JSONObject();
+
+    try {
+      bodyjson.put("idToken", idtoken );
+
+    } catch (JSONException e) {
+      e.printStackTrace();
+      Log.d(TAG, "bodyjson create failed. abort sending jsonobject request");
+      return;
+
+    }
+
+    JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, bodyjson,
+        new Response.Listener() {
+      @Override
+      public void onResponse(Object response) {
+        JSONObject resjson = (JSONObject) response;
+        Log.d(TAG, "response :" + resjson.toString());
+
+      }
+    },
+        new Response.ErrorListener() {
+          @Override
+          public void onErrorResponse(VolleyError error) {
+            error.printStackTrace();
+            Log.d(TAG, "error response");
+
+          }
+        }
+
+
+    );
+
+
+    getQueue().add(jsonRequest);
+    Log.d(TAG, "sent idToken to server");
+
+  }
 
 
 }

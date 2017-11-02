@@ -80,11 +80,16 @@ public class PageInfoSet {
     mainIV.setdrawBtnpressedcallback(drawBtnpressedcallback);
     mainIV.passPageInfoSet(this);
 
-    maskIV.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+    ViewTreeObserver viewTreeObserver = maskIV.getViewTreeObserver();
+
+    viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
       @Override
       public void onGlobalLayout() {
 
         maskIV.passWH(maskIV.getWidth(), maskIV.getHeight());
+
+        maskIV.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
       }
     });
 

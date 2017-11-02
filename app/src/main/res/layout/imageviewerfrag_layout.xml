@@ -22,7 +22,7 @@
           android:id="@+id/drawbtn"
           android:elevation="2dp"
           android:layout_gravity="bottom"
-          android:background="@color/buttonreleasedcolor"
+          android:background="@drawable/btnselect"
           android:text="hold press to draw"
   />
 

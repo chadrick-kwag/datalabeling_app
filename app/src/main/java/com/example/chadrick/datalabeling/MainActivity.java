@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -101,11 +102,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "googleapiclient connected!!");
 
             return;
-//
 
-
-            //            DatasetSelectFragment fragment = new DatasetSelectFragment();
-//            fragmentManager.beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
           }
 
 
@@ -191,11 +188,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG, "internet available");
 
 
-//            DatasetSelectFragment fragment = new DatasetSelectFragment();
-
-            // test signin frag
-
-
           }
         }, new Response.ErrorListener() {
       @Override
@@ -230,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
     JSONObject bodyjson = new JSONObject();
 
     try {
-      bodyjson.put("idToken", idtoken );
+      bodyjson.put("idToken", idtoken);
 
     } catch (JSONException e) {
       e.printStackTrace();
@@ -240,30 +232,41 @@ public class MainActivity extends AppCompatActivity {
     }
 
     JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.POST, url, bodyjson,
-        new Response.Listener() {
-      @Override
-      public void onResponse(Object response) {
-        JSONObject resjson = (JSONObject) response;
-        Log.d(TAG, "response :" + resjson.toString());
+        // response listener
+        (JSONObject response) -> {
+          JSONObject resjson = (JSONObject) response;
+          Log.d(TAG, "response :" + resjson.toString());
 
-      }
-    },
-        new Response.ErrorListener() {
-          @Override
-          public void onErrorResponse(VolleyError error) {
-            error.printStackTrace();
-            Log.d(TAG, "error response");
+          try {
+            if (resjson.getBoolean("userverified")) {
+              // if true, then we can move on to dataselectfragment
+              gotoDataSelectFragment();
+            } else {
+              Log.d(TAG, "user not verified by server. go to sign in page");
+            }
+          } catch (JSONException e) {
+            e.printStackTrace();
 
           }
+        },
+
+        // error listener
+        (VolleyError error) -> {
+          error.printStackTrace();
+          Log.d(TAG, "error response");
         }
-
-
     );
 
 
     getQueue().add(jsonRequest);
     Log.d(TAG, "sent idToken to server");
 
+  }
+
+
+  private void gotoDataSelectFragment() {
+    DatasetSelectFragment fragment = new DatasetSelectFragment();
+    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
   }
 
 

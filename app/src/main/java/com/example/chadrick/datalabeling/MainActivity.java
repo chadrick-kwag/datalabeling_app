@@ -4,6 +4,7 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
@@ -211,7 +212,26 @@ public class MainActivity extends AppCompatActivity {
     } else {
       Log.d(TAG, "googlesigninresult failed");
       Log.d(TAG, "fail detail: " + result.getStatus().getStatusMessage());
-      Log.d(TAG, "fail code: " + result.getStatus().getStatusCode());
+      Log.d(TAG, "fail status tostring: " + result.getStatus().toString());
+
+      if(result.getStatus().getStatusCode()== GoogleSignInStatusCodes.SIGN_IN_REQUIRED){
+        Log.d(TAG, "checksigninresult: sign in required");
+
+        // FIXME
+        Fragment fragment = new DatasetSelectFragment();
+        fragmentManager.beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
+
+        // the below should be the right thing to do,
+        // but due to different dev machine, we will directly skip to dataseletfragment.
+//        // go to sign in fragment
+//        Fragment fragment = new SignInFragment();
+//        fragmentManager.beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
+      }
+      else{
+        Log.d(TAG, "checksigninresult: some weird signin case");
+        Toast.makeText(getApplicationContext(),"Sing in critical error. Quiting App",Toast.LENGTH_SHORT).show();
+        finish();
+      }
     }
   }
 

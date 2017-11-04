@@ -32,58 +32,59 @@ public class SignInFragment extends Fragment {
   public static int RC_SIGN_IN = 1;
 
   @Override
-  public void onCreate(Bundle s){
+  public void onCreate(Bundle s) {
     super.onCreate(s);
     mainActivity = (MainActivity) getActivity();
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
+      Bundle savedInstanceState) {
 
     View root = inflater.inflate(R.layout.signinfrag_layout, container, false);
     signInButton = (Button) root.findViewById(R.id.sign_in_button);
 
-    signInButton.setOnClickListener( (view)-> signIn());
+    signInButton.setOnClickListener((view) -> signIn());
 
     return root;
 
   }
 
 
-  private void signIn(){
-    Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent( mainActivity.googleApiClient );
-    if(mainActivity.googleApiClient.isConnected()){
-      Log.d(TAG,"gac connected");
+  private void signIn() {
+    Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mainActivity.googleApiClient);
+    if (mainActivity.googleApiClient.isConnected()) {
+      Log.d(TAG, "gac connected");
+    } else {
+      Log.d(TAG, "gac not connected");
     }
-    else{
-      Log.d(TAG,"gac not connected");
-    }
-    Log.d(TAG,"trying to start google api activity");
+    Log.d(TAG, "trying to start google api activity");
     startActivityForResult(signInIntent, mainActivity.RC_SIGN_IN);
   }
 
 
   @Override
-  public void onActivityResult(int requestCode, int resultcode, Intent data){
-    super.onActivityResult(requestCode,resultcode,data);
-    Log.d(TAG,"insdie activity result");
+  public void onActivityResult(int requestCode, int resultcode, Intent data) {
+    super.onActivityResult(requestCode, resultcode, data);
+    Log.d(TAG, "insdie activity result");
 
-    if(requestCode == RC_SIGN_IN){
+    if (requestCode == RC_SIGN_IN) {
       GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
 
       //handle signin result
-      if(result.isSuccess()){
+      if (result.isSuccess()) {
         GoogleSignInAccount acct = result.getSignInAccount();
-        Log.d(TAG,"sign in account ="+ acct.getDisplayName());
+        Log.d(TAG, "sign in account =" + acct.getDisplayName());
 
         // if we succeed, then move on to dataselect
-        getFragmentManager().beginTransaction().add(R.id.fragmentcontainer, new DatasetSelectFragment()).commit();
+        getFragmentManager().beginTransaction()
+            .add(R.id.fragmentcontainer, new DatasetSelectFragment()).commit();
 
-      }
-      else{
-        Log.d(TAG,"sign in failed");
-        Toast.makeText(getContext(),"sign in failed",Toast.LENGTH_SHORT).show();
+      } else {
+        Log.d(TAG, "sign in failed");
+        Log.d(TAG, "onActivityResult: failed message=" + result.getStatus().getStatusMessage());
+        Log.d(TAG, "onActivityResult: failed detail=" + result.getStatus().toString());
+        Toast.makeText(getContext(), "sign in failed", Toast.LENGTH_SHORT).show();
       }
     }
   }

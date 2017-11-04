@@ -1,31 +1,22 @@
 package com.example.chadrick.datalabeling.CustomComponents;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-
 import com.example.chadrick.datalabeling.Callback;
-import com.example.chadrick.datalabeling.CustomViewPager;
-import com.example.chadrick.datalabeling.Models.PageInfoSet;
-import com.example.chadrick.datalabeling.Util;
-import java.util.function.Consumer;
-
 
 /**
- * Created by chadrick on 17. 10. 12.
+ * Created by chadrick on 17. 11. 4.
  */
 
-public class TouchImageView extends android.support.v7.widget.AppCompatImageView {
+public class BasicZoomImageView extends AppCompatImageView {
   Matrix matrix;
   private Matrix inverseMatrix;
 
@@ -51,30 +42,20 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
   ScaleGestureDetector mScaleDetector;
 
   Context context;
-
-  private CustomViewPager customViewPager;
-  private Callback drawBtnpressedcallback;
-  private Canvas canvas;
-  private Paint paint;
   private boolean touchEnable = true;
-  private Rect savedrect;
-
-  private PageInfoSet pageInfoSet;
-
-  private Consumer<Rect> addRectCallback;
-  private Runnable saveLabelCallback;
-
   private final String TAG = this.getClass().getSimpleName();
+  private Callback drawBtnpressedcallback;
 
-  public TouchImageView(Context context) {
+  public BasicZoomImageView(Context context) {
     super(context);
     sharedConstructing(context);
   }
 
-  public TouchImageView(Context context, AttributeSet attrs) {
+  public BasicZoomImageView(Context context, AttributeSet attrs) {
     super(context, attrs);
     sharedConstructing(context);
   }
+
 
   private void sharedConstructing(Context context) {
     super.setClickable(true);
@@ -85,11 +66,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     setImageMatrix(matrix);
     setScaleType(ScaleType.MATRIX);
 
-    // setup paint
-    paint = new Paint();
-    paint.setColor(Color.rgb(255, 63, 20));
-    paint.setStrokeWidth(5);
-    paint.setStyle(Paint.Style.STROKE);
 
     setOnTouchListener(new OnTouchListener() {
 
@@ -170,14 +146,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
             mode = NONE;
             if (drawbtnpressed) {
 
-              event.transform(inverseMatrix);
-              last.set(event.getX(),event.getY());
 
-              // get the final rect
-              // but don't draw it yet. just keep it.
-              // the drawing will be done when the user clicks yes.
-              savedrect = Util.convertToRect(start,last);
-              Log.d(TAG, "onTouch: savedrect updated");
 
             } else {
               int xDiff = (int) Math.abs(curr.x - start.x);
@@ -203,9 +172,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     });
   }
 
-  public void setMaxZoom(float x) {
-    maxScale = x;
-  }
 
   private class ScaleListener extends
       ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -232,15 +198,17 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
       // if not, (which would be when the slightset zoom in has occured,
       // then we disable the swipe of viewpager.
 
-      if (customViewPager != null) {
-        if (saveScale == minScale) {
-          Log.i(TAG, "enable swipe");
-          customViewPager.enableSwipe();
-        } else {
-          Log.i(TAG, "disable swipe");
-          customViewPager.disableSwipe();
-        }
-      }
+      // we will not disable/enable swiper here. that will be done in
+      // touchimageview, which is rectiv
+//      if (customViewPager != null) {
+//        if (saveScale == minScale) {
+//          Log.i(TAG, "enable swipe");
+//          customViewPager.enableSwipe();
+//        } else {
+//          Log.i(TAG, "disable swipe");
+//          customViewPager.disableSwipe();
+//        }
+//      }
 
       if (origWidth * saveScale <= viewWidth
           || origHeight * saveScale <= viewHeight)
@@ -254,6 +222,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
       return true;
     }
   }
+
 
   void fixTrans() {
     matrix.getValues(m);
@@ -343,50 +312,12 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     fixTrans();
   }
 
-  public void setCustomViewPager(CustomViewPager input) {
-    this.customViewPager = input;
-  }
-
   public void setdrawBtnpressedcallback(Callback callback) {
     this.drawBtnpressedcallback = callback;
   }
-
-  public void passCanvas(Canvas canvas) {
-    this.canvas = canvas;
-  }
-
-
 
   public void setTouchEnable(boolean value) {
     this.touchEnable = value;
   }
 
-  public void passPageInfoSet(PageInfoSet pageInfoSet){
-    this.pageInfoSet = pageInfoSet;
-  }
-
-  public void passAddRectCallback(Consumer<Rect> addRectCallback){
-    this.addRectCallback = addRectCallback;
-  }
-
-  public void passSaveLabelCallback(Runnable saveLabelCallback){
-    this.saveLabelCallback = saveLabelCallback;
-  }
-
-  public void drawRect() {
-    canvas.drawRect(savedrect, paint);
-
-    // send the savedrect to the pageinfoset so that it can update the rectarraylist
-    // and save the updated info to labelfile
-
-//    pageInfoSet.addRect(savedrect);
-//    pageInfoSet.saveLabelFile();
-
-    addRectCallback.accept(savedrect);
-    saveLabelCallback.run();
-
-
-    Log.d(TAG,"call savedlabelfile from mainIV");
-
-  }
 }

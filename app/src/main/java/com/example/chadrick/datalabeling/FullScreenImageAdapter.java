@@ -13,6 +13,8 @@ import android.widget.FrameLayout;
 import com.example.chadrick.datalabeling.CustomComponents.MaskImageView;
 import com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout;
 import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
+import com.example.chadrick.datalabeling.Models.LabelDrawPad;
+import com.example.chadrick.datalabeling.Models.LabelDrawPad.LabelDrawPadBuilder;
 import com.example.chadrick.datalabeling.Models.PageInfoSet;
 
 import java.io.File;
@@ -38,6 +40,8 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
   private HashMap<Integer,View> savedpages = new HashMap<Integer,View>();
   private HashMap<Integer, PageInfoSet> pageInfoSetHashMap = new HashMap<Integer, PageInfoSet>();
+
+  private HashMap<Integer, LabelDrawPad> labelDrawPadHashMap = new HashMap<Integer, LabelDrawPad>();
 
   private final String TAG = this.getClass().getSimpleName();
 
@@ -66,33 +70,52 @@ public class FullScreenImageAdapter extends PagerAdapter {
   public Object instantiateItem(ViewGroup container, int position) {
 
     Log.d(TAG,"instantiating position: "+position);
-//        ImageView imgDisplay;
-    TouchImageView mainIV;
-    MaskImageView maskIV;
-    PageFrameLayout pageframelayout;
-
 
     LayoutInflater inflater = (LayoutInflater) context
         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View viewLayout = inflater.inflate(R.layout.layout_fullscreen_image, container,
-        false);
+    LabelDrawPad labelDrawPad =  new LabelDrawPad.LabelDrawPadBuilder(inflater,container,position)
+        .setDrawBtnPressedCallback(drawBtnpressedcallback)
+        .setCustomViewPager(customViewPager)
+        .setMaskRectReadyCallback(callback2)
+        .setImageFile(imagefiles.get(position))
+        .build();
+
+    // add to labeldrawpad object to hashmap
+    labelDrawPadHashMap.put(position,labelDrawPad);
 
 
-    mainIV = (TouchImageView) viewLayout.findViewById(R.id.touchimageview);
-    maskIV = (MaskImageView) viewLayout.findViewById(R.id.tempdrawarea);
-    pageframelayout = (PageFrameLayout) viewLayout.findViewById(R.id.pageFramelayout);
+    View rootview = labelDrawPad.getRootview();
+    ((ViewPager) container).addView(rootview);
 
-    PageInfoSet pageInfoSet = new PageInfoSet(mainIV, maskIV, pageframelayout, customViewPager,
-        drawBtnpressedcallback, callback2, imagefiles.get(position));
+    return rootview;
 
-    ((ViewPager) container).addView(viewLayout);
-
-    // save this object in the hashmap
-    savedpages.put(position,viewLayout);
-    pageInfoSetHashMap.put(position,pageInfoSet);
-    Log.d(TAG,"pageinfoset of position: "+ position + " is added to hashmap");
-
-    return viewLayout;
+//
+////        ImageView imgDisplay;
+//    TouchImageView mainIV;
+//    MaskImageView maskIV;
+//    PageFrameLayout pageframelayout;
+//
+//
+//
+//    View viewLayout = inflater.inflate(R.layout.layout_fullscreen_image, container,
+//        false);
+//
+//
+//    mainIV = (TouchImageView) viewLayout.findViewById(R.id.touchimageview);
+//    maskIV = (MaskImageView) viewLayout.findViewById(R.id.tempdrawarea);
+//    pageframelayout = (PageFrameLayout) viewLayout.findViewById(R.id.pageFramelayout);
+//
+//    PageInfoSet pageInfoSet = new PageInfoSet(mainIV, maskIV, pageframelayout, customViewPager,
+//        drawBtnpressedcallback, callback2, imagefiles.get(position));
+//
+//    ((ViewPager) container).addView(viewLayout);
+//
+//    // save this object in the hashmap
+//    savedpages.put(position,viewLayout);
+//    pageInfoSetHashMap.put(position,pageInfoSet);
+//    Log.d(TAG,"pageinfoset of position: "+ position + " is added to hashmap");
+//
+//    return viewLayout;
   }
 
   @Override
@@ -100,17 +123,29 @@ public class FullScreenImageAdapter extends PagerAdapter {
     Log.d(TAG,"destroying position: "+position);
     ((ViewPager) container).removeView((FrameLayout) object);
 
-    // removed from savedpages
-    savedpages.remove(position);
+    labelDrawPadHashMap.remove(position);
 
-    // remove from pageinfosethashmap
-    pageInfoSetHashMap.remove(position);
+//    // removed from savedpages
+//    savedpages.remove(position);
+//
+//    // remove from pageinfosethashmap
+//    pageInfoSetHashMap.remove(position);
   }
 
-  public View getPage(int position){
-    return savedpages.get(position);
-  }
+  // this is called by the ImageViewerfragment which holds the control over
+  // draw/yes/no/del buttons.
+  // this is why this class needs to keep a record of pages in 'savedpages'
+  // don't be mistaken. the `savedpages` is a hashmap of
+  // position and the view of the page. not the page itself.
+  // that pair is saved in `pageinfosethashmap`
 
+//  public View getPage(int position){
+//    return savedpages.get(position);
+//  }
+
+  public LabelDrawPad getLabelDrawPad(int position){
+    return labelDrawPadHashMap.get(position);
+  }
 
   public void passRectReadyCallback(CallbackWithRect callback){
     this.callback2 = callback;

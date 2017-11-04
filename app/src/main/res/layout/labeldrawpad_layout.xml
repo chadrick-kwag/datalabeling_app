@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout2
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/pageframelayout2"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  >
+
+  <com.example.chadrick.datalabeling.CustomComponents.BasicZoomImageView
+    android:id="@+id/baseiv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="fitCenter"/>
+
+
+  <com.example.chadrick.datalabeling.CustomComponents.TouchImageView
+    android:id="@+id/rectiv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scaleType="fitCenter"
+    />
+
+  <com.example.chadrick.datalabeling.CustomComponents.MaskImageView
+    android:id="@+id/drawiv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    />
+
+
+</com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout2>

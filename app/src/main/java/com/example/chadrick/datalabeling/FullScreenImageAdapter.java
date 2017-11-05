@@ -31,6 +31,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
   private ArrayList<File> imagefiles;
   private CustomViewPager customViewPager;
   private Callback drawBtnpressedcallback;
+  private Runnable rectSelectedCallback;
 
   private CallbackWithRect callback2;
   private Canvas canvas;
@@ -78,6 +79,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
         .setCustomViewPager(customViewPager)
         .setMaskRectReadyCallback(callback2)
         .setImageFile(imagefiles.get(position))
+        .setRectSelectedCallback(rectSelectedCallback)
         .build();
 
     // add to labeldrawpad object to hashmap
@@ -149,6 +151,10 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
   public void passRectReadyCallback(CallbackWithRect callback){
     this.callback2 = callback;
+  }
+
+  public void passRectSelectedCallback(Runnable rectSelectedCallback){
+    this.rectSelectedCallback = rectSelectedCallback;
   }
 
 }

@@ -58,6 +58,7 @@ public class LabelDrawPad {
   private Bitmap baseBitmap, rectBitmap;
   private Canvas rectCanvas;
   private Rect selectedRect;
+  private Runnable rectSelectedCallback;
 
   private ArrayList<Rect> rectArrayList = new ArrayList<Rect>();
 
@@ -232,6 +233,7 @@ public class LabelDrawPad {
     this.maskRectReadyCallback = builder.maskRectReadyCallback;
     this.imageFile = builder.imageFile;
     this.customViewPager = builder.customViewPager;
+    this.rectSelectedCallback = builder.rectSelectedCallback;
 
     initElements();
 
@@ -366,6 +368,9 @@ public class LabelDrawPad {
 
         rectIV.drawSelectedRect(selectedRect);
 
+        // display delete btn
+        rectSelectedCallback.run();
+
         return true;
       }
 
@@ -383,6 +388,34 @@ public class LabelDrawPad {
     drawIV.eraseall();
   }
 
+  public void deleteSelectedRect() {
+    // delete the selectedrect
+    // draw with transparent paint
+    if (selectedRect == null) {
+      return;
+    }
+
+//    rectIV.drawDeleteRect(selectedRect);
+
+    // remove it from rectarray
+    Log.d(TAG, "deleteSelectedRect: length of rectarray before remove=" + rectArrayList.size());
+    rectArrayList.remove(selectedRect);
+    Log.d(TAG, "deleteSelectedRect: length of rectarray after remove=" + rectArrayList.size());
+
+    // nullify the selectedrect variable
+    selectedRect = null;
+
+    // clear the rectIV, and redraw all rects in rectarray
+    rectBitmap.eraseColor(Color.TRANSPARENT);
+    for (Rect rect : rectArrayList) {
+      rectIV.drawUnselectedRect(rect);
+    }
+
+    // updatelabelfile
+    saveLabelFile();
+
+  }
+
   /***
    *
    *
@@ -394,6 +427,7 @@ public class LabelDrawPad {
 
     private Callback drawBtnpressedcallback;
     private CallbackWithRect maskRectReadyCallback;
+    private Runnable rectSelectedCallback;
 
     private LayoutInflater inflater;
     private ViewGroup container;
@@ -427,9 +461,15 @@ public class LabelDrawPad {
       return this;
     }
 
+    public LabelDrawPadBuilder setRectSelectedCallback(Runnable rectSelectedCallback) {
+      this.rectSelectedCallback = rectSelectedCallback;
+      return this;
+    }
+
     public LabelDrawPad build() {
       return new LabelDrawPad(this);
     }
 
   }
+
 }

@@ -63,6 +63,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
   private Canvas canvas;
   private Paint paint;
   private Paint selectedpaint;
+  private Paint transparentpaint;
   private boolean touchEnable = true;
   private Rect savedrect;
 
@@ -106,6 +107,12 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     selectedpaint.setColor(Color.rgb(0, 255, 0));
     selectedpaint.setStrokeWidth(5);
     selectedpaint.setStyle(Style.STROKE);
+
+    // setup transparent paint
+    transparentpaint = new Paint();
+    transparentpaint.setColor(Color.TRANSPARENT);
+    transparentpaint.setStrokeWidth(5);
+    transparentpaint.setStyle(Style.STROKE);
 
     setOnTouchListener(new OnTouchListener() {
 
@@ -446,9 +453,16 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     Log.d(TAG, "drawSelectedRect: finished");
   }
 
+
   public void drawUnselectedRect(Rect rect) {
     canvas.drawRect(rect, paint);
     Log.d(TAG, "drawUnselectedRect: finished");
   }
+
+  public void drawDeleteRect(Rect rect) {
+    canvas.drawRect(rect, transparentpaint);
+    Log.d(TAG, "drawDeleteRect: finished");
+  }
+
 
 }

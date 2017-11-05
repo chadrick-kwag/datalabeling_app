@@ -11,6 +11,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
@@ -38,7 +39,7 @@ import java.util.Collections;
 public class ImageViewerFragment extends Fragment {
 
   private CustomViewPager customviewPager;
-  private Button drawButton, yesbtn, nobtn;
+  private Button drawButton, yesbtn, nobtn, deletebtn;
 
 
   private DataSet dataSet;
@@ -159,6 +160,19 @@ public class ImageViewerFragment extends Fragment {
       }
     });
 
+
+    // setup delete btn
+    deletebtn = (Button) root.findViewById(R.id.deletebtn);
+    deletebtn.setOnClickListener( (view)->{
+      // command the current labeldrawpad to delete the selected rect.
+      LabelDrawPad labelDrawPad = adapter.getLabelDrawPad(viewpager_currentposition);
+      labelDrawPad.deleteSelectedRect();
+
+      // after delete and redraw, make this btn invisible
+      deletebtn.setVisibility(View.INVISIBLE);
+    });
+
+
     // get dataset
     try {
       dataSet = DataSet.deserialize(getArguments().getString("ds"));
@@ -259,6 +273,7 @@ public class ImageViewerFragment extends Fragment {
     };
 
     adapter.passRectReadyCallback(RectReadycallback);
+    adapter.passRectSelectedCallback(this::rectSelectedCallback);
 
     return root;
   }
@@ -269,6 +284,11 @@ public class ImageViewerFragment extends Fragment {
     updateStatCallback.run();
 
     super.onPause();
+  }
+
+  public void rectSelectedCallback(){
+    // show delete btn
+    deletebtn.setVisibility(View.VISIBLE);
   }
 
   public void passUpdateStatCallback(Runnable callback) {

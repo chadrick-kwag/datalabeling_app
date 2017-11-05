@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
+  signingConfigs {
+    develop {
+      keyAlias 'develop'
+      keyPassword 'develop'
+      storeFile file('../keystore/develop.keystore')
+      storePassword 'develop'
+    }
+  }
   compileSdkVersion 26
   buildToolsVersion "26.0.2"
   defaultConfig {
@@ -21,14 +29,17 @@ android {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
+    develop {
+      debuggable true
+      signingConfig signingConfigs.develop
+      minifyEnabled false
+      zipAlignEnabled true
+    }
   }
-
-
-
 }
 
 dependencies {
-  compile fileTree(dir: 'libs', include: ['*.jar'])
+  compile fileTree(include: ['*.jar'], dir: 'libs')
   androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
     exclude group: 'com.android.support', module: 'support-annotations'
   })
@@ -37,9 +48,7 @@ dependencies {
   compile 'com.android.volley:volley:1.0.0'
   testCompile 'junit:junit:4.12'
   compile 'com.android.support:recyclerview-v7:26.+'
-
   compile 'com.mikhaellopez:circularprogressbar:1.1.1'
   compile 'com.google.android.gms:play-services-auth:9.0.0'
   compile 'com.google.firebase:firebase-auth:9.0.0'
-
 }

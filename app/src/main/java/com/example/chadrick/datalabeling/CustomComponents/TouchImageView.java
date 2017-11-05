@@ -5,6 +5,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -18,7 +20,10 @@ import com.example.chadrick.datalabeling.Callback;
 import com.example.chadrick.datalabeling.CustomViewPager;
 import com.example.chadrick.datalabeling.Models.PageInfoSet;
 import com.example.chadrick.datalabeling.Util;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 
 /**
@@ -26,6 +31,7 @@ import java.util.function.Consumer;
  */
 
 public class TouchImageView extends android.support.v7.widget.AppCompatImageView {
+
   Matrix matrix;
   private Matrix inverseMatrix;
 
@@ -56,6 +62,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
   private Callback drawBtnpressedcallback;
   private Canvas canvas;
   private Paint paint;
+  private Paint selectedpaint;
   private boolean touchEnable = true;
   private Rect savedrect;
 
@@ -63,6 +70,9 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
   private Consumer<Rect> addRectCallback;
   private Runnable saveLabelCallback;
+  private Function<Point, Boolean> checkRectSelectCallback;
+
+  private Point sendpoint = new Point();
 
   private final String TAG = this.getClass().getSimpleName();
 
@@ -91,6 +101,12 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     paint.setStrokeWidth(5);
     paint.setStyle(Paint.Style.STROKE);
 
+    // setup selected paint
+    selectedpaint = new Paint();
+    selectedpaint.setColor(Color.rgb(0, 255, 0));
+    selectedpaint.setStrokeWidth(5);
+    selectedpaint.setStyle(Style.STROKE);
+
     setOnTouchListener(new OnTouchListener() {
 
       @Override
@@ -106,7 +122,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         mScaleDetector.onTouchEvent(event);
         PointF curr = new PointF(event.getX(), event.getY());
 
-
         // check if the drawBtn is pressed or not.
         boolean drawbtnpressed;
         if (drawBtnpressedcallback != null) {
@@ -119,7 +134,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
         switch (event.getAction()) {
           case MotionEvent.ACTION_DOWN:
 
-            Log.d(TAG,"mainIV x:"+event.getX()+", y:"+event.getY());
+            Log.d(TAG, "mainIV x:" + event.getX() + ", y:" + event.getY());
 
             if (drawbtnpressed) {
 
@@ -130,15 +145,28 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
               // then get the absolute x,y values
               event.transform(inverseMatrix);
 
-              last.set(event.getX(),event.getY());
+// when draw btn is not pressed save the last,start with current scale.
+              last.set(event.getX(), event.getY());
               start.set(last);
+
               mode = DRAG;
-
-
             } else {
-              last.set(curr);
+
+              last.set(event.getX(), event.getY());
               start.set(last);
               mode = DRAG;
+
+              // we still need the fullscalestart saved so that we can use this
+              // in ACTION_UP in order to pass on to check selected rect.
+
+              inverseMatrix = new Matrix(matrix);
+              inverseMatrix.invert(inverseMatrix);
+
+              // then get the absolute x,y values
+              event.transform(inverseMatrix);
+
+              sendpoint.set((int) event.getX(), (int) event.getY());
+
             }
 
             break;
@@ -148,7 +176,6 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
               if (drawbtnpressed) {
                 // we are not drawing temp rects here. so do nothing.
-
 
               } else {
                 float deltaX = curr.x - last.x;
@@ -171,19 +198,32 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
             if (drawbtnpressed) {
 
               event.transform(inverseMatrix);
-              last.set(event.getX(),event.getY());
+              last.set(event.getX(), event.getY());
 
               // get the final rect
               // but don't draw it yet. just keep it.
               // the drawing will be done when the user clicks yes.
-              savedrect = Util.convertToRect(start,last);
+              savedrect = Util.convertToRect(start, last);
               Log.d(TAG, "onTouch: savedrect updated");
 
             } else {
+
               int xDiff = (int) Math.abs(curr.x - start.x);
               int yDiff = (int) Math.abs(curr.y - start.y);
-              if (xDiff < CLICK && yDiff < CLICK)
+              if (xDiff < CLICK && yDiff < CLICK) {
+
+                Log.d(TAG, "onTouch: inside click case");
+                Log.d(TAG, "onTouch: sendpoint x=" + sendpoint.x + ", y=" + sendpoint.y);
+                boolean isRectSelectExist = checkRectSelectCallback.apply(sendpoint);
+                if (isRectSelectExist) {
+                  Log.d(TAG, "onTouch: rect select exist");
+                } else {
+                  Log.d(TAG, "onTouch: rect select not exist");
+                }
                 performClick();
+              }
+
+
             }
 
             break;
@@ -192,7 +232,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
             mode = NONE;
             break;
           default:
-            Log.d(TAG,"touch event falling to default");
+            Log.d(TAG, "touch event falling to default");
         }
 
         setImageMatrix(matrix);
@@ -201,6 +241,8 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
       }
 
     });
+
+
   }
 
   public void setMaxZoom(float x) {
@@ -209,6 +251,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
   private class ScaleListener extends
       ScaleGestureDetector.SimpleOnScaleGestureListener {
+
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
       mode = ZOOM;
@@ -243,12 +286,13 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
       }
 
       if (origWidth * saveScale <= viewWidth
-          || origHeight * saveScale <= viewHeight)
+          || origHeight * saveScale <= viewHeight) {
         matrix.postScale(mScaleFactor, mScaleFactor, viewWidth / 2,
             viewHeight / 2);
-      else
+      } else {
         matrix.postScale(mScaleFactor, mScaleFactor,
             detector.getFocusX(), detector.getFocusY());
+      }
 
       fixTrans();
       return true;
@@ -264,8 +308,9 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     float fixTransY = getFixTrans(transY, viewHeight, origHeight
         * saveScale);
 
-    if (fixTransX != 0 || fixTransY != 0)
+    if (fixTransX != 0 || fixTransY != 0) {
       matrix.postTranslate(fixTransX, fixTransY);
+    }
   }
 
   float getFixTrans(float trans, float viewSize, float contentSize) {
@@ -279,10 +324,12 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
       maxTrans = 0;
     }
 
-    if (trans < minTrans)
+    if (trans < minTrans) {
       return -trans + minTrans;
-    if (trans > maxTrans)
+    }
+    if (trans > maxTrans) {
       return -trans + maxTrans;
+    }
     return 0;
   }
 
@@ -303,8 +350,9 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     // Rescales image on rotation
     //
     if (oldMeasuredHeight == viewWidth && oldMeasuredHeight == viewHeight
-        || viewWidth == 0 || viewHeight == 0)
+        || viewWidth == 0 || viewHeight == 0) {
       return;
+    }
     oldMeasuredHeight = viewHeight;
     oldMeasuredWidth = viewWidth;
 
@@ -314,8 +362,9 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
       Drawable drawable = getDrawable();
       if (drawable == null || drawable.getIntrinsicWidth() == 0
-          || drawable.getIntrinsicHeight() == 0)
+          || drawable.getIntrinsicHeight() == 0) {
         return;
+      }
       int bmWidth = drawable.getIntrinsicWidth();
       int bmHeight = drawable.getIntrinsicHeight();
 
@@ -356,21 +405,24 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
   }
 
 
-
   public void setTouchEnable(boolean value) {
     this.touchEnable = value;
   }
 
-  public void passPageInfoSet(PageInfoSet pageInfoSet){
+  public void passPageInfoSet(PageInfoSet pageInfoSet) {
     this.pageInfoSet = pageInfoSet;
   }
 
-  public void passAddRectCallback(Consumer<Rect> addRectCallback){
+  public void passAddRectCallback(Consumer<Rect> addRectCallback) {
     this.addRectCallback = addRectCallback;
   }
 
-  public void passSaveLabelCallback(Runnable saveLabelCallback){
+  public void passSaveLabelCallback(Runnable saveLabelCallback) {
     this.saveLabelCallback = saveLabelCallback;
+  }
+
+  public void passCheckRectSelectCallback(Function<Point, Boolean> checkRectSelectCallback) {
+    this.checkRectSelectCallback = checkRectSelectCallback;
   }
 
   public void drawRect() {
@@ -385,8 +437,18 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
     addRectCallback.accept(savedrect);
     saveLabelCallback.run();
 
-
-    Log.d(TAG,"call savedlabelfile from mainIV");
+    Log.d(TAG, "call savedlabelfile from mainIV");
 
   }
+
+  public void drawSelectedRect(Rect rect) {
+    canvas.drawRect(rect, selectedpaint);
+    Log.d(TAG, "drawSelectedRect: finished");
+  }
+
+  public void drawUnselectedRect(Rect rect) {
+    canvas.drawRect(rect, paint);
+    Log.d(TAG, "drawUnselectedRect: finished");
+  }
+
 }

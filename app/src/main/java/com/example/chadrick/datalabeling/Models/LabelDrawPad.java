@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,8 +57,11 @@ public class LabelDrawPad {
   private File imageFile, labelFile;
   private Bitmap baseBitmap, rectBitmap;
   private Canvas rectCanvas;
+  private Rect selectedRect;
 
   private ArrayList<Rect> rectArrayList = new ArrayList<Rect>();
+
+  private static int RECT_SELECT_AREA_PADDING = 50;
 
 
   private final String TAG = this.getClass().getSimpleName();
@@ -129,6 +133,7 @@ public class LabelDrawPad {
       rectArrayList.add(rect);
     });
     rectIV.passSaveLabelCallback(this::saveLabelFile);
+    rectIV.passCheckRectSelectCallback(this::checkRectSelect);
 
     // drawIV has its own canvas
     drawIV.setdrawBtnpressedcallback(drawBtnpressedcallback);
@@ -268,6 +273,7 @@ public class LabelDrawPad {
     try {
       BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(labelFile));
       bufferedWriter.write(newRoot.toString());
+      bufferedWriter.flush();
       bufferedWriter.close();
       Log.d(TAG, "newly written contents:" + newRoot.toString());
       Log.d(TAG, "new labelfile size: " + labelFile.length());
@@ -293,6 +299,80 @@ public class LabelDrawPad {
     baseIV.setTouchEnable(false);
     rectIV.setTouchEnable(false);
     drawIV.setTouchEnable(false);
+  }
+
+  private boolean checkRectSelect(Point point) {
+    // check with all rects. the first hit will be set as selected and
+    // this method will return true
+    // if there are no hits, then return false
+
+    int touch_x = point.x;
+    int touch_y = point.y;
+
+    Log.d(TAG, "checkRectSelect: received x=" + touch_x + ", y=" + touch_y);
+
+    for (Rect rect : rectArrayList) {
+
+      Rect biggerRect = new Rect(rect.left - RECT_SELECT_AREA_PADDING,
+          rect.top - RECT_SELECT_AREA_PADDING,
+          rect.right + RECT_SELECT_AREA_PADDING,
+          rect.bottom + RECT_SELECT_AREA_PADDING);
+
+      Rect smallerRect = new Rect(rect.left + RECT_SELECT_AREA_PADDING,
+          rect.top + RECT_SELECT_AREA_PADDING,
+          rect.right - RECT_SELECT_AREA_PADDING,
+          rect.bottom - RECT_SELECT_AREA_PADDING);
+
+      Log.d(TAG,
+          "checkRectSelect: biggerRect, left=" + biggerRect.left + ", top=" + biggerRect.top + ","
+              + "right=" + biggerRect.right + ", bottom=" + biggerRect.bottom);
+
+      Log.d(TAG,
+          "checkRectSelect: smallerREct, left=" + smallerRect.left + ", top=" + smallerRect.top +
+              ", right=" + smallerRect.right + ", bottom=" + smallerRect.bottom);
+
+      // assume that there are no conflicts with the sizes of the bigger and smaller rect
+
+      boolean biggercontain = false;
+      boolean smallercontain = false;
+
+      if (biggerRect.contains(touch_x, touch_y)) {
+        biggercontain = true;
+      }
+
+      if (smallerRect.contains(touch_x, touch_y)) {
+        smallercontain = true;
+      }
+
+      Log.d(TAG,
+          "checkRectSelect: biggercontain=" + biggercontain + ", smallercontain=" + smallercontain);
+
+      if (biggercontain == true && smallercontain == false) {
+        Log.d(TAG, "checkRectSelect: select rect hit found");
+
+        // okay so a hit was found, and we know which rectangle it is.
+        // we need to redraw it, and it will eventually be done with
+        // rectIV
+        // the rectangle of interest is already drawn.
+        // instead of redrawing the whole thing(including othe rectangles),
+        // why not just overdraw the rectangle of interest with anther paint?
+
+        // first draw unselected rect of the previous existing selectedRect
+        if (selectedRect != null) {
+          rectIV.drawUnselectedRect(selectedRect);
+        }
+
+        selectedRect = rect;
+
+        rectIV.drawSelectedRect(selectedRect);
+
+        return true;
+      }
+
+
+    }
+
+    return false;
   }
 
   public void drawRect() {

@@ -72,13 +72,17 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:id="@+id/continue_area"
+        android:background="@drawable/continue_area_selector"
+
     >
-      <Button
+      <ImageView
           android:layout_width="200px"
           android:layout_height="200px"
-          android:id="@+id/continuebtn"
+          android:id="@+id/continueImageView"
           android:background="@drawable/ic_navigate_next_black_48dp"
           android:layout_gravity="center"
+          android:clickable="false"
       />
 
     </FrameLayout>

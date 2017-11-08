@@ -40,11 +40,11 @@ public class DatasetProgressFragment extends Fragment {
   private TextView mprogresspercentage;
   private TextView mtotaltextview;
   private TextView mdonetextview;
-  private Button mcontinuebtn;
-  private ImageView uploadImageView;
+
+  private ImageView uploadImageView, continueImageView;
   private DataSet dataset;
   private Runnable updateStatsRunnable;
-  private FrameLayout upload_layout;
+  private FrameLayout upload_layout, continue_area;
   private ProgressBar uploadProgressBar;
 
   private final String TAG = "DatasetProgressFrag";
@@ -79,9 +79,10 @@ public class DatasetProgressFragment extends Fragment {
     mtotaltextview = (TextView) root.findViewById(R.id.total_textview);
     mdonetextview = (TextView) root.findViewById(R.id.done_textview);
     uploadImageView = (ImageView) root.findViewById(R.id.uploadImageview);
-    mcontinuebtn = (Button) root.findViewById(R.id.continuebtn);
+    continueImageView = (ImageView) root.findViewById(R.id.continueImageView);
     upload_layout = (FrameLayout) root.findViewById(R.id.upload_click_area);
     uploadProgressBar = (ProgressBar) root.findViewById(R.id.uploadprogressbar);
+    continue_area = (FrameLayout) root.findViewById(R.id.continue_area);
 
 
     // attach clicklisteners
@@ -155,7 +156,7 @@ public class DatasetProgressFragment extends Fragment {
     });
 
 
-    mcontinuebtn.setOnClickListener(new View.OnClickListener() {
+    continue_area.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         Log.d(TAG, "continue btn clicked.");
@@ -263,7 +264,7 @@ public class DatasetProgressFragment extends Fragment {
 
     Log.d(TAG, "enableUploadArea: enable upload");
     upload_layout.setClickable(true);
-    upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_enable_color);
+    upload_layout.setBackgroundResource(R.drawable.upload_area_selector);
   }
 
   private void restoreUploadArea() {

@@ -1,5 +1,6 @@
 package com.example.chadrick.datalabeling.Fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -8,7 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,10 +40,12 @@ public class DatasetProgressFragment extends Fragment {
   private TextView mprogresspercentage;
   private TextView mtotaltextview;
   private TextView mdonetextview;
-  private Button muploadbtn, mcontinuebtn;
+  private Button mcontinuebtn;
+  private ImageView uploadImageView;
   private DataSet dataset;
   private Runnable updateStatsRunnable;
-  private LinearLayout upload_layout;
+  private FrameLayout upload_layout;
+  private ProgressBar uploadProgressBar;
 
   private final String TAG = "DatasetProgressFrag";
 
@@ -72,16 +78,21 @@ public class DatasetProgressFragment extends Fragment {
     mprogresspercentage = (TextView) root.findViewById(R.id.progresspercentage);
     mtotaltextview = (TextView) root.findViewById(R.id.total_textview);
     mdonetextview = (TextView) root.findViewById(R.id.done_textview);
-    muploadbtn = (Button) root.findViewById(R.id.uploadbtn);
+    uploadImageView = (ImageView) root.findViewById(R.id.uploadImageview);
     mcontinuebtn = (Button) root.findViewById(R.id.continuebtn);
-    upload_layout = (LinearLayout) root.findViewById(R.id.uploadbtn_wrapping_layout);
+    upload_layout = (FrameLayout) root.findViewById(R.id.upload_click_area);
+    uploadProgressBar = (ProgressBar) root.findViewById(R.id.uploadprogressbar);
 
 
     // attach clicklisteners
-    muploadbtn.setOnClickListener(new View.OnClickListener() {
+    upload_layout.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         Log.d(TAG, "upload clicked");
+
+        // change the icon to progress circle
+        uploadProgressBar.setVisibility(View.VISIBLE);
+        uploadImageView.setVisibility(View.INVISIBLE);
 
         // gather the imagefiles
         // there are several ways to do this. but for simplicity, let's just gather the .json files
@@ -94,6 +105,7 @@ public class DatasetProgressFragment extends Fragment {
         // check if number matches with imagefiles
         if (jsonfiles.size() != Util.getImageFileList(dir).size()) {
           Log.d(TAG, "jsonfiles number doesn't match with image files number. abort");
+          restoreUploadArea();
           return;
         }
 
@@ -120,7 +132,13 @@ public class DatasetProgressFragment extends Fragment {
 
         // send to server
         // first create multipart request
-        VolleyMultipartRequest request = Util.createRequestFileUpload(outputzipfile, "http://13.124.175.119:4001/upload/labelzip");
+        VolleyMultipartRequest request = Util.createRequestFileUpload(outputzipfile,
+            "http://13.124.175.119:4001/upload/labelzip",
+            () -> {
+              restoreUploadArea();
+              Toast.makeText(getContext(), "Upload Success", Toast.LENGTH_SHORT).show();
+            }
+        );
 
         RequestQueue queue = ((MainActivity) getActivity()).getQueue();
 
@@ -128,6 +146,7 @@ public class DatasetProgressFragment extends Fragment {
           queue.add(request);
         } else {
           Log.d(TAG, "queue is null");
+          restoreUploadArea();
           return;
         }
 
@@ -221,13 +240,36 @@ public class DatasetProgressFragment extends Fragment {
     // check and update upload btn status
     if (num_finishedimages == sizeofds) {
       // enable upload btn
-      upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_enable_color);
-      muploadbtn.setEnabled(true);
+      enableUploadArea();
+
     } else {
-      upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_disable_color);
-      muploadbtn.setEnabled(false);
+
+      disableUploadArea();
     }
 
+  }
+
+
+  private void disableUploadArea() {
+
+    Log.d(TAG, "disableUploadArea: disable upload");
+
+    // make the area non clickable
+    upload_layout.setClickable(false);
+    upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_disable_color);
+  }
+
+  private void enableUploadArea() {
+
+    Log.d(TAG, "enableUploadArea: enable upload");
+    upload_layout.setClickable(true);
+    upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_enable_color);
+  }
+
+  private void restoreUploadArea() {
+    // what to do after request is finished
+    uploadImageView.setVisibility(View.VISIBLE);
+    uploadProgressBar.setVisibility(View.INVISIBLE);
   }
 
 

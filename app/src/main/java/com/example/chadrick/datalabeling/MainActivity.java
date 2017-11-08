@@ -217,15 +217,15 @@ public class MainActivity extends AppCompatActivity {
       if(result.getStatus().getStatusCode()== GoogleSignInStatusCodes.SIGN_IN_REQUIRED){
         Log.d(TAG, "checksigninresult: sign in required");
 
-        // FIXME
-        Fragment fragment = new DatasetSelectFragment();
-        fragmentManager.beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
+//        // FIXME
+//        Fragment fragment = new DatasetSelectFragment();
+//        fragmentManager.beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
 
         // the below should be the right thing to do,
         // but due to different dev machine, we will directly skip to dataseletfragment.
-//        // go to sign in fragment
-//        Fragment fragment = new SignInFragment();
-//        fragmentManager.beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
+        // go to sign in fragment
+        Fragment fragment = new SignInFragment();
+        fragmentManager.beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
       }
       else{
         Log.d(TAG, "checksigninresult: some weird signin case");
@@ -288,6 +288,5 @@ public class MainActivity extends AppCompatActivity {
     DatasetSelectFragment fragment = new DatasetSelectFragment();
     getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
   }
-
 
 }

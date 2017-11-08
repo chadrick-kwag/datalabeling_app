@@ -3,6 +3,7 @@ package com.example.chadrick.datalabeling;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.NoConnectionError;
@@ -157,7 +158,8 @@ public class Util {
   }
 
 
-  public static VolleyMultipartRequest createRequestFileUpload(File uploadfile, String url){
+  public static VolleyMultipartRequest createRequestFileUpload(File uploadfile, String url, Runnable finishedcallback){
+
     VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
         new Response.Listener<NetworkResponse>() {
       @Override
@@ -175,6 +177,7 @@ public class Util {
           int resultint = resultobj.getInt("result");
           if(resultint==1){
             Log.d("whatup","successfully uploaded");
+
           }
           else{
             Log.d("whatup","statuscode 200 but upload error");
@@ -205,6 +208,10 @@ public class Util {
 //        } catch (JSONException e) {
 //          e.printStackTrace();
 //        }
+
+        // when done, restore UI
+        finishedcallback.run();
+
       }
     }, new Response.ErrorListener() {
       @Override
@@ -242,6 +249,10 @@ public class Util {
         }
         Log.i("Error", errorMessage);
         error.printStackTrace();
+
+        // when done, restore UI
+        finishedcallback.run();
+
       }
     }) {
 //      @Override

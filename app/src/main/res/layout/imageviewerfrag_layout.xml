@@ -46,4 +46,14 @@
   />
 
 
+  <Button android:layout_width="100dp" android:layout_height="100dp"
+    android:id="@+id/deletebtn"
+    android:elevation="2dp"
+    android:layout_gravity="bottom|right"
+    android:background="@drawable/btnselect"
+    android:text="delete"
+    android:visibility="invisible"
+    />
+
+
 </FrameLayout>

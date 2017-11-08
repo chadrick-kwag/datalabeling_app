@@ -11,6 +11,7 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
@@ -21,6 +22,7 @@ import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
 import com.example.chadrick.datalabeling.CustomViewPager;
 import com.example.chadrick.datalabeling.Models.DataSet;
 import com.example.chadrick.datalabeling.FullScreenImageAdapter;
+import com.example.chadrick.datalabeling.Models.LabelDrawPad;
 import com.example.chadrick.datalabeling.R;
 import com.example.chadrick.datalabeling.Util;
 
@@ -37,7 +39,7 @@ import java.util.Collections;
 public class ImageViewerFragment extends Fragment {
 
   private CustomViewPager customviewPager;
-  private Button drawButton, yesbtn, nobtn;
+  private Button drawButton, yesbtn, nobtn, deletebtn;
 
 
   private DataSet dataSet;
@@ -52,9 +54,9 @@ public class ImageViewerFragment extends Fragment {
   private Rect receivedRect;
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+      Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
 
     View root = inflater.inflate(R.layout.imageviewerfrag_layout, container, false);
     customviewPager = (CustomViewPager) root.findViewById(R.id.customviewpager);
@@ -67,12 +69,14 @@ public class ImageViewerFragment extends Fragment {
           case MotionEvent.ACTION_DOWN:
             Log.d(TAG, "draw button pressed");
             drawBtnpressed = true;
-            drawButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.buttonpressedcolor));
+            drawButton.setBackgroundColor(
+                ContextCompat.getColor(getContext(), R.color.buttonpressedcolor));
             break;
           case MotionEvent.ACTION_UP:
             drawBtnpressed = false;
             Log.d(TAG, "draw button released");
-            drawButton.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.buttonreleasedcolor));
+            drawButton.setBackgroundColor(
+                ContextCompat.getColor(getContext(), R.color.buttonreleasedcolor));
             break;
           default:
             break;
@@ -89,15 +93,21 @@ public class ImageViewerFragment extends Fragment {
         Log.d(TAG, "inside yesbtn onclick listener");
 
         //enable the touch events in the two main IVs
-        View pageview = adapter.getPage(viewpager_currentposition);
+        // in order to do this, get reference of the labelDrawPad object
+        // and call method that does this job for us.
 
-        // fetch the two IVs
-        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
-        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
+//        View pageview = adapter.getPage(viewpager_currentposition);
+        LabelDrawPad labelDrawPad = adapter.getLabelDrawPad(viewpager_currentposition);
 
-        // disable the touch of these two IVs
-        mainIV.setTouchEnable(true);
-        maskIV.setTouchEnable(true);
+        labelDrawPad.enableTouches();
+//
+//        // fetch the two IVs
+//        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
+//        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
+//
+//        // enable the touch of these two IVs
+//        mainIV.setTouchEnable(true);
+//        maskIV.setTouchEnable(true);
 
         // hide yes and no btn from layout
         yesbtn.setVisibility(View.INVISIBLE);
@@ -106,15 +116,15 @@ public class ImageViewerFragment extends Fragment {
         // enable draw btn
         drawButton.setVisibility(View.VISIBLE);
 
-
         // actually draw rectangle in mainIV
-        mainIV.drawRect();
+        labelDrawPad.drawRect();
+//        mainIV.drawRect();
 
         // clear the temp rectangle in maskIV
-        maskIV.eraseall();
+        labelDrawPad.eraseDrawnRect();
+//        maskIV.eraseall();
       }
     });
-
 
     nobtn = (Button) root.findViewById(R.id.nobtn);
 
@@ -123,15 +133,18 @@ public class ImageViewerFragment extends Fragment {
       public void onClick(View v) {
 
         //enable the touch events in the two main IVs
-        View pageview = adapter.getPage(viewpager_currentposition);
+//        View pageview = adapter.getPage(viewpager_currentposition);
+        LabelDrawPad labelDrawPad = adapter.getLabelDrawPad(viewpager_currentposition);
 
-        // fetch the two IVs
-        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
-        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
+//        // fetch the two IVs
+//        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
+//        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
+//
+//        // disable the touch of these two IVs
+//        mainIV.setTouchEnable(true);
+//        maskIV.setTouchEnable(true);
 
-        // disable the touch of these two IVs
-        mainIV.setTouchEnable(true);
-        maskIV.setTouchEnable(true);
+        labelDrawPad.enableTouches();
 
         // hide yes and no btn from layout
         yesbtn.setVisibility(View.INVISIBLE);
@@ -141,10 +154,22 @@ public class ImageViewerFragment extends Fragment {
         drawButton.setVisibility(View.VISIBLE);
 
         //erase maskIV
-        maskIV.eraseall();
-
+        labelDrawPad.eraseDrawnRect();
+//        maskIV.eraseall();
 
       }
+    });
+
+
+    // setup delete btn
+    deletebtn = (Button) root.findViewById(R.id.deletebtn);
+    deletebtn.setOnClickListener( (view)->{
+      // command the current labeldrawpad to delete the selected rect.
+      LabelDrawPad labelDrawPad = adapter.getLabelDrawPad(viewpager_currentposition);
+      labelDrawPad.deleteSelectedRect();
+
+      // after delete and redraw, make this btn invisible
+      deletebtn.setVisibility(View.INVISIBLE);
     });
 
 
@@ -170,7 +195,6 @@ public class ImageViewerFragment extends Fragment {
     // sort the list alphabetically
     Collections.sort(imagefiles);
 
-
     Callback drawbtnpressedcallback = new Callback() {
       @Override
       public boolean getBoolean() {
@@ -184,7 +208,8 @@ public class ImageViewerFragment extends Fragment {
     int screenwidth = size.x;
     int screenheight = size.y;
 
-    adapter = new FullScreenImageAdapter(getContext(), imagefiles, customviewPager, drawbtnpressedcallback, screenwidth, screenheight);
+    adapter = new FullScreenImageAdapter(getContext(), imagefiles, customviewPager,
+        drawbtnpressedcallback, screenwidth, screenheight);
 
     customviewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       @Override
@@ -208,12 +233,10 @@ public class ImageViewerFragment extends Fragment {
 
     customviewPager.setAdapter(adapter);
 
-
     RectReadycallback = new CallbackWithRect() {
       @Override
       public void doit(Rect rect) {
         Log.d(TAG, "inside testcallback");
-
 
         // make sure that drawbtnpressed is reset to false
         // so that subsequent draws can be processed
@@ -227,15 +250,18 @@ public class ImageViewerFragment extends Fragment {
         // disable the touch handler in the two IVs
 
         // first access the appropriate page
-        View pageview = adapter.getPage(viewpager_currentposition);
+//        View pageview = adapter.getPage(viewpager_currentposition);
+        LabelDrawPad labelDrawPad = adapter.getLabelDrawPad(viewpager_currentposition);
 
         // fetch the two IVs
-        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
-        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
+//        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
+//        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
+//
+//        // disable the touch of these two IVs
+//        mainIV.setTouchEnable(false);
+//        maskIV.setTouchEnable(false);
 
-        // disable the touch of these two IVs
-        mainIV.setTouchEnable(false);
-        maskIV.setTouchEnable(false);
+        labelDrawPad.disableTouches();
 
         // show yes/no btns
         yesbtn.setVisibility(View.VISIBLE);
@@ -243,12 +269,11 @@ public class ImageViewerFragment extends Fragment {
 
         drawButton.setVisibility(View.INVISIBLE);
 
-
       }
     };
 
     adapter.passRectReadyCallback(RectReadycallback);
-
+    adapter.passRectSelectedCallback(this::rectSelectedCallback);
 
     return root;
   }
@@ -259,6 +284,11 @@ public class ImageViewerFragment extends Fragment {
     updateStatCallback.run();
 
     super.onPause();
+  }
+
+  public void rectSelectedCallback(){
+    // show delete btn
+    deletebtn.setVisibility(View.VISIBLE);
   }
 
   public void passUpdateStatCallback(Runnable callback) {

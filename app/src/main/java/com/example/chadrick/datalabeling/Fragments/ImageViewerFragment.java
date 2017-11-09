@@ -285,6 +285,7 @@ public class ImageViewerFragment extends Fragment {
 
     adapter.passRectReadyCallback(RectReadycallback);
     adapter.passRectSelectedCallback(this::rectSelectedCallback);
+    adapter.passHideDeleteBtnCallback(this::hideDeleteBtn);
 
     return root;
   }
@@ -304,5 +305,9 @@ public class ImageViewerFragment extends Fragment {
 
   public void passUpdateStatCallback(Runnable callback) {
     this.updateStatCallback = callback;
+  }
+
+  private void hideDeleteBtn(){
+    deletebtn.setVisibility(View.INVISIBLE);
   }
 }

@@ -46,6 +46,9 @@ public class BasicZoomImageView extends AppCompatImageView {
   private final String TAG = this.getClass().getSimpleName();
   private Callback drawBtnpressedcallback;
 
+
+  private int MOVE_CLICK_LIMIT=5;
+
   public BasicZoomImageView(Context context) {
     super(context);
     sharedConstructing(context);
@@ -129,6 +132,13 @@ public class BasicZoomImageView extends AppCompatImageView {
               } else {
                 float deltaX = curr.x - last.x;
                 float deltaY = curr.y - last.y;
+
+                if( deltaX < MOVE_CLICK_LIMIT && deltaY < MOVE_CLICK_LIMIT){
+                  // do not move if it is a small movement.
+                  break;
+                }
+
+
                 float fixTransX = getFixDragTrans(deltaX, viewWidth,
                     origWidth * saveScale);
                 float fixTransY = getFixDragTrans(deltaY, viewHeight,
@@ -151,7 +161,7 @@ public class BasicZoomImageView extends AppCompatImageView {
             } else {
               int xDiff = (int) Math.abs(curr.x - start.x);
               int yDiff = (int) Math.abs(curr.y - start.y);
-              if (xDiff < CLICK && yDiff < CLICK)
+              if (xDiff < MOVE_CLICK_LIMIT && yDiff < MOVE_CLICK_LIMIT)
                 performClick();
             }
 

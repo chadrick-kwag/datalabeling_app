@@ -72,10 +72,13 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
   private Consumer<Rect> addRectCallback;
   private Runnable saveLabelCallback;
   private Function<Point, Boolean> checkRectSelectCallback;
+  private Runnable unselectAnyIfExistCallback;
 
   private Point sendpoint = new Point();
 
   private final String TAG = this.getClass().getSimpleName();
+
+  private int MOVE_CLICK_LIMIT=5;
 
   public TouchImageView(Context context) {
     super(context);
@@ -187,6 +190,13 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
               } else {
                 float deltaX = curr.x - last.x;
                 float deltaY = curr.y - last.y;
+
+                // if deltaX and deltaY are not enough then we don't move
+                if( deltaX < MOVE_CLICK_LIMIT && deltaY < MOVE_CLICK_LIMIT){
+                  // do not move if it is a small movement.
+                  break;
+                }
+
                 float fixTransX = getFixDragTrans(deltaX, viewWidth,
                     origWidth * saveScale);
                 float fixTransY = getFixDragTrans(deltaY, viewHeight,
@@ -217,7 +227,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
               int xDiff = (int) Math.abs(curr.x - start.x);
               int yDiff = (int) Math.abs(curr.y - start.y);
-              if (xDiff < CLICK && yDiff < CLICK) {
+              if (xDiff < MOVE_CLICK_LIMIT && yDiff < MOVE_CLICK_LIMIT) {
 
                 Log.d(TAG, "onTouch: inside click case");
                 Log.d(TAG, "onTouch: sendpoint x=" + sendpoint.x + ", y=" + sendpoint.y);
@@ -226,6 +236,10 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
                   Log.d(TAG, "onTouch: rect select exist");
                 } else {
                   Log.d(TAG, "onTouch: rect select not exist");
+
+                  // if no rect exist, then unselect any selected rectangles and redraw
+                  unselectAnyIfExistCallback.run();
+
                 }
                 performClick();
               }
@@ -462,6 +476,10 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
   public void drawDeleteRect(Rect rect) {
     canvas.drawRect(rect, transparentpaint);
     Log.d(TAG, "drawDeleteRect: finished");
+  }
+
+  public void passUnselectAnyIfExist(Runnable unselectAnyIfExistCallback){
+    this.unselectAnyIfExistCallback = unselectAnyIfExistCallback;
   }
 
 

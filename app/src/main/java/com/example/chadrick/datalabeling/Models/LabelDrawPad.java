@@ -59,6 +59,7 @@ public class LabelDrawPad {
   private Canvas rectCanvas;
   private Rect selectedRect;
   private Runnable rectSelectedCallback;
+  private Runnable hideDeleteBtnCallback;
 
   private ArrayList<Rect> rectArrayList = new ArrayList<Rect>();
 
@@ -135,6 +136,7 @@ public class LabelDrawPad {
     });
     rectIV.passSaveLabelCallback(this::saveLabelFile);
     rectIV.passCheckRectSelectCallback(this::checkRectSelect);
+    rectIV.passUnselectAnyIfExist(this::unselectAnyIfExist);
 
     // drawIV has its own canvas
     drawIV.setdrawBtnpressedcallback(drawBtnpressedcallback);
@@ -234,6 +236,7 @@ public class LabelDrawPad {
     this.imageFile = builder.imageFile;
     this.customViewPager = builder.customViewPager;
     this.rectSelectedCallback = builder.rectSelectedCallback;
+    this.hideDeleteBtnCallback = builder.hideDeleteBtnCallback;
 
     initElements();
 
@@ -440,6 +443,18 @@ public class LabelDrawPad {
     }
   }
 
+  private void unselectAnyIfExist(){
+    if(selectedRect==null){
+      return;
+    }
+
+    removeSelectedRect();
+    redrawrects();
+    hideDeleteBtnCallback.run();
+
+  }
+
+
   /***
    *
    *
@@ -452,6 +467,7 @@ public class LabelDrawPad {
     private Callback drawBtnpressedcallback;
     private CallbackWithRect maskRectReadyCallback;
     private Runnable rectSelectedCallback;
+    private Runnable hideDeleteBtnCallback;
 
     private LayoutInflater inflater;
     private ViewGroup container;
@@ -487,6 +503,11 @@ public class LabelDrawPad {
 
     public LabelDrawPadBuilder setRectSelectedCallback(Runnable rectSelectedCallback) {
       this.rectSelectedCallback = rectSelectedCallback;
+      return this;
+    }
+
+    public LabelDrawPadBuilder setHideDeleteBtnCallback(Runnable hideDeleteBtnCallback) {
+      this.hideDeleteBtnCallback = hideDeleteBtnCallback;
       return this;
     }
 

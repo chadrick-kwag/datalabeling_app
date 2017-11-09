@@ -54,7 +54,6 @@
                  android:id="@+id/uploadImageview"
                  android:background="@drawable/ic_file_upload_black_48dp"
                  android:layout_gravity="center"
-                 android:clickable="false"
       />
 
       <ProgressBar

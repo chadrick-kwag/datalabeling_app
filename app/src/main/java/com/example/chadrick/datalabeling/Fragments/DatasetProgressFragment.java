@@ -91,13 +91,8 @@ public class DatasetProgressFragment extends Fragment {
       public void onClick(View view) {
         Log.d(TAG, "upload clicked");
 
-        // change the icon to progress circle
-        uploadProgressBar.setVisibility(View.VISIBLE);
-        uploadImageView.setVisibility(View.INVISIBLE);
 
-        // gather the imagefiles
-        // there are several ways to do this. but for simplicity, let's just gather the .json files
-        // and check the number of files and see if they match with the number of image files
+        // first check if progress is complete
 
         // gathering .json files
         File dir = new File(dataset.getDirstr());
@@ -106,11 +101,23 @@ public class DatasetProgressFragment extends Fragment {
         // check if number matches with imagefiles
         if (jsonfiles.size() != Util.getImageFileList(dir).size()) {
           Log.d(TAG, "jsonfiles number doesn't match with image files number. abort");
+          Toast.makeText(getContext(),"progress not complete",Toast.LENGTH_SHORT).show();
           restoreUploadArea();
           return;
         }
 
         Log.d(TAG, "jsonfiles number match");
+
+
+        // change the icon to progress circle
+        uploadProgressBar.setVisibility(View.VISIBLE);
+        uploadImageView.setVisibility(View.INVISIBLE);
+
+        // gather the imagefiles
+        // there are several ways to do this. but for simplicity, let's just gather the .json files
+        // and check the number of files and see if they match with the number of image files
+
+
 
         // if any zip file exists(probably with older date in name), delete it.
 
@@ -148,10 +155,9 @@ public class DatasetProgressFragment extends Fragment {
         } else {
           Log.d(TAG, "queue is null");
           restoreUploadArea();
+          Toast.makeText(getContext(),"request queue error",Toast.LENGTH_SHORT).show();
           return;
         }
-
-
       }
     });
 
@@ -256,7 +262,7 @@ public class DatasetProgressFragment extends Fragment {
     Log.d(TAG, "disableUploadArea: disable upload");
 
     // make the area non clickable
-    upload_layout.setClickable(false);
+
     upload_layout.setBackgroundResource(R.color.dsprogressfrag_btn_disable_color);
   }
 

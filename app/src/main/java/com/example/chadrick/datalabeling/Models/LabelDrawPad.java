@@ -388,9 +388,14 @@ public class LabelDrawPad {
     drawIV.eraseall();
   }
 
+
+  /**
+   * this will delete the selectedRect from the list
+   * and redraw canvas without that rect
+   */
   public void deleteSelectedRect() {
     // delete the selectedrect
-    // draw with transparent paint
+
     if (selectedRect == null) {
       return;
     }
@@ -405,15 +410,34 @@ public class LabelDrawPad {
     // nullify the selectedrect variable
     selectedRect = null;
 
-    // clear the rectIV, and redraw all rects in rectarray
-    rectBitmap.eraseColor(Color.TRANSPARENT);
-    for (Rect rect : rectArrayList) {
-      rectIV.drawUnselectedRect(rect);
-    }
+//    // clear the rectIV, and redraw all rects in rectarray
+//    rectBitmap.eraseColor(Color.TRANSPARENT);
+//    for (Rect rect : rectArrayList) {
+//      rectIV.drawUnselectedRect(rect);
+//    }
+
+    redrawrects();
 
     // updatelabelfile
     saveLabelFile();
 
+  }
+
+  /**
+   * this method literally sets the selectedRect to null
+   */
+  public void removeSelectedRect(){
+    this.selectedRect = null;
+  }
+
+  /**
+   * this method will redraw the rects with unselected color
+   */
+  public void redrawrects(){
+    rectBitmap.eraseColor(Color.TRANSPARENT);
+    for (Rect rect : rectArrayList) {
+      rectIV.drawUnselectedRect(rect);
+    }
   }
 
   /***
@@ -469,6 +493,8 @@ public class LabelDrawPad {
     public LabelDrawPad build() {
       return new LabelDrawPad(this);
     }
+
+
 
   }
 

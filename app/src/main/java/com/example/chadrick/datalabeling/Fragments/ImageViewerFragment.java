@@ -214,6 +214,17 @@ public class ImageViewerFragment extends Fragment {
     customviewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       @Override
       public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        Log.d(TAG, "onPageScrolled: from position"+position);
+
+        //make sure that delete button is invisible
+        deletebtn.setVisibility(View.INVISIBLE);
+
+        // and deselect any selected rects
+        LabelDrawPad labelDrawPad = adapter.getLabelDrawPad(position);
+        labelDrawPad.removeSelectedRect();
+
+        // redraw the rects
+        labelDrawPad.redrawrects();
 
       }
 

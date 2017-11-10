@@ -102,6 +102,12 @@ public class DSAdapter extends RecyclerView.Adapter<DSAdapter.DSViewHolder> {
         if (targetdir.exists() || !testzipfile.exists()) {
           // see if there are any .png files
           File[] files = targetdir.listFiles();
+          
+          if(files==null){
+            Toast.makeText(mContext,"download first",Toast.LENGTH_SHORT).show();
+            return;
+          }
+          
           for (File listitem : files) {
             String pathstr = listitem.toString();
             String extension = pathstr.substring(pathstr.lastIndexOf(".") + 1, pathstr.length());

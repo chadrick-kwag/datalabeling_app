@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.chadrick.datalabeling.Callback;
 import com.example.chadrick.datalabeling.CallbackWithRect;
@@ -40,6 +41,7 @@ public class ImageViewerFragment extends Fragment {
 
   private CustomViewPager customviewPager;
   private Button drawButton, yesbtn, nobtn, deletebtn;
+  private TextView pageNumberTV;
 
 
   private DataSet dataSet;
@@ -52,6 +54,7 @@ public class ImageViewerFragment extends Fragment {
 
   private int viewpager_currentposition;
   private Rect receivedRect;
+  private int totalImageNumber =0;
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,6 +63,8 @@ public class ImageViewerFragment extends Fragment {
 
     View root = inflater.inflate(R.layout.imageviewerfrag_layout, container, false);
     customviewPager = (CustomViewPager) root.findViewById(R.id.customviewpager);
+
+    pageNumberTV = (TextView) root.findViewById(R.id.pagenumber);
 
     drawButton = (Button) root.findViewById(R.id.drawbtn);
     drawButton.setOnTouchListener(new View.OnTouchListener() {
@@ -192,6 +197,8 @@ public class ImageViewerFragment extends Fragment {
       return root;
     }
 
+    totalImageNumber = imagefiles.size();
+
     // sort the list alphabetically
     Collections.sort(imagefiles);
 
@@ -233,6 +240,8 @@ public class ImageViewerFragment extends Fragment {
         // update the page position
 
         viewpager_currentposition = position;
+        updatePageNumberText(position);
+
 
       }
 
@@ -243,6 +252,10 @@ public class ImageViewerFragment extends Fragment {
     });
 
     customviewPager.setAdapter(adapter);
+    customviewPager.setCurrentItem(0);
+    updatePageNumberText(0);
+
+
 
     RectReadycallback = new CallbackWithRect() {
       @Override
@@ -309,5 +322,10 @@ public class ImageViewerFragment extends Fragment {
 
   private void hideDeleteBtn(){
     deletebtn.setVisibility(View.INVISIBLE);
+  }
+
+  private void updatePageNumberText(int currentpageindex){
+    String newstring = new String(Integer.toString(currentpageindex+1)+"/"+Integer.toString(totalImageNumber));
+    pageNumberTV.setText(newstring);
   }
 }

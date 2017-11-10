@@ -15,4 +15,6 @@
   <color name="uploadarea_default_color">#dd5018</color>
   <color name="uploadarea_pressed_color">#f7895d</color>
 
+  <color name="pageNumberBackgroundColor">#afafaf</color>
+
 </resources>

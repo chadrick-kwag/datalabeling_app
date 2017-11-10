@@ -20,6 +20,7 @@ import com.example.chadrick.datalabeling.Models.PageInfoSet;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 /**
  * Created by chadrick on 17. 10. 12.
@@ -33,6 +34,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
   private Callback drawBtnpressedcallback;
   private Runnable rectSelectedCallback;
   private Runnable hideDeleteBtnCallback;
+
 
   private CallbackWithRect callback2;
   private Canvas canvas;
@@ -162,5 +164,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
   public void passHideDeleteBtnCallback(Runnable hideDeleteBtnCallback){
     this.hideDeleteBtnCallback = hideDeleteBtnCallback;
   }
+
+
 
 }

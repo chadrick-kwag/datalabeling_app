@@ -99,6 +99,10 @@ public class DatasetSelectFragment extends Fragment {
     menulist.setOnItemClickListener((parent,view, position,id)->{
       String itemtext = (String) parent.getItemAtPosition(position);
       Log.d(TAG, "onCreateView: "+itemtext+" is selected");
+      if(itemtext.equals("Settings")){
+        SettingsFragment fragment = new SettingsFragment();
+        getFragmentManager().beginTransaction().add(R.id.dataselect_fragmentcontainer, fragment).commit();
+      }
 
     });
 

@@ -11,6 +11,7 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
         .requestIdToken(getString(R.string.server_client_id))
+        .requestProfile()
         .build();
 
     googleApiClient = new GoogleApiClient.Builder(this)
@@ -88,10 +90,7 @@ public class MainActivity extends AppCompatActivity {
           @Override
           public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
             Log.d(TAG, "googleapiclient onconnectionfailed" + connectionResult);
-            SignInFragment fragment = new SignInFragment();
-
-
-            fragmentManager.beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
+            gotoSignInFragment();
           }
         })
         .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
@@ -208,7 +207,10 @@ public class MainActivity extends AppCompatActivity {
       Log.d(TAG, "googlesigninresult is success");
 
       Log.d(TAG, "idtoken=" + result.getSignInAccount().getIdToken());
-      authwithserver(result.getSignInAccount().getIdToken());
+      Log.d(TAG, "checksigninresult: photourl="+result.getSignInAccount().getPhotoUrl());
+      Log.d(TAG, "checksigninresult: display name"+result.getSignInAccount().getDisplayName());
+
+      authwithserver(result);
     } else {
       Log.d(TAG, "googlesigninresult failed");
       Log.d(TAG, "fail detail: " + result.getStatus().getStatusMessage());
@@ -224,8 +226,7 @@ public class MainActivity extends AppCompatActivity {
         // the below should be the right thing to do,
         // but due to different dev machine, we will directly skip to dataseletfragment.
         // go to sign in fragment
-        Fragment fragment = new SignInFragment();
-        fragmentManager.beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
+        gotoSignInFragment();
       }
       else{
         Log.d(TAG, "checksigninresult: some weird signin case");
@@ -235,11 +236,14 @@ public class MainActivity extends AppCompatActivity {
     }
   }
 
-  private void authwithserver(String idtoken) {
+  private void authwithserver(GoogleSignInResult signInResult) {
 
     // send token to server
     String url = baseurl + "/tokensignin";
     JSONObject bodyjson = new JSONObject();
+
+
+    String idtoken = signInResult.getSignInAccount().getIdToken();
 
     try {
       bodyjson.put("idToken", idtoken);
@@ -260,9 +264,11 @@ public class MainActivity extends AppCompatActivity {
           try {
             if (resjson.getBoolean("userverified")) {
               // if true, then we can move on to dataselectfragment
-              gotoDataSelectFragment();
+
+              gotoDataSelectFragment(signInResult.getSignInAccount().getDisplayName(),signInResult.getSignInAccount().getPhotoUrl());
             } else {
               Log.d(TAG, "user not verified by server. go to sign in page");
+              gotoSignInFragment();
             }
           } catch (JSONException e) {
             e.printStackTrace();
@@ -284,8 +290,17 @@ public class MainActivity extends AppCompatActivity {
   }
 
 
-  private void gotoDataSelectFragment() {
+  private void gotoDataSelectFragment(String displayname, Uri photourl) {
     DatasetSelectFragment fragment = new DatasetSelectFragment();
+    Bundle passData = new Bundle();
+    passData.putString("displayname",displayname);
+    passData.putString("photourl",photourl.toString());
+    fragment.setArguments(passData);
+    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
+  }
+
+  private void gotoSignInFragment(){
+    SignInFragment fragment = new SignInFragment();
     getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
   }
 

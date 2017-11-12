@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/drawer_layout"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
 
   <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
-    >
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:background="@android:color/white"
+  >
 
     <android.support.v4.widget.SwipeRefreshLayout
-      android:id="@+id/swiperefreshlayout"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_marginLeft="10dp"
-      android:layout_marginRight="10dp"
-      android:background="@color/colorAccent"
-      >
-      <android.support.v7.widget.RecyclerView
-        android:id="@+id/dslistrv"
+        android:id="@+id/swiperefreshlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@color/colorAccent"
+    >
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/dslistrv"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:layout_marginTop="30dp"
+          android:layout_alignParentTop="true"
+          android:layout_centerHorizontal="true"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 
@@ -34,27 +34,47 @@
 
 
   <android.support.design.widget.NavigationView
-    android:id="@+id/navigation"
-    android:layout_width=
-      "150dp"
-    android:layout_height="match_parent"
-    android:layout_gravity="start"
+      android:id="@+id/navigation"
+      android:layout_width="150dp"
+      android:layout_height="match_parent"
+      android:layout_gravity="start"
+  >
+    <LinearLayout android:layout_width="250dp"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+
     >
 
-    <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="150dp"
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="150dp"
+          android:background="@android:color/white"
+          android:gravity="center_vertical"
+          android:orientation="horizontal"
       >
 
+        <ImageView android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:id="@+id/profile_icon"
+                   android:layout_marginLeft="5dp"
+        />
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="20dp"
+                  android:id="@+id/profile_name"
+                  android:textSize="15dp"
+                  android:layout_marginLeft="5dp"
+        />
+      </LinearLayout>
 
-    </RelativeLayout>
 
-
-    <ListView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:id="@+id/menulist"
+      <ListView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/menulist"
       />
+
+    </LinearLayout>
+
 
   </android.support.design.widget.NavigationView>
 

@@ -2,53 +2,56 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-  signingConfigs {
-    develop {
-      keyAlias 'develop'
-      keyPassword 'develop'
-      storeFile file('../keystore/develop.keystore')
-      storePassword 'develop'
+    signingConfigs {
+        develop {
+            keyAlias 'develop'
+            keyPassword 'develop'
+            storeFile file('../keystore/develop.keystore')
+            storePassword 'develop'
+        }
     }
-  }
-  compileSdkVersion 26
-  buildToolsVersion "26.0.2"
-  defaultConfig {
-    applicationId "com.example.chadrick.datalabeling"
-    minSdkVersion 24
-    targetSdkVersion 26
-    versionCode 1
-    versionName "1.0"
-    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.2"
+    defaultConfig {
+        applicationId "com.example.chadrick.datalabeling"
+        minSdkVersion 24
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
 
-    android.compileOptions.sourceCompatibility 1.8
-    android.compileOptions.targetCompatibility 1.8
-  }
-  buildTypes {
-    release {
-      minifyEnabled false
-      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        android.compileOptions.sourceCompatibility 1.8
+        android.compileOptions.targetCompatibility 1.8
     }
-    develop {
-      debuggable true
-      signingConfig signingConfigs.develop
-      minifyEnabled false
-      zipAlignEnabled true
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        develop {
+            debuggable true
+            signingConfig signingConfigs.develop
+            minifyEnabled false
+            zipAlignEnabled true
+        }
     }
-  }
 }
 
 dependencies {
-  compile fileTree(include: ['*.jar'], dir: 'libs')
-  androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-    exclude group: 'com.android.support', module: 'support-annotations'
-  })
-  compile 'com.android.support:appcompat-v7:26.+'
-  compile 'com.android.support.constraint:constraint-layout:1.0.2'
-  compile 'com.android.volley:volley:1.0.0'
-  testCompile 'junit:junit:4.12'
-  compile 'com.android.support:recyclerview-v7:26.+'
-  compile 'com.mikhaellopez:circularprogressbar:1.1.1'
-  compile 'com.google.android.gms:play-services-auth:9.0.0'
-  compile 'com.google.firebase:firebase-auth:9.0.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    implementation 'com.android.support:appcompat-v7:26.+'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.volley:volley:1.0.0'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:recyclerview-v7:26.+'
+    implementation 'com.mikhaellopez:circularprogressbar:1.1.1'
+    implementation 'com.google.android.gms:play-services-auth:9.0.0'
+    implementation 'com.google.firebase:firebase-auth:9.0.0'
+    implementation 'com.android.support:design:26.1.0'
+
+
 }

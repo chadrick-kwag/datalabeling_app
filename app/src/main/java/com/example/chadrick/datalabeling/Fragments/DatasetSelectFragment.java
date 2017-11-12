@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -39,6 +41,7 @@ public class DatasetSelectFragment extends Fragment {
   private RequestQueue queue;
   private List<DataSet> dslist;
   private SwipeRefreshLayout swipeRefreshLayout;
+  private ListView menulist;
 
   @Override
   public void onCreate(Bundle savedinstance) {
@@ -73,6 +76,12 @@ public class DatasetSelectFragment extends Fragment {
         populateRecyclerView(true);
       }
     });
+
+    menulist = (ListView) v.findViewById(R.id.menulist);
+    ArrayList<String> menuitems = new ArrayList<String>();
+    menuitems.add("Main");
+    menuitems.add("Settings");
+    menulist.setAdapter(new ArrayAdapter<String>(getContext(),R.layout.menulist_item_layout,menuitems));
 
     Log.d(TAG, "oncreateview end");
 

@@ -201,6 +201,7 @@ public class DatasetSelectFragment extends Fragment {
 
           //
           if (calledfromRefresh) {
+
             swipeRefreshLayout.setRefreshing(false);
           }
 

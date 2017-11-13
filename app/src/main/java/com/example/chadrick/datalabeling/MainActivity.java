@@ -33,6 +33,7 @@ import com.example.chadrick.datalabeling.Fragments.MainPortalFragment;
 import com.example.chadrick.datalabeling.Fragments.NoInternetFragment;
 import com.example.chadrick.datalabeling.Fragments.SignInFragment;
 import com.example.chadrick.datalabeling.Fragments.SplashScreenFragment;
+import com.example.chadrick.datalabeling.Fragments.StartErrorFragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
       handler.postDelayed(new Runnable() {
         @Override
         public void run() {
-//          checkinternetandAction();
-          Log.d(TAG, "end of handler delayed run");
+
+          initsequence();
         }
       }, 500);
     } else {
@@ -105,22 +106,10 @@ public class MainActivity extends AppCompatActivity {
   @Override
   public void onStart() {
     super.onStart();
-    googleApiClient.connect();
-    OptionalPendingResult<GoogleSignInResult> pendingResult = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
-    if (pendingResult.isDone()) {
-      Log.d(TAG, "immediate result available");
-      GoogleSignInResult googleSignInResult = pendingResult.get();
-      checksigninresult(googleSignInResult);
-    } else {
-      Log.d(TAG, "no immediate result available");
-      pendingResult.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-        @Override
-        public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
-          Log.d(TAG, "pending result onresult callback");
-          checksigninresult(googleSignInResult);
-        }
-      });
+    if (firstentry == false) {
+      initsequence();
     }
+
   }
 
   public RequestQueue getQueue() {
@@ -201,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
         (VolleyError error) -> {
           error.printStackTrace();
           Log.d(TAG, "error response");
+          gotoStartErrorFragment("Can't communicate with server");
+
         }
     );
     getQueue().add(jsonRequest);
@@ -221,7 +212,35 @@ public class MainActivity extends AppCompatActivity {
     getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
   }
 
-  private void initsequence(){
+  public void initsequence() {
+    googleApiClient.connect();
+    OptionalPendingResult<GoogleSignInResult> pendingResult = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
+    if (pendingResult.isDone()) {
+      Log.d(TAG, "immediate result available");
+      GoogleSignInResult googleSignInResult = pendingResult.get();
+      checksigninresult(googleSignInResult);
+    } else {
+      Log.d(TAG, "no immediate result available");
+      pendingResult.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+        @Override
+        public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
+          Log.d(TAG, "pending result onresult callback");
+          checksigninresult(googleSignInResult);
+        }
+      });
+    }
 
   }
+
+  private void gotoStartErrorFragment(String msg){
+    StartErrorFragment fragment = new StartErrorFragment();
+    Bundle data = new Bundle();
+    data.putString("msg",msg);
+
+
+    fragment.setArguments(data);
+    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
+
+  }
+
 }

@@ -59,15 +59,19 @@ class MainPortalFragment : Fragment() {
             val itemtext = parent.getItemAtPosition(position)
             Log.d("kotlin", "itemtext=" + itemtext)
             if (itemtext.equals("Settings")) {
-                fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, SettingsFragment.newInstance()).commit()
+                fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer,
+                        SettingsFragment.newInstance()).commit()
 
             } else if (itemtext.equals("Main")) {
+                Log.d("chadrick","creating dataselect from navigationbar")
                 val frag = DatasetSelectFragment()
-                fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag).commit()
+                fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer,
+                        frag).commit()
             }
         })
 
         // show dataset select fragment as the default
+        Log.d("chadrick","creating dataselectfragment")
         val frag = DatasetSelectFragment()
         fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag).commit()
 

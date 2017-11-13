@@ -71,8 +71,8 @@ public class DatasetSelectFragment extends Fragment {
                            Bundle savedInstanceState) {
     Log.d(TAG, "oncreateview start");
 
-    username = getArguments().getString("displayname");
-    photourl = getArguments().getString("photourl");
+//    username = getArguments().getString("displayname");
+//    photourl = getArguments().getString("photourl");
 
     View v = inflater.inflate(R.layout.datasetselectfragment_layout, container, false);
     // Inflate the layout for this fragment
@@ -91,45 +91,48 @@ public class DatasetSelectFragment extends Fragment {
       }
     });
 
-    menulist = (ListView) v.findViewById(R.id.menulist);
-    ArrayList<String> menuitems = new ArrayList<String>();
-    menuitems.add("Main");
-    menuitems.add("Settings");
-    menulist.setAdapter(new ArrayAdapter<String>(getContext(),R.layout.menulist_item_layout,menuitems));
-    menulist.setOnItemClickListener((parent,view, position,id)->{
-      String itemtext = (String) parent.getItemAtPosition(position);
-      Log.d(TAG, "onCreateView: "+itemtext+" is selected");
-      if(itemtext.equals("Settings")){
-        SettingsFragment fragment = new SettingsFragment();
-        getFragmentManager().beginTransaction().add(R.id.dataselect_fragmentcontainer, fragment).commit();
-      }
-
-    });
-
-    profilename = (TextView) v.findViewById(R.id.profile_name);
-    profileicon = (ImageView) v.findViewById(R.id.profile_icon);
-
-    profilename.setText(username);
-
-    ImageRequest imageRequest = new ImageRequest(
-        photourl,
-        (Bitmap bitmap)->{
-          profileicon.setImageBitmap(bitmap);
-
-        },
-        0,
-        0,
-        ImageView.ScaleType.CENTER_CROP,
-        Bitmap.Config.RGB_565,
-        (err)->{
-          err.toString();
-          Log.d(TAG, "onCreateView: error while fetching profile image");
-        }
-    );
-
-    RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-    requestQueue.add(imageRequest);
-    Log.d(TAG, "onCreateView: imagerequest added");
+//    menulist = (ListView) v.findViewById(R.id.menulist);
+//    ArrayList<String> menuitems = new ArrayList<String>();
+//    menuitems.add("Main");
+//    menuitems.add("Settings");
+//    menulist.setAdapter(new ArrayAdapter<String>(getContext(),R.layout.menulist_item_layout,menuitems));
+//    menulist.setOnItemClickListener((parent,view, position,id)->{
+//      String itemtext = (String) parent.getItemAtPosition(position);
+//      Log.d(TAG, "onCreateView: "+itemtext+" is selected");
+//      if(itemtext.equals("Settings")){
+//        SettingsFragment fragment = new SettingsFragment();
+//        getFragmentManager().beginTransaction().add(R.id.dataselect_fragmentcontainer, fragment).commit();
+//      }
+//      else if(itemtext.equals("Main")){
+//
+//      }
+//
+//    });
+//
+//    profilename = (TextView) v.findViewById(R.id.profile_name);
+//    profileicon = (ImageView) v.findViewById(R.id.profile_icon);
+//
+//    profilename.setText(username);
+//
+//    ImageRequest imageRequest = new ImageRequest(
+//        photourl,
+//        (Bitmap bitmap)->{
+//          profileicon.setImageBitmap(bitmap);
+//
+//        },
+//        0,
+//        0,
+//        ImageView.ScaleType.CENTER_CROP,
+//        Bitmap.Config.RGB_565,
+//        (err)->{
+//          err.toString();
+//          Log.d(TAG, "onCreateView: error while fetching profile image");
+//        }
+//    );
+//
+//    RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+//    requestQueue.add(imageRequest);
+//    Log.d(TAG, "onCreateView: imagerequest added");
 
 
 

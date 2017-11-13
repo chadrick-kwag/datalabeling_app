@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+               android:layout_width="match_parent"
+               android:layout_height="match_parent"
+               android:background="@android:color/white"
+               android:id="@+id/mainportal_fragmentcontainer"
+  >
+
+  </FrameLayout>
+
+
+  <android.support.design.widget.NavigationView
+      android:id="@+id/navigation"
+      android:layout_width="150dp"
+      android:layout_height="match_parent"
+      android:layout_gravity="start"
+  >
+    <LinearLayout android:layout_width="250dp"
+                  android:layout_height="match_parent"
+                  android:orientation="vertical"
+
+    >
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="150dp"
+          android:background="@android:color/white"
+          android:gravity="center_vertical"
+          android:orientation="horizontal"
+      >
+
+        <ImageView android:layout_width="30dp"
+                   android:layout_height="30dp"
+                   android:id="@+id/profile_icon"
+                   android:layout_marginLeft="5dp"
+        />
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="20dp"
+                  android:id="@+id/profile_name"
+                  android:textSize="15dp"
+                  android:layout_marginLeft="5dp"
+        />
+      </LinearLayout>
+
+
+      <ListView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/menulist"
+      />
+
+    </LinearLayout>
+
+
+  </android.support.design.widget.NavigationView>
+
+
+
+</android.support.v4.widget.DrawerLayout>

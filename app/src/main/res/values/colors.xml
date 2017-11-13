@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+  <color name="colorPrimary">#3F51B5</color>
+  <color name="colorPrimaryDark">#303F9F</color>
+  <color name="colorAccent">#FF4081</color>
   <color name="buttonpressedcolor">#595959</color>
   <color name="buttonreleasedcolor">#afafaf</color>
 
@@ -16,5 +16,8 @@
   <color name="uploadarea_pressed_color">#f7895d</color>
 
   <color name="pageNumberBackgroundColor">#afafaf</color>
+
+  <color name="splashscreenbackgroundcolor">#25354f</color>
+  <color name="splashtextcolor">#ffffff</color>
 
 </resources>

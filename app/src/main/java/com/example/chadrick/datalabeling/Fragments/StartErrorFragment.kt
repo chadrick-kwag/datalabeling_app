@@ -6,30 +6,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.chadrick.datalabeling.R
-import kotlinx.android.synthetic.main.settings_layout.*
+import kotlinx.android.synthetic.main.starterrorfragment_layout.*
 
 /**
  * Created by chadrick on 17. 11. 13.
  */
 
-class SettingsFragment : Fragment() {
+class StartErrorFragment : Fragment(){
 
     companion object {
-        fun newInstance(): SettingsFragment {
-            return SettingsFragment()
+        fun newInstance() : StartErrorFragment {
+            return StartErrorFragment()
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater?.inflate(R.layout.settings_layout, container, false)
-
+        return inflater?.inflate(R.layout.starterrorfragment_layout,container,false)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        test1.setText("added now")
+        val errmsg = arguments.getString("msg")
+        errormessage.setText(errmsg)
+
+
     }
-
-
-
 }

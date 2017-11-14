@@ -62,7 +62,7 @@ public class DatasetSelectFragment extends Fragment {
     dslist = new ArrayList<>();
     mDSAdapter = new DSAdapter(getContext(), dslist);
 
-    Log.d(TAG, "oncreate finished");
+    Log.d(TAG, "fuck: dataselect fragment created");
 
   }
 

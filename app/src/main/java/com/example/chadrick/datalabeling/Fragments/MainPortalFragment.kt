@@ -3,6 +3,7 @@ package com.example.chadrick.datalabeling.Fragments
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.Settings
+import android.support.transition.Slide
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -31,6 +32,7 @@ class MainPortalFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Log.d("fuck", "creatview of mainPortalFragment")
         return inflater?.inflate(R.layout.mainportalfragment_layout, container, false)
     }
 
@@ -61,19 +63,35 @@ class MainPortalFragment : Fragment() {
             val itemtext = parent.getItemAtPosition(position)
             Log.d("kotlin", "itemtext=" + itemtext)
             if (itemtext.equals("Settings")) {
-                fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer,
-                        SettingsFragment.newInstance()).commit()
+
+                if (fragmentManager.findFragmentByTag("settings") != null) {
+
+                } else {
+                    fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
+                            SettingsFragment.newInstance(), "settings").commit()
+                }
+
 
             } else if (itemtext.equals("Main")) {
-                val frag = DatasetSelectFragment()
-                fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer,
-                        frag).commit()
+
+                if (fragmentManager.findFragmentByTag("main") != null) {
+
+                } else {
+                    val frag = DatasetSelectFragment()
+                    fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
+                            frag, "main").commit()
+                }
+
+
             }
+
+            drawer_layout.closeDrawers()
+
         })
 
         // show dataset select fragment as the default
         val frag = DatasetSelectFragment()
-        fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag).commit()
+        fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "main").commit()
 
     }
 

@@ -1,27 +1,14 @@
 package com.example.chadrick.datalabeling;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -34,7 +21,14 @@ import com.example.chadrick.datalabeling.Fragments.NoInternetFragment;
 import com.example.chadrick.datalabeling.Fragments.SignInFragment;
 import com.example.chadrick.datalabeling.Fragments.SplashScreenFragment;
 import com.example.chadrick.datalabeling.Fragments.StartErrorFragment;
-
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
         })
         .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
         .build();
+
+
     final Handler handler = new Handler();
     if (firstentry) {
       firstentry = false;
@@ -196,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void gotoMainPortalFragment(String displayname, Uri photourl) {
+    Log.d(TAG,"fuck: gotoMainPortal from MainActivity");
     MainPortalFragment fragment = new MainPortalFragment();
     Bundle passData = new Bundle();
     passData.putString("displayname", displayname);
@@ -238,6 +235,10 @@ public class MainActivity extends AppCompatActivity {
     fragment.setArguments(data);
     getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
 
+  }
+
+  public GoogleApiClient getGoogleApiClient(){
+    return this.googleApiClient;
   }
 
 }

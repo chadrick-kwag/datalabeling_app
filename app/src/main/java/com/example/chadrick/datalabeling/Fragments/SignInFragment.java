@@ -77,6 +77,7 @@ public class SignInFragment extends Fragment {
         Log.d(TAG, "sign in account =" + acct.getDisplayName());
 
         // if we succeed, then move on to dataselect
+        Log.d(TAG, "fuck: calling dsSelectFrag from SigninFragment");
         getFragmentManager().beginTransaction()
             .add(R.id.fragmentcontainer, new DatasetSelectFragment()).commit();
 

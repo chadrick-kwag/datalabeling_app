@@ -13,5 +13,14 @@
             android:layout_marginLeft="30dp"
 
   />
+  <Button
+    android:id="@+id/signoutbtn"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="98dp"
+    android:layout_marginStart="101dp"
+    android:layout_below="@+id/test1"
+    android:layout_toEndOf="@+id/test1"
+    android:text="sign out"/>
 
 </RelativeLayout>

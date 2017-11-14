@@ -106,10 +106,6 @@ public class MainActivity extends AppCompatActivity {
   @Override
   public void onStart() {
     super.onStart();
-    if (firstentry == false) {
-      initsequence();
-    }
-
   }
 
   public RequestQueue getQueue() {
@@ -177,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
           try {
             if (resjson.getBoolean("userverified")) {
               // if true, then we can move on to dataselectfragment
+              Log.d(TAG, "fuck: goto mainportal from MainActivity authwithserver");
               gotoMainPortalFragment(signInResult.getSignInAccount().getDisplayName(), signInResult.getSignInAccount().getPhotoUrl());
             } else {
               Log.d(TAG, "user not verified by server. go to sign in page");

@@ -35,6 +35,8 @@ class MainPortalFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+
+
         photourl = arguments.getString("photourl")
         username = arguments.getString("displayname")
 
@@ -63,7 +65,6 @@ class MainPortalFragment : Fragment() {
                         SettingsFragment.newInstance()).commit()
 
             } else if (itemtext.equals("Main")) {
-                Log.d("chadrick","creating dataselect from navigationbar")
                 val frag = DatasetSelectFragment()
                 fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer,
                         frag).commit()
@@ -71,7 +72,6 @@ class MainPortalFragment : Fragment() {
         })
 
         // show dataset select fragment as the default
-        Log.d("chadrick","creating dataselectfragment")
         val frag = DatasetSelectFragment()
         fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag).commit()
 

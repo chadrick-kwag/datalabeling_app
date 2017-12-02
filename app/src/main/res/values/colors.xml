@@ -21,5 +21,6 @@
   <color name="splashtextcolor">#ffffff</color>
 
   <color name="SigninNoticeTextColor">#ffffff</color>
+  <color name="white">#ffffff</color>
 
 </resources>

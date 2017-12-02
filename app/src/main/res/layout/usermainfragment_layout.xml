@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/white"
+  android:orientation="vertical"
+  android:padding="@dimen/usermain_container_padding"
+  >
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Recent Activity"
+    android:textSize="@dimen/usermain_categoryfontsize"
+    />
+
+  <android.support.v7.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/usermain_thumb_square_size"
+    android:id="@+id/RArecyclerview"
+    android:orientation="horizontal"
+    >
+
+  </android.support.v7.widget.RecyclerView>
+
+  <TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="All Datasets"
+    android:textSize="@dimen/usermain_categoryfontsize"
+    />
+
+  <android.support.v7.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/AllDSrecyclerview"
+    android:orientation="horizontal"
+    >
+
+  </android.support.v7.widget.RecyclerView>
+
+
+
+</LinearLayout>

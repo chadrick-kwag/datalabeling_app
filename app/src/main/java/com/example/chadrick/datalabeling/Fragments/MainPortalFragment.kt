@@ -77,7 +77,8 @@ class MainPortalFragment : Fragment() {
                 if (fragmentManager.findFragmentByTag("main") != null) {
 
                 } else {
-                    val frag = DatasetSelectFragment()
+//                    val frag = DatasetSelectFragment()
+                    val frag = UserMainFragment.instance
                     fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
                             frag, "main").commit()
                 }
@@ -90,7 +91,8 @@ class MainPortalFragment : Fragment() {
         })
 
         // show dataset select fragment as the default
-        val frag = DatasetSelectFragment()
+//        val frag = DatasetSelectFragment()
+        val frag = UserMainFragment.instance
         fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "main").commit()
 
     }

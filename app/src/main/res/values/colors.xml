@@ -20,4 +20,6 @@
   <color name="splashscreenbackgroundcolor">#25354f</color>
   <color name="splashtextcolor">#ffffff</color>
 
+  <color name="SigninNoticeTextColor">#ffffff</color>
+
 </resources>

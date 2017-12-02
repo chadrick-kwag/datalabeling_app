@@ -12,11 +12,34 @@
       <!--android:layout_width="wrap_content"-->
       <!--android:layout_height="wrap_content"-->
   <!--/>-->
+  <RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
 
-  <Button android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:text="sign in button"
-          android:id="@+id/sign_in_button"
-  />
+    >
+
+    <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text = "@string/signinText"
+      android:id="@+id/noticeText"
+      android:layout_centerHorizontal="true"
+      android:textColor="@color/SigninNoticeTextColor"
+      android:textAlignment="center"
+      android:textSize="@dimen/SigninNoticeTextSize"
+      />
+
+    <Button android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="Sign In"
+      android:id="@+id/sign_in_button"
+      android:layout_below="@id/noticeText"
+      android:layout_centerHorizontal="true"
+      android:layout_marginTop="10px"
+      />
+
+
+  </RelativeLayout>                 
+
 
 </RelativeLayout>

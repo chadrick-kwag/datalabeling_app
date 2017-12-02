@@ -114,10 +114,14 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
       // instead of the file
       if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
         Log.d(TAG, "download attempt fail. " + connection.getResponseMessage());
-        return "Server returned HTTP " + connection.getResponseCode()
+        return "Error: Server returned HTTP " + connection.getResponseCode()
             + " " + connection.getResponseMessage();
 
       }
+
+      Log.d(TAG, "doInBackground: responsecode = "+connection.getResponseCode());
+      Log.d(TAG, "doInBackground: responsemsg = "+connection.getResponseMessage());
+
 
       // this will be useful to display download percentage
       // might be -1: server did not report the length
@@ -166,7 +170,8 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
     }
     Log.d(TAG, "download finished. file: " + outputpath.toString());
 
-    return null;
+    String returnstr = new String("success");
+    return returnstr;
   }
 
   @Override
@@ -180,6 +185,16 @@ public class DownloadTask extends AsyncTask<String, Integer, String> {
   @Override
   protected void onPostExecute(String url) {
     Log.d(TAG, "inside postexecute");
+
+    if(url.contains("Error")){
+      Log.d(TAG, "onPostExecute: error: "+url);
+      Toast.makeText(mContext,"download failed",Toast.LENGTH_SHORT).show();
+
+      mholder.downloadpgb.setVisibility(View.INVISIBLE);
+      mholder.downloadpgb.setProgress(0);
+      return;
+    }
+
     Toast.makeText(mContext, "download finished", Toast.LENGTH_SHORT).show();
     // need to change the store icon
     mholder.downloadpgb.setVisibility(View.INVISIBLE);

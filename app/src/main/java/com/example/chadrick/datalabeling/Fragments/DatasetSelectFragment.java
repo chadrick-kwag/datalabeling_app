@@ -17,8 +17,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Request.Method;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.chadrick.datalabeling.DSAdapter;
@@ -103,22 +106,28 @@ public class DatasetSelectFragment extends Fragment {
     dslist.clear();
 
     JSONObject jsonObject = new JSONObject();
+    JSONArray jsonRequestArray = new JSONArray();
     try {
       jsonObject.put("ds_request_id", "anything");
+      jsonRequestArray.put(jsonObject);
     } catch (JSONException e) {
       e.printStackTrace();
     }
 
-    JsonObjectRequest jsonRequest = new JsonObjectRequest(baseurl + "/dslist",
-        jsonObject,
-        (JSONObject response) -> {
+
+
+    JsonArrayRequest jsonRequest = new JsonArrayRequest(Method.POST, baseurl + "/dslist",
+        jsonRequestArray,
+        (JSONArray response) -> {
           // parse the response and populate listview
 
           try {
-            JSONArray jsonArray = response.getJSONArray("dslist");
 
+
+//            JSONArray jsonArray = response.getJSONArray("result");
+              JSONArray jsonArray = response;
             for (int i = 0; i < jsonArray.length(); i++) {
-              Log.d(TAG, jsonArray.getJSONObject(i).get("name").toString());
+              Log.d(TAG, jsonArray.getJSONObject(i).get("title").toString());
               JSONObject object = jsonArray.getJSONObject(i);
 
               //check for storage
@@ -133,7 +142,7 @@ public class DatasetSelectFragment extends Fragment {
                 Log.d(TAG, filename + "not exists");
               }
 
-              DataSet ds = new DataSet(object.getInt("id"), object.getString("name"), direxist,
+              DataSet ds = new DataSet(object.getInt("id"), object.getString("title"), direxist,
                   getContext().getFilesDir().toString());
 
               dslist.add(ds);
@@ -153,7 +162,8 @@ public class DatasetSelectFragment extends Fragment {
           }
 
         }, (error) -> {
-      Log.d(TAG, "post failed to get dslist");
+      Log.d(TAG, "post failed to get dslist. error=");
+
       Toast.makeText(getContext(), "failed to fetch dslist", Toast.LENGTH_SHORT).show();
       if (calledfromRefresh) {
         swipeRefreshLayout.setRefreshing(false);

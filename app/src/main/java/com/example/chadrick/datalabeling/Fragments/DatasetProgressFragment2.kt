@@ -12,7 +12,9 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.JsonRequest
 import com.android.volley.toolbox.Volley
+import com.example.chadrick.datalabeling.DownloadTask
 import com.example.chadrick.datalabeling.Models.DataSet
+import com.example.chadrick.datalabeling.Models.DownloadTaskManager
 import com.example.chadrick.datalabeling.R
 import kotlinx.android.synthetic.main.datasetprogressfragment2_layout.*
 import org.json.JSONArray
@@ -25,15 +27,16 @@ import java.io.File
 
 class DatasetProgressFragment2 : Fragment() {
 
-//    private  ds : DataSet =  DataSet.deserialize(arguments.get("ds") as String)
-    private val ds : DataSet by lazy { DataSet.deserialize(arguments.get("ds") as String) }
-    private var bgcolor : Int =0
+    //    private  ds : DataSet =  DataSet.deserialize(arguments.get("ds") as String)
+    private val ds: DataSet by lazy { DataSet.deserialize(arguments.get("ds") as String) }
+    private var bgcolor: Int = 0
+    private val downloadTaskManger = DownloadTaskManager.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bgcolor = Color.parseColor(arguments.getString("bgcolor"))
-        Log.d("chadrick","bgcolor fetched at oncreate="+bgcolor)
+        Log.d("chadrick", "bgcolor fetched at oncreate=" + bgcolor)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,20 +47,30 @@ class DatasetProgressFragment2 : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         title_tv.text = ds.name
-        Log.d("chadrick","bgcolor="+bgcolor)
+        Log.d("chadrick", "bgcolor=" + bgcolor)
         thumbnail_holder.setBackgroundColor(bgcolor)
 
+        // attach click listener
+        download_constraintlayout.setOnClickListener({ view ->
+            // execute download task.
+            synchronized(downloadTaskManger){
+                if(!downloadTaskManger.isAlreadyRegistered(ds)){
+                    val downloadtask = DownloadTask(context,)
+                }
+            }
+
+        })
+
         fetchdescription()
-        if(checkAlreadyDownloaded()){
+        if (checkAlreadyDownloaded()) {
             // if already downloaded, goto statcheck
 
-        }
-        else{
+        } else {
             // if not downloaded, then show download button.
         }
     }
 
-    private fun fetchdescription(){
+    private fun fetchdescription() {
         // create post request
         val jsonreqobj = JSONObject()
         jsonreqobj.put("id", ds.id)
@@ -65,43 +78,42 @@ class DatasetProgressFragment2 : Fragment() {
         jsonreqobj.put("reqfield", jsonarray)
         val jsonreq = JsonObjectRequest(Request.Method.POST, UserMainFragment.baseurl + "/dsinfo",
                 jsonreqobj,
-                { response :JSONObject? ->
+                { response: JSONObject? ->
 
                     val isSuccess = response?.getBoolean("success") ?: false
 
-                    if (isSuccess){
+                    if (isSuccess) {
                         // is success if true
                         val desc = response?.getString("description")
                         description_tv.text = desc
-                    }
-                    else{
-                        Log.d("chadrick","received unsuccessful response from server")
+                    } else {
+                        Log.d("chadrick", "received unsuccessful response from server")
                         description_tv.text = "unsuccessful response"
                     }
 
                 },
                 { error: VolleyError? ->
-                    Log.d("chadrick","error occured while fetching description. err="+error.toString())
+                    Log.d("chadrick", "error occured while fetching description. err=" + error.toString())
                     description_tv.text = "failed to get description"
                 }
-                )
+        )
         val queue = Volley.newRequestQueue(context)
         queue.add(jsonreq)
     }
 
-    private fun checkAlreadyDownloaded(): Boolean{
+    private fun checkAlreadyDownloaded(): Boolean {
         // if the dir with ds id exists, then we assume that the directory is all set.
 
         // TODO: make the checking of downloaded_&installed more detailed
-        val dsworkdir = File( context.filesDir, ds.name )
+        val dsworkdir = File(context.filesDir, ds.name)
         return dsworkdir.exists()
     }
 
-    private fun showDownloadButton(){
+    private fun showDownloadButton() {
 
     }
 
-    private fun showUploadAndContButton(){
+    private fun showUploadAndContButton() {
 
     }
 }

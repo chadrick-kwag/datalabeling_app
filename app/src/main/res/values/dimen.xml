@@ -6,7 +6,7 @@
   <dimen name="dsprogressfrag_TitleTextSize">20sp</dimen>
 
   <dimen name="usermain_categoryfontsize">40sp</dimen>
-  <dimen name="dsprogressfrag2_downloadTextSize">20sp</dimen>
+  <dimen name="dsprogressfrag2_downloadTextSize">30sp</dimen>
 
   <dimen name="usermain_thumb_square_size">150dp</dimen>
   <dimen name="usermain_container_padding">10dp</dimen>

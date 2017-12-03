@@ -100,7 +100,7 @@ class dszipDownloadTask : AsyncTask<String, Integer, String>(){
     override fun onPostExecute(result: String?) {
 //        super.onPostExecute(result)
         if(result!!.contains("Error")){
-            
+            //TODO: should create callback method for error case, and successfull download case
         }
 
     }

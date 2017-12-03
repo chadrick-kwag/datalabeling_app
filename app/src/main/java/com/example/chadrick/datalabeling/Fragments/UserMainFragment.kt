@@ -26,7 +26,7 @@ import java.io.File
 class UserMainFragment : Fragment() {
 
 
-    private val baseurl = "http://13.124.175.119:4001"
+//    private val baseurl = "http://13.124.175.119:4001"
     private val serverFectchedDSlist: ArrayList<DataSet> = ArrayList<DataSet>()
     lateinit var allDSrecyclerviewAdapter: RAAdapter
 
@@ -35,6 +35,7 @@ class UserMainFragment : Fragment() {
     companion object {
 //        val instance : UserMainFragment by lazy { Holder.INSTANCE}
         val instance : UserMainFragment = Holder.INSTANCE
+        val baseurl = "http://13.124.175.119:4001"
     }
 
 

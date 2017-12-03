@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:background="@color/white"
+  >
+
+  <ImageView
+    android:id="@+id/thumbnail_holder"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintBottom_toBottomOf="@id/imagebottom_guideline"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    />
+
+  <android.support.constraint.Guideline
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/imagebottom_guideline"
+    android:orientation="horizontal"
+    app:layout_constraintGuide_percent="0.4"
+    />
+  <TextView
+    android:id="@+id/title_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="27dp"
+    android:text="TextView"
+    android:textSize="@dimen/dsprogressfrag_TitleTextSize"
+    app:layout_constraintBottom_toTopOf="@+id/imagebottom_guideline"
+    app:layout_constraintHorizontal_bias="0.5"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    tools:layout_editor_absoluteX="163dp"/>
+
+
+  <android.support.constraint.Guideline
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/buttonarea_top_guideline"
+    android:orientation="horizontal"
+    app:layout_constraintGuide_percent="0.8"
+    />
+
+  <android.support.constraint.Guideline
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/buttonarea_halfdivide_guideline"
+    android:orientation="vertical"
+    app:layout_constraintGuide_percent="0.5"
+    />
+
+  <TextView
+    android:id="@+id/description_tv"
+    android:layout_width="360dp"
+    android:layout_height="102dp"
+    android:layout_marginBottom="14dp"
+    app:layout_constraintBottom_toTopOf="@+id/buttonarea_top_guideline"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:layout_marginLeft="5dp"
+    android:layout_marginRight="5dp"
+    />
+  <TextView
+    android:id="@+id/complete_title_tv"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="70dp"
+    android:text="Complete"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/imagebottom_guideline"/>
+  <TextView
+    android:id="@+id/total_title_tv"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="78dp"
+    android:text="Total"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/imagebottom_guideline"
+
+    tools:layout_editor_absoluteY="249dp"/>
+  <TextView
+    android:id="@+id/complete_stat_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="24dp"
+    android:layout_marginTop="28dp"
+    android:layout_marginLeft="70dp"
+
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/complete_title_tv"/>
+  <TextView
+    android:id="@+id/total_stat_tv"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginTop="28dp"
+    android:layout_marginRight="70dp"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/total_title_tv"
+
+    />
+
+  <ImageView
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:id="@+id/continuebtn_background_iv"
+    app:layout_constraintTop_toBottomOf="@id/buttonarea_top_guideline"
+    app:layout_constraintLeft_toRightOf="@id/buttonarea_halfdivide_guideline"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:background="@drawable/continue_area_selector"
+
+    >
+  </ImageView>
+
+  <ImageView
+    android:id="@+id/continuebtn_icon_iv"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+
+    android:background="@drawable/ic_navigate_next_black_48dp"
+
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintDimensionRatio="1:1"
+    app:layout_constraintLeft_toRightOf="@id/buttonarea_halfdivide_guideline"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/buttonarea_top_guideline"/>
+
+
+  <android.support.constraint.ConstraintLayout
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:id="@+id/download_constraintlayout"
+    android:background="@drawable/download_icon_selector"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/buttonarea_top_guideline"
+    app:layout_constraintBottom_toBottomOf="parent"
+    >
+
+    <ImageView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:background="@drawable/ic_file_download_black_24dp"
+      android:layout_marginTop="5dp"
+      android:layout_marginBottom="5dp"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintHorizontal_bias="0.3"
+      android:id="@+id/download_icon_iv"
+
+      />
+    <TextView
+      android:layout_width="0dp"
+      android:layout_height="0dp"
+      android:text= "download"
+      android:layout_marginLeft="10dp"
+      android:textSize="@dimen/dsprogressfrag2_downloadTextSize"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintLeft_toRightOf="@id/download_icon_iv"
+
+      />
+  </android.support.constraint.ConstraintLayout>
+
+
+
+</android.support.constraint.ConstraintLayout>

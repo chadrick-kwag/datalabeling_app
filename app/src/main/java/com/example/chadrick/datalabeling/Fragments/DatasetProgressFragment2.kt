@@ -35,7 +35,7 @@ class DatasetProgressFragment2 : Fragment() {
     //    private  ds : DataSet =  DataSet.deserialize(arguments.get("ds") as String)
     private val ds: DataSet by lazy { DataSet.deserialize(arguments.get("ds") as String) }
     private var bgcolor: Int = 0
-    //    private val downloadTaskManger = DownloadTaskManager.getInstance()
+
     private val downloadTaskManger = DownloadTaskManager2.instance
 
     companion object {

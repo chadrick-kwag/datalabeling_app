@@ -12,6 +12,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.example.chadrick.datalabeling.Models.DataSet
+import com.example.chadrick.datalabeling.Models.ServerInfo
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.RAAdapter
 import kotlinx.android.synthetic.main.usermainfragment_layout.*
@@ -35,7 +36,8 @@ class UserMainFragment : Fragment() {
     companion object {
 //        val instance : UserMainFragment by lazy { Holder.INSTANCE}
         val instance : UserMainFragment = Holder.INSTANCE
-        val baseurl = "http://13.124.175.119:4001"
+//        val baseurl = "http://13.124.175.119:4001"
+        val baseurl = ServerInfo.instance.serveraddress
     }
 
 

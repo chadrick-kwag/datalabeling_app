@@ -66,7 +66,7 @@ class MainPortalFragment : Fragment() {
 
                 } else {
                     fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
-                            SettingsFragment.newInstance(), "settings").commit()
+                            SettingsFragment.instance, "settings").commit()
                 }
 
 

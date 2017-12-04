@@ -16,14 +16,16 @@ import java.net.URL
 class dszipDownloadTask(param_dataset: DataSet,
                         param_successCallback: () -> Unit,
                         param_errorCallback: () -> Unit,
-                        param_unzipcompletecallback: () -> Unit)
-    : AsyncTask<String, Integer, String>() {
+                        param_unzipcompletecallback: () -> Unit,
+                        param_progressUIupdate: (Int) -> Unit
+) : AsyncTask<String, Integer, String>() {
 
 
     val dataset: DataSet = param_dataset
     val successCallback: () -> Unit = param_successCallback
     val errorCallback: () -> Unit = param_errorCallback
     val unzipcompleteCallback: () -> Unit = param_unzipcompletecallback
+    val progressUIupdate: (Int) -> Unit = param_progressUIupdate
     lateinit var unziptask: UnzipTask
 
 
@@ -33,7 +35,7 @@ class dszipDownloadTask(param_dataset: DataSet,
 
 
     override fun doInBackground(vararg p0: String?): String {
-        val url: URL = URL(UserMainFragment.baseurl + "/download/dszip"+ "?id=" + dataset.id.toString())
+        val url: URL = URL(UserMainFragment.baseurl + "/download/dszip" + "?id=" + dataset.id.toString())
         val outputpath: File = File(dataset.zipfilestr)
 
         if (!outputpath.exists()) {
@@ -95,7 +97,9 @@ class dszipDownloadTask(param_dataset: DataSet,
     override fun onProgressUpdate(vararg values: Integer?) {
         super.onProgressUpdate(*values)
         // should update the progresscircle later on
-        Log.d(TAG, "updated progress=" + values)
+        Log.d(TAG, "updated progress=" + values[0])
+        progressUIupdate(values[0] as Int)
+
     }
 
     override fun onPostExecute(result: String?) {

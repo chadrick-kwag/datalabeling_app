@@ -12,6 +12,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.example.chadrick.datalabeling.Models.DataSet
+import com.example.chadrick.datalabeling.Models.RecentActivityLogManager
 import com.example.chadrick.datalabeling.Models.ServerInfo
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.RAAdapter
@@ -30,14 +31,20 @@ class UserMainFragment : Fragment() {
 //    private val baseurl1 = "http://13.124.175.119:4001"
     private val serverFectchedDSlist: ArrayList<DataSet> = ArrayList<DataSet>()
     lateinit var allDSrecyclerviewAdapter: RAAdapter
+    lateinit var RArvAdapter : RAAdapter
+
+    lateinit var RAlist : ArrayList<DataSet> = ArrayList<DataSet>
 
     private object Holder { val INSTANCE = UserMainFragment()}
+
+    lateinit var recentactivitylogmanager : RecentActivityLogManager
 
     companion object {
 //        val instance : UserMainFragment by lazy { Holder.INSTANCE}
         val instance : UserMainFragment = Holder.INSTANCE
 //        val baseurl = "http://13.124.175.119:4001"
         val baseurl = ServerInfo.instance.serveraddress
+
     }
 
 
@@ -48,6 +55,10 @@ class UserMainFragment : Fragment() {
 
         // setup adapter for RA
         allDSrecyclerviewAdapter = RAAdapter.newInstance(context,serverFectchedDSlist)
+        recentactivitylogmanager = RecentActivityLogManager.getInstance(context)
+
+        RArvAdapter = RAAdapter.newInstance(context,RAlist)
+
 
         return root
     }

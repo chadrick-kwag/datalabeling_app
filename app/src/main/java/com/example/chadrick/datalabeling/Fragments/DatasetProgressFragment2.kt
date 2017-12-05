@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley
 import com.example.chadrick.datalabeling.MainActivity
 import com.example.chadrick.datalabeling.Models.DataSet
 import com.example.chadrick.datalabeling.Models.DownloadTaskManager2
+import com.example.chadrick.datalabeling.Models.RecentActivityLogManager
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.Tasks.dszipDownloadTask
 import com.example.chadrick.datalabeling.Util
@@ -37,6 +38,7 @@ class DatasetProgressFragment2 : Fragment() {
     private var bgcolor: Int = 0
 
     private val downloadTaskManger = DownloadTaskManager2.instance
+    lateinit var ralogmanager: RecentActivityLogManager
 
     companion object {
         val TAG: String = this.javaClass.simpleName
@@ -50,6 +52,8 @@ class DatasetProgressFragment2 : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        ralogmanager = RecentActivityLogManager.getInstance(context)
 
         return inflater?.inflate(R.layout.datasetprogressfragment2_layout, container, false)
     }
@@ -66,13 +70,15 @@ class DatasetProgressFragment2 : Fragment() {
             synchronized(downloadTaskManger) {
                 if (!downloadTaskManger.isAlreadyRegistered(ds)) {
 
+                    ralogmanager.updateRAitem(ds.id, System.currentTimeMillis())
+
                     changetoDownloadingUI()
 
                     val downloadtask = dszipDownloadTask(param_dataset = ds,
                             param_errorCallback = { downloadErrorCallback() },
                             param_successCallback = { downloadSuccessCallback() },
                             param_unzipcompletecallback = { unzipCompleteCallback() },
-                            param_progressUIupdate =  this@DatasetProgressFragment2::updateDownloadprogresscircle )
+                            param_progressUIupdate = this@DatasetProgressFragment2::updateDownloadprogresscircle)
                     downloadTaskManger.addDownloadTask(ds, downloadtask)
                     downloadtask.execute()
                 }
@@ -81,6 +87,9 @@ class DatasetProgressFragment2 : Fragment() {
         })
 
         continuebtn_background_iv.setOnClickListener({ view ->
+
+            ralogmanager.updateRAitem(ds.id, System.currentTimeMillis())
+
             val imageViewerFragment = ImageViewerFragment()
             imageViewerFragment.passUpdateStatCallback({ updateStats() })
             val b = Bundle()
@@ -95,7 +104,7 @@ class DatasetProgressFragment2 : Fragment() {
         uploadbtn_bg_iv.setOnClickListener(listener@ { view ->
             Log.d(TAG, "upload clicked")
 
-
+            ralogmanager.updateRAitem(ds.id, System.currentTimeMillis())
             // first check if progress is complete
 
             // gathering .json files
@@ -180,7 +189,7 @@ class DatasetProgressFragment2 : Fragment() {
 
         })
 
-        downloadprogresscircle.progress= 0f
+        downloadprogresscircle.progress = 0f
     }
 
     private fun fetchdescription() {
@@ -318,6 +327,6 @@ class DatasetProgressFragment2 : Fragment() {
 
     private fun updateDownloadprogresscircle(progress: Int) {
         downloadprogresscircle.progress = progress.toFloat()
-        Log.d(TAG,"updating progress="+progress)
+        Log.d(TAG, "updating progress=" + progress)
     }
 }

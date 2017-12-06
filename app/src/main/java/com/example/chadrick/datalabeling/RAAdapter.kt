@@ -1,6 +1,5 @@
 package com.example.chadrick.datalabeling
 
-import android.app.FragmentManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -12,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment
 import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment2
 import com.example.chadrick.datalabeling.Models.BGColorRandomPicker
 import com.example.chadrick.datalabeling.Models.DataSet

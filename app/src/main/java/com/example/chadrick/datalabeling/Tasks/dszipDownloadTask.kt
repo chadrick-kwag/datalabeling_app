@@ -26,7 +26,7 @@ class dszipDownloadTask(param_dataset: DataSet,
     val errorCallback: () -> Unit = param_errorCallback
     val unzipcompleteCallback: () -> Unit = param_unzipcompletecallback
     val progressUIupdate: (Int) -> Unit = param_progressUIupdate
-    lateinit var unziptask: UnzipTask
+    lateinit var unziptask: unziptask
 
 
     companion object {
@@ -114,7 +114,7 @@ class dszipDownloadTask(param_dataset: DataSet,
 
         //unzip the file
         val zipfile = File(dataset.zipfilestr)
-        unziptask = UnzipTask(zipfile, unzipcompleteCallback)
+        unziptask = unziptask(zipfile, unzipcompleteCallback)
 
         unziptask.execute()
 

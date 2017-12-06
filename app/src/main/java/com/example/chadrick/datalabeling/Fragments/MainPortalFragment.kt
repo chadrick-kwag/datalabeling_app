@@ -91,7 +91,14 @@ class MainPortalFragment : Fragment() {
         // show dataset select fragment as the default
 //        val frag = DatasetSelectFragment()
         val frag = UserMainFragment.instance
-        fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "main").commit()
+        fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "usermain").commit()
+        fragmentManager.addOnBackStackChangedListener {
+            Log.d("fuck", "inside backstackchangedlistener from Mainportalfragment")
+            fragmentManager.findFragmentByTag("usermain").onResume()
+        }
+
+//        Log.d(TAG,"inside backstackchangedlistener from UserMainFragment")
+//        fragmentManager.findFragmentByTag("usermain").onResume()
 
     }
 

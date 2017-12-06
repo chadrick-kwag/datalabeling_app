@@ -53,7 +53,7 @@ class UserMainFragment : Fragment() {
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        Log.d("fuck", "creatview of mainPortalFragment")
+
         val root: View? = inflater?.inflate(R.layout.usermainfragment_layout, container, false)
 
         // setup adapter for RA
@@ -67,6 +67,8 @@ class UserMainFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+
+
         super.onViewCreated(view, savedInstanceState)
         AllDSrecyclerview.adapter = allDSrecyclerviewAdapter
         AllDSrecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -76,11 +78,14 @@ class UserMainFragment : Fragment() {
 
     }
 
+
     override fun onResume() {
+        Log.d(TAG, "fuck: inside onresume")
         super.onResume()
         populateDSrv()
         populateRAlist()
     }
+
 
     private fun populateDSrv() {
         serverFectchedDSlist.clear()
@@ -130,15 +135,14 @@ class UserMainFragment : Fragment() {
         RAlist.clear()
 
         val newlist = recentactivitylogmanager.getsortedlist()
-        for( item in newlist){
+        for (item in newlist) {
             RAlist.add(item)
         }
 
-        if(RAlist.size==0){
+        if (RAlist.size == 0) {
             RArecyclerview.visibility = View.INVISIBLE
             nonefound_tv.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             RArecyclerview.visibility = View.VISIBLE
             nonefound_tv.visibility = View.INVISIBLE
         }

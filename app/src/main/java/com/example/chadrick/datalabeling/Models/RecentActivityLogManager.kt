@@ -31,7 +31,8 @@ class RecentActivityLogManager {
 
         val TAG: String = "RecentActivityLogManager"
 
-        val RAitemMap = HashMap<Int, Long>()
+        val RAitemMap = HashMap<DataSet, Long>()
+
 
         val jsonfilename = "recentactivitylog.json"
 
@@ -70,22 +71,19 @@ class RecentActivityLogManager {
 
 
 
-
-
-
         for (i in 0..RAarray.length() - 1) {
 
 
-
-            try{
+            try {
                 val item = RAarray.getJSONObject(i)
-                RAitemMap.put(item.getInt("datasetid"), item.getLong("recent_access_time"))
-            }
-            catch(e:JSONException){
+                RAitemMap.put(DataSet.deserialize(item.getString("dataset")), item.getLong("recent_access_time"))
+            } catch (e: JSONException) {
+                // the file is corrupt. delete it.
+                Log.d(TAG, "the ra json file is corrupt. delete it")
+                jsonfilefullpath.delete()
                 return
 
             }
-
 
 
         }
@@ -100,8 +98,8 @@ class RecentActivityLogManager {
 
     }
 
-    fun updateRAitem(datasetid: Int, access_datetime: Long) {
-        RAitemMap.put(datasetid, access_datetime)
+    fun updateRAitem(dataset: DataSet, access_datetime: Long) {
+        RAitemMap.put(dataset, access_datetime)
 
 //        val sortedMap = RAitemMap.toList().sortedBy { (key,value) -> -value }.toMap()
 
@@ -113,7 +111,7 @@ class RecentActivityLogManager {
 
         Log.d(TAG, "print RAitemMap")
         for (item in RAitemMap) {
-            Log.d(TAG, "key=" + item.key + ", value=" + item.value)
+            Log.d(TAG, "key.id=" + item.key.id + ", value=" + item.value)
         }
 
         savetojsonfile()
@@ -122,33 +120,32 @@ class RecentActivityLogManager {
     }
 
     fun savetojsonfile() {
-        Log.d(TAG,"inside savetojsonfile")
+        Log.d(TAG, "inside savetojsonfile")
 
         // convert RAitemmap to json obj
 
         // create individual jsonojects for each RAitemmap item
 
         val convertedJsonobjs = ArrayList<JSONObject>()
-        for(item in RAitemMap){
+        for (item in RAitemMap) {
             val jsonobj = JSONObject()
-            jsonobj.put("datasetid",item.key)
-            jsonobj.put("recent_access_time",item.value)
+            jsonobj.put("dataset", item.key.serialize())
+            jsonobj.put("recent_access_time", item.value)
             convertedJsonobjs.add(jsonobj)
         }
 
 
-
         val itemjsonarray = JSONArray(convertedJsonobjs)
 
-        Log.d(TAG,"print itemjsonarray = "+itemjsonarray.toString())
+        Log.d(TAG, "print itemjsonarray = " + itemjsonarray.toString())
 
         val rootobj = JSONObject()
-        rootobj.put("items",itemjsonarray)
+        rootobj.put("items", itemjsonarray)
 
         // print completed jsonobj
-        Log.d(TAG,"temp created root jsonobj: "+rootobj.toString())
+        Log.d(TAG, "temp created root jsonobj: " + rootobj.toString())
 
-        if(jsonfilefullpath.exists()){
+        if (jsonfilefullpath.exists()) {
             jsonfilefullpath.delete()
         }
 
@@ -159,8 +156,11 @@ class RecentActivityLogManager {
 
     }
 
-    fun getsortedlist(): Map<Int, Long> {
-        return RAitemMap.toList().sortedBy { (key, value) -> -value }.toMap()
+    fun getsortedlist(): ArrayList<DataSet> {
+        val pairlist = RAitemMap.toList().sortedBy { (key, value) -> -value }
+        val dsidlist = ArrayList<DataSet>()
+        pairlist.forEach { (key, value) -> dsidlist.add(key) }
+        return dsidlist
     }
 
 

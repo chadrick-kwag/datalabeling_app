@@ -10,6 +10,7 @@
 
   <dimen name="usermain_thumb_square_size">150dp</dimen>
   <dimen name="usermain_container_padding">10dp</dimen>
+  <dimen name="usermain_norafound_textSize">20sp</dimen>
 
   <dimen name="SettingsMenu_rv_itemheight">40dp</dimen>
   <dimen name="SettingsMenu_rv_titleTextSize">20sp</dimen>

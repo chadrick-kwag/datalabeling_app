@@ -70,7 +70,7 @@ class DatasetProgressFragment2 : Fragment() {
             synchronized(downloadTaskManger) {
                 if (!downloadTaskManger.isAlreadyRegistered(ds)) {
 
-                    ralogmanager.updateRAitem(ds.id, System.currentTimeMillis())
+                    ralogmanager.updateRAitem(ds, System.currentTimeMillis())
 
                     changetoDownloadingUI()
 
@@ -88,7 +88,7 @@ class DatasetProgressFragment2 : Fragment() {
 
         continuebtn_background_iv.setOnClickListener({ view ->
 
-            ralogmanager.updateRAitem(ds.id, System.currentTimeMillis())
+            ralogmanager.updateRAitem(ds, System.currentTimeMillis())
 
             val imageViewerFragment = ImageViewerFragment()
             imageViewerFragment.passUpdateStatCallback({ updateStats() })
@@ -104,7 +104,7 @@ class DatasetProgressFragment2 : Fragment() {
         uploadbtn_bg_iv.setOnClickListener(listener@ { view ->
             Log.d(TAG, "upload clicked")
 
-            ralogmanager.updateRAitem(ds.id, System.currentTimeMillis())
+            ralogmanager.updateRAitem(ds, System.currentTimeMillis())
             // first check if progress is complete
 
             // gathering .json files

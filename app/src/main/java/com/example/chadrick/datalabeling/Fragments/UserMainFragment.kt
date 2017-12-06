@@ -28,25 +28,28 @@ import java.io.File
 class UserMainFragment : Fragment() {
 
 
-//    private val baseurl1 = "http://13.124.175.119:4001"
+    //    private val baseurl1 = "http://13.124.175.119:4001"
     private val serverFectchedDSlist: ArrayList<DataSet> = ArrayList<DataSet>()
     lateinit var allDSrecyclerviewAdapter: RAAdapter
-    lateinit var RArvAdapter : RAAdapter
+    lateinit var RArvAdapter: RAAdapter
 
-    lateinit var RAlist : ArrayList<DataSet> = ArrayList<DataSet>
+    private val RAlist: ArrayList<DataSet> = ArrayList<DataSet>()
 
-    private object Holder { val INSTANCE = UserMainFragment()}
-
-    lateinit var recentactivitylogmanager : RecentActivityLogManager
-
-    companion object {
-//        val instance : UserMainFragment by lazy { Holder.INSTANCE}
-        val instance : UserMainFragment = Holder.INSTANCE
-//        val baseurl = "http://13.124.175.119:4001"
-        val baseurl = ServerInfo.instance.serveraddress
-
+    private object Holder {
+        val INSTANCE = UserMainFragment()
     }
 
+    lateinit var recentactivitylogmanager: RecentActivityLogManager
+
+    companion object {
+        //        val instance : UserMainFragment by lazy { Holder.INSTANCE}
+        val instance: UserMainFragment = Holder.INSTANCE
+        //        val baseurl = "http://13.124.175.119:4001"
+        val baseurl = ServerInfo.instance.serveraddress
+
+        val TAG = "UserMainFragment"
+
+    }
 
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -54,10 +57,10 @@ class UserMainFragment : Fragment() {
         val root: View? = inflater?.inflate(R.layout.usermainfragment_layout, container, false)
 
         // setup adapter for RA
-        allDSrecyclerviewAdapter = RAAdapter.newInstance(context,serverFectchedDSlist)
+        allDSrecyclerviewAdapter = RAAdapter.newInstance(context, serverFectchedDSlist)
         recentactivitylogmanager = RecentActivityLogManager.getInstance(context)
 
-        RArvAdapter = RAAdapter.newInstance(context,RAlist)
+        RArvAdapter = RAAdapter.newInstance(context, RAlist)
 
 
         return root
@@ -66,15 +69,17 @@ class UserMainFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         AllDSrecyclerview.adapter = allDSrecyclerviewAdapter
-        AllDSrecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL,false)
+        AllDSrecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-//        RArecyclerview.adapter = RArecyclerviewAdapter
-//        RArecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        RArecyclerview.adapter = RArvAdapter
+        RArecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+
     }
 
     override fun onResume() {
         super.onResume()
         populateDSrv()
+        populateRAlist()
     }
 
     private fun populateDSrv() {
@@ -117,6 +122,28 @@ class UserMainFragment : Fragment() {
 
         queue.add(jsonarrayreq)
 
+
+    }
+
+    fun populateRAlist() {
+        Log.d(TAG, "inside populateRAlist")
+        RAlist.clear()
+
+        val newlist = recentactivitylogmanager.getsortedlist()
+        for( item in newlist){
+            RAlist.add(item)
+        }
+
+        if(RAlist.size==0){
+            RArecyclerview.visibility = View.INVISIBLE
+            nonefound_tv.visibility = View.VISIBLE
+        }
+        else{
+            RArecyclerview.visibility = View.VISIBLE
+            nonefound_tv.visibility = View.INVISIBLE
+        }
+
+        RArvAdapter.notifyDataSetChanged()
 
     }
 

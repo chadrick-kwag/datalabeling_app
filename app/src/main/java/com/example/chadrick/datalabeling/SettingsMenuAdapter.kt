@@ -30,6 +30,7 @@ class SettingsMenuAdapter(menuitemlist: ArrayList<SMitem>) : RecyclerView.Adapte
 
     class plainTypeViewHolder(iv: View) : RecyclerView.ViewHolder(iv) {
         val title = iv.plaintype_layout_title_tv
+        val entire_layout = iv.entire_relativelayout
     }
 
     override fun getItemCount(): Int {
@@ -65,6 +66,12 @@ class SettingsMenuAdapter(menuitemlist: ArrayList<SMitem>) : RecyclerView.Adapte
                 plainVH.title.text = item.title
                 if(item.titleColor!= Color.WHITE){
                     plainVH.title.setTextColor(item.titleColor)
+                }
+
+                if(item.clickable){
+                    holder.entire_layout.setOnClickListener({ _ ->
+                        Log.d(TAG,"click detected in relative layout of type_plain holder")
+                        item.clickAction() })
                 }
             }
             else -> {

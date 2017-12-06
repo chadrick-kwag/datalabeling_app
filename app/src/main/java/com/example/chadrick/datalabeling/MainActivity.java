@@ -218,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
     passData.putString("displayname", displayname);
     passData.putString("photourl", photourl.toString());
     fragment.setArguments(passData);
-    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
+    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment,"mainportal").commit();
   }
 
   private void gotoSignInFragment() {

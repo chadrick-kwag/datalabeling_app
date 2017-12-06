@@ -33,6 +33,8 @@ class SettingsFragment : Fragment() {
 
     lateinit var smAdapter : SettingsMenuAdapter
 
+    private var initialized : Boolean = false
+
 
     companion object {
         val instance = holder.INSTANCE
@@ -41,9 +43,18 @@ class SettingsFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        menulist.add(SMitem(type=SMitem.TYPE_TOGGLE,title="Night Mode"))
-        menulist.add(SMitem(type=SMitem.TYPE_PLAIN,title="Logout",clickable = true,titleColor = Color.parseColor("#ff0000")))
-        smAdapter = SettingsMenuAdapter(menulist)
+
+        if(!initialized){
+            menulist.add(SMitem(type=SMitem.TYPE_TOGGLE,title="Night Mode"))
+            menulist.add(SMitem(type=SMitem.TYPE_PLAIN,title="Logout",clickable = true,
+                    titleColor = Color.parseColor("#ff0000") ,
+                    clickAction = ::asksignout
+            ))
+            smAdapter = SettingsMenuAdapter(menulist)
+
+            initialized = true
+        }
+
         return inflater?.inflate(R.layout.settings_layout, container, false)
 
     }
@@ -51,18 +62,20 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        signoutbtn.setOnClickListener({ v ->
-            val alertbuilder = AlertDialog.Builder(activity)
-            alertbuilder.setMessage("Sign out for real?")
-                    .setPositiveButton("Let's geddit", { x, y -> signout() })
-                    .setNegativeButton("Nope", { x, y ->  })
-            val alert = alertbuilder.create()
-            alert.show()
-        })
+
 
         // recycler view manage
         settings_menu_rv.adapter = smAdapter
         settings_menu_rv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+    }
+
+    private fun asksignout(){
+        val alertbuilder = AlertDialog.Builder(activity)
+        alertbuilder.setMessage("Sign out for real?")
+                .setPositiveButton("Let's geddit", { x, y -> signout() })
+                .setNegativeButton("Nope", { x, y ->  })
+        val alert = alertbuilder.create()
+        alert.show()
     }
 
     private fun signout() {
@@ -76,7 +89,10 @@ class SettingsFragment : Fragment() {
     }
 
     private fun gotoSignInFragment() {
+
         fragmentManager.beginTransaction().replace(R.id.fragmentcontainer, SignInFragment()).commit()
+        val mainportalfrag = fragmentManager.findFragmentByTag("mainportal")
+        fragmentManager.beginTransaction().remove(mainportalfrag).commit()
     }
 
 }

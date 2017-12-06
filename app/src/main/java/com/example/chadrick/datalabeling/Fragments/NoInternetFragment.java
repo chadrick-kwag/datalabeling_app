@@ -62,7 +62,7 @@ public class NoInternetFragment extends Fragment {
                 Log.d(TAG, "fuck: calling dsSelectfrag from nointernetconnection fragment");
                 MainPortalFragment fragment = new MainPortalFragment();
 
-                fragmentManager.beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
+                fragmentManager.beginTransaction().add(R.id.fragmentcontainer, fragment, "mainportal").commit();
 
 
               }

@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
   <RelativeLayout android:layout_width="match_parent"
-                  android:layout_height="@dimen/SettingsMenu_rv_itemheight">
+                  android:layout_height="@dimen/SettingsMenu_rv_itemheight"
+                  android:id="@+id/entire_relativelayout"
+  >
     <!--this is just a layout to fill up to match the height-->
 
   </RelativeLayout>

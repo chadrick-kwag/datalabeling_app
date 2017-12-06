@@ -3,6 +3,7 @@ package com.example.chadrick.datalabeling.Fragments
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.widget.DrawerLayout
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,6 +23,7 @@ class MainPortalFragment : Fragment() {
 
     lateinit var photourl: String
     lateinit var username: String
+
 
     companion object {
         fun newInstance(): MainPortalFragment {
@@ -47,6 +49,7 @@ class MainPortalFragment : Fragment() {
                 , { err -> err.printStackTrace() })
         val queue = Volley.newRequestQueue(context);
         queue.add(imagerequest)
+
 
         val menulistarray: ArrayList<String> = ArrayList()
         menulistarray.add("Main")
@@ -78,13 +81,14 @@ class MainPortalFragment : Fragment() {
 //                    val frag = DatasetSelectFragment()
                     val frag = UserMainFragment.instance
                     fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
-                            frag, "main").commit()
+                            frag, "usermain").commit()
                 }
 
 
             }
 
             drawer_layout.closeDrawers()
+//            drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
 
         })
 
@@ -94,11 +98,51 @@ class MainPortalFragment : Fragment() {
         fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "usermain").commit()
         fragmentManager.addOnBackStackChangedListener {
             Log.d("fuck", "inside backstackchangedlistener from Mainportalfragment")
-            fragmentManager.findFragmentByTag("usermain").onResume()
+
+            val fetchedfrag = fragmentManager?.findFragmentByTag("usermain")
+
+            fetchedfrag?.let {
+                if (fetchedfrag.isVisible) {
+                    fetchedfrag.onResume()
+                }
+
+            }
+
+            // for controlling the drawer
+
+            val fetchedfrag2 = fragmentManager?.findFragmentByTag("mainportal")
+
+            // print fragments in stack
+
+            var isontop: Boolean = false
+
+            val stacks = fragmentManager.fragments
+
+            for (item in stacks) {
+                Log.d("nvidia", "stack: " + item.toString())
+            }
+
+            val lastfrag = stacks.last()
+
+            Log.d("nvidia", "lastfrag=" + lastfrag.toString())
+
+
+            fetchedfrag2?.let {
+
+
+                if (lastfrag is MainPortalFragment || lastfrag is UserMainFragment) {
+                    Log.d("nvidia", "mainportal on top. enable drawer")
+                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                } else {
+                    Log.d("nvidia", "mainportal not on top. disable drawer")
+                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                }
+
+            }
+
+
         }
 
-//        Log.d(TAG,"inside backstackchangedlistener from UserMainFragment")
-//        fragmentManager.findFragmentByTag("usermain").onResume()
 
     }
 

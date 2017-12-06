@@ -3,6 +3,7 @@ package com.example.chadrick.datalabeling.Fragments
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -183,13 +184,32 @@ class DatasetProgressFragment2 : Fragment() {
         }
 
         delete_btn.setOnClickListener({ view ->
-            val workdir = File(ds.dirstr)
-            workdir.delete()
-            showDownloadButton()
+
+            val alertbuilder = AlertDialog.Builder(activity)
+            alertbuilder.setMessage("Delete this dataset?")
+                    .setPositiveButton("Delete", { _, _ ->
+                        val workdir = File(ds.dirstr)
+                        Log.d(TAG,"fuck deleting filepath="+workdir.toString())
+                        val deleteresult = workdir.deleteRecursively()
+                        Log.d(TAG, "fuck delete result = "+deleteresult)
+
+                        showDownloadButton()
+                        updateStats()
+                    })
+                    .setNegativeButton("No", { _, _ -> })
+            val alert = alertbuilder.create()
+            alert.show()
+
 
         })
 
+        goback_btn.setOnClickListener({ view ->
+            Log.d(TAG, "goback clicked")
+            fragmentManager.popBackStack()
+        })
+
         downloadprogresscircle.progress = 0f
+        updateStats()
     }
 
     private fun fetchdescription() {
@@ -271,10 +291,20 @@ class DatasetProgressFragment2 : Fragment() {
         Toast.makeText(context, "download success", Toast.LENGTH_SHORT).show()
         changetoDownloadReadyUI()
         showUploadAndContButton()
+        updateStats()
     }
 
     private fun updateStats() {
         val workdir = File(ds.dirstr)
+
+        // if it doesn't exist, it means that dataset is not downloaded in this case, set
+        // both the complete and total to '-'
+
+        if(!workdir.exists()){
+            total_stat_tv.text = "-"
+            complete_stat_tv.text = "-"
+            return
+        }
 
         val imagefiles = Util.getImageFileList(workdir)
         val finishedImageCount: Int = getFinishedCount(imagefiles)

@@ -189,9 +189,9 @@ class DatasetProgressFragment2 : Fragment() {
             alertbuilder.setMessage("Delete this dataset?")
                     .setPositiveButton("Delete", { _, _ ->
                         val workdir = File(ds.dirstr)
-                        Log.d(TAG,"fuck deleting filepath="+workdir.toString())
+                        Log.d(TAG, "fuck deleting filepath=" + workdir.toString())
                         val deleteresult = workdir.deleteRecursively()
-                        Log.d(TAG, "fuck delete result = "+deleteresult)
+                        Log.d(TAG, "fuck delete result = " + deleteresult)
 
                         showDownloadButton()
                         updateStats()
@@ -210,6 +210,19 @@ class DatasetProgressFragment2 : Fragment() {
 
         downloadprogresscircle.progress = 0f
         updateStats()
+    }
+
+
+    override fun onPause() {
+        super.onPause()
+        // remove any downloading task. if it was in download, delete the
+        // dsdir too it if was in the middle of creating it.
+        downloadTaskManger.remove(ds)
+        val dsdir = File(ds.dirstr)
+        if (dsdir.exists()) {
+            dsdir.deleteRecursively()
+        }
+
     }
 
     private fun fetchdescription() {
@@ -300,7 +313,7 @@ class DatasetProgressFragment2 : Fragment() {
         // if it doesn't exist, it means that dataset is not downloaded in this case, set
         // both the complete and total to '-'
 
-        if(!workdir.exists()){
+        if (!workdir.exists()) {
             total_stat_tv.text = "-"
             complete_stat_tv.text = "-"
             return
@@ -356,7 +369,10 @@ class DatasetProgressFragment2 : Fragment() {
     }
 
     private fun updateDownloadprogresscircle(progress: Int) {
-        downloadprogresscircle.progress = progress.toFloat()
-        Log.d(TAG, "updating progress=" + progress)
+        downloadprogresscircle?.let {
+            it.progress = progress.toFloat()
+            Log.d(TAG, "updating progress=" + progress)
+        }
+
     }
 }

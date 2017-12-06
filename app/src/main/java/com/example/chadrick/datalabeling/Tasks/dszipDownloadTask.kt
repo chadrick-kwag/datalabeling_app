@@ -124,10 +124,13 @@ class dszipDownloadTask(param_dataset: DataSet,
         // just because this asynctask(DownloadTask) is finished(onPostExecute finished)
         // doesn't mean that the actuall downloading and unzipping process is finished
         // this is all finished when the unzipTask is finished for good.
+        try {
+            unziptask?.let {
 
-        unziptask?.let {
-
-            return unziptask.status == AsyncTask.Status.FINISHED
+                return unziptask.status == AsyncTask.Status.FINISHED
+            }
+        } catch ( e: UninitializedPropertyAccessException ){
+            return false
         }
 
         return false

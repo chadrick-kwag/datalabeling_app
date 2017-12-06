@@ -36,4 +36,14 @@ class DownloadTaskManager2 private constructor(){
         hashmap.put(ds,param_downloadtask)
     }
 
+    @Synchronized fun remove(ds:DataSet){
+        if(hashmap.containsKey(ds)){
+            val task = hashmap.get(ds)
+            if(task?.isFinished() ?: true == false){
+                hashmap.remove(ds)
+                task?.cancel(true)
+            }
+        }
+    }
+
 }

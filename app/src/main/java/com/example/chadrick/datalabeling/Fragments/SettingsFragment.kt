@@ -2,15 +2,19 @@ package com.example.chadrick.datalabeling.Fragments
 
 import android.content.BroadcastReceiver
 import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.chadrick.datalabeling.MainActivity
+import com.example.chadrick.datalabeling.Models.SMitem
 import com.example.chadrick.datalabeling.R
+import com.example.chadrick.datalabeling.SettingsMenuAdapter
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInApi
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -25,28 +29,53 @@ import kotlinx.android.synthetic.main.settings_layout.*
 
 class SettingsFragment : Fragment() {
 
+    object holder { val INSTANCE=SettingsFragment()}
+
+    lateinit var smAdapter : SettingsMenuAdapter
+
+    private var initialized : Boolean = false
+
+
     companion object {
-        fun newInstance(): SettingsFragment {
-            return SettingsFragment()
-        }
+        val instance = holder.INSTANCE
+        val menulist : ArrayList<SMitem> = ArrayList()
+
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
+        if(!initialized){
+            menulist.add(SMitem(type=SMitem.TYPE_TOGGLE,title="Night Mode"))
+            menulist.add(SMitem(type=SMitem.TYPE_PLAIN,title="Logout",clickable = true,
+                    titleColor = Color.parseColor("#ff0000") ,
+                    clickAction = ::asksignout
+            ))
+            smAdapter = SettingsMenuAdapter(menulist)
+
+            initialized = true
+        }
+
         return inflater?.inflate(R.layout.settings_layout, container, false)
 
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        test1.setText("added now")
-        signoutbtn.setOnClickListener({ v ->
-            val alertbuilder = AlertDialog.Builder(activity)
-            alertbuilder.setMessage("Sign out for real?")
-                    .setPositiveButton("Let's geddit", { x, y -> signout() })
-                    .setNegativeButton("Nope", { x, y ->  })
-            val alert = alertbuilder.create()
-            alert.show()
-        })
+
+
+
+        // recycler view manage
+        settings_menu_rv.adapter = smAdapter
+        settings_menu_rv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+    }
+
+    private fun asksignout(){
+        val alertbuilder = AlertDialog.Builder(activity)
+        alertbuilder.setMessage("Sign out for real?")
+                .setPositiveButton("Let's geddit", { x, y -> signout() })
+                .setNegativeButton("Nope", { x, y ->  })
+        val alert = alertbuilder.create()
+        alert.show()
     }
 
     private fun signout() {
@@ -60,7 +89,10 @@ class SettingsFragment : Fragment() {
     }
 
     private fun gotoSignInFragment() {
+
         fragmentManager.beginTransaction().replace(R.id.fragmentcontainer, SignInFragment()).commit()
+        val mainportalfrag = fragmentManager.findFragmentByTag("mainportal")
+        fragmentManager.beginTransaction().remove(mainportalfrag).commit()
     }
 
 }

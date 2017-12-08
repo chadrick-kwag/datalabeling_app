@@ -93,7 +93,7 @@ public class SignInFragment extends Fragment {
     passData.putString("photourl", photourl.toString());
     fragment.setArguments(passData);
 
-    getFragmentManager().beginTransaction().replace(R.id.fragmentcontainer, fragment).commit();
+    getFragmentManager().beginTransaction().replace(R.id.fragmentcontainer, fragment, "mainportal").commit();
   }
 
 }

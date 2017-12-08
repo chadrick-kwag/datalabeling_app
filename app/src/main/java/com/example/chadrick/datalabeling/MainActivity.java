@@ -21,6 +21,8 @@ import com.example.chadrick.datalabeling.Fragments.NoInternetFragment;
 import com.example.chadrick.datalabeling.Fragments.SignInFragment;
 import com.example.chadrick.datalabeling.Fragments.SplashScreenFragment;
 import com.example.chadrick.datalabeling.Fragments.StartErrorFragment;
+import com.example.chadrick.datalabeling.Models.ServerInfo;
+
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -32,20 +34,38 @@ import com.google.android.gms.common.api.ResultCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class MainActivity extends AppCompatActivity {
   private RequestQueue queue;
-  private static String baseurl = "http://13.124.175.119:4001";
+//  private static String baseurl = "http://13.124.175.119:4001";
   private final String TAG = "datalabel";
   private FragmentManager fragmentManager;
   private boolean firstentry = true;
   public GoogleApiClient googleApiClient;
   public static int RC_SIGN_IN = 1;
+  private ServerInfo serverInfo = ServerInfo.Companion.getInstance();
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     queue = Volley.newRequestQueue(this);
     setContentView(R.layout.activity_main);
+
+    // setup server info loading
+    try{
+      serverInfo.config(getAssets().open("serverinfo.txt"));
+    }
+    catch(IOException e){
+      e.printStackTrace();
+    }
+
+    // testing serverinfo read
+    Log.d(TAG, "onCreate: read from serverinfo="+serverInfo.serveraddress);
+
+
+
     fragmentManager = getSupportFragmentManager();
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
@@ -151,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
   private void authwithserver(GoogleSignInResult signInResult) {
     // send token to server
-    String url = baseurl + "/tokensignin";
+    String url = serverInfo.serveraddress + "/tokensignin";
     JSONObject bodyjson = new JSONObject();
     String idtoken = signInResult.getSignInAccount().getIdToken();
     try {
@@ -198,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
     passData.putString("displayname", displayname);
     passData.putString("photourl", photourl.toString());
     fragment.setArguments(passData);
-    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
+    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment,"mainportal").commit();
   }
 
   private void gotoSignInFragment() {

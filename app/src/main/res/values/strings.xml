@@ -2,4 +2,5 @@
     <string name="app_name">DataLabeling</string>
   <string name="server_client_id">873694293520-q047egbt95605dlh2t9vv8ijd65j8i9i.apps.googleusercontent.com</string>
   <string name="signinText">You are not a registered user.\nPlease sign in with a google account.</string>
+  <string name="usermain_norafound_str">No Recent Activities found</string>
 </resources>

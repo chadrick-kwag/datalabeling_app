@@ -21,5 +21,9 @@
   <color name="splashtextcolor">#ffffff</color>
 
   <color name="SigninNoticeTextColor">#ffffff</color>
+  <color name="white">#ffffff</color>
+
+  <color name="usermain_thumbnail_tv_background">#000000</color>
+  <color name="usermain_thumbnail_tv_textcolor">#ffffff</color>
 
 </resources>

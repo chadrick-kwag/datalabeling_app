@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <dimen name="pageNumberingTextSize">30px</dimen>
-  <dimen name="SigninNoticeTextSize">40px</dimen>
+  <dimen name="pageNumberingTextSize">15sp</dimen>
+  <dimen name="SigninNoticeTextSize">20sp</dimen>
+
+  <dimen name="dsprogressfrag_TitleTextSize">10sp</dimen>
+
+  <dimen name="usermain_categoryfontsize">40sp</dimen>
+  <dimen name="dsprogressfrag2_downloadTextSize">30sp</dimen>
+
+  <dimen name="usermain_thumb_square_size">150dp</dimen>
+  <dimen name="usermain_container_padding">10dp</dimen>
+  <dimen name="usermain_norafound_textSize">20sp</dimen>
+
+  <dimen name="SettingsMenu_rv_itemheight">40dp</dimen>
+  <dimen name="SettingsMenu_rv_titleTextSize">20sp</dimen>
+
 </resources>

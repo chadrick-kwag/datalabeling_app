@@ -1,5 +1,6 @@
 package com.example.chadrick.datalabeling.Fragments
 
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -63,7 +64,25 @@ class DatasetProgressFragment2 : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         title_tv.text = ds.name
         Log.d("chadrick", "bgcolor=" + bgcolor)
-        thumbnail_holder.setBackgroundColor(bgcolor)
+//        thumbnail_holder.setBackgroundColor(bgcolor)
+
+        // check if thumbnail image exists in dataset dir
+        val datasetthumbnailfile = ds.dirstr+"/info/thumbnail.jpg"
+        if(File(datasetthumbnailfile).exists()){
+            thumbnail_holder.setImageBitmap(BitmapFactory.decodeFile(datasetthumbnailfile))
+        }
+        else{
+            // check if thumbnail image exists in cache.. it should be...
+            val cachepath = context.filesDir.toString() +"/thumbnailcache/" + ds.id.toString() + ".jpg"
+            if(File(cachepath).exists()){
+                thumbnail_holder.setImageBitmap(BitmapFactory.decodeFile(cachepath))
+            }
+            else{
+                Log.d(TAG,"thumbnail image not exist even in cache directory")
+                thumbnail_holder.setBackgroundColor(bgcolor)
+            }
+
+        }
 
         // attach click listener
         download_constraintlayout.setOnClickListener({ view ->
@@ -173,6 +192,18 @@ class DatasetProgressFragment2 : Fragment() {
         })
 
         fetchdescription()
+
+        // manual check
+        val checkfile = File(context.filesDir, ds.id.toString())
+        if(checkfile.exists()){
+            Log.d(TAG,"fuck: onviewcreated , /2 exists")
+        }
+        else{
+            Log.d(TAG,"fuck: onviewcreated, /2 not exists")
+        }
+
+
+
         if (checkAlreadyDownloaded()) {
             // if already downloaded, goto statcheck
             showUploadAndContButton()
@@ -206,6 +237,15 @@ class DatasetProgressFragment2 : Fragment() {
         goback_btn.setOnClickListener({ view ->
             Log.d(TAG, "goback clicked")
             fragmentManager.popBackStack()
+
+
+            val checkfile = File(context.filesDir, ds.id.toString())
+            if(checkfile.exists()){
+                Log.d(TAG,"fuck: goback btn pressed, /2 exists")
+            }
+            else{
+                Log.d(TAG,"fuck: goback btn pressed, /2 not exists")
+            }
         })
 
         downloadprogresscircle.progress = 0f
@@ -218,10 +258,11 @@ class DatasetProgressFragment2 : Fragment() {
         // remove any downloading task. if it was in download, delete the
         // dsdir too it if was in the middle of creating it.
         downloadTaskManger.remove(ds)
-        val dsdir = File(ds.dirstr)
-        if (dsdir.exists()) {
-            dsdir.deleteRecursively()
-        }
+
+//        val dsdir = File(ds.dirstr)
+//        if (dsdir.exists()) {
+//            dsdir.deleteRecursively()
+//        }
 
     }
 
@@ -240,10 +281,10 @@ class DatasetProgressFragment2 : Fragment() {
                     if (isSuccess) {
                         // is success if true
                         val desc = response?.getString("description")
-                        description_tv.text = desc
+                        description_tv?.text = desc
                     } else {
                         Log.d("chadrick", "received unsuccessful response from server")
-                        description_tv.text = "unsuccessful response"
+                        description_tv?.text = "unsuccessful response"
                     }
 
                 },
@@ -260,11 +301,13 @@ class DatasetProgressFragment2 : Fragment() {
         // if the dir with ds id exists, then we assume that the directory is all set.
 
         // TODO: make the checking of downloaded_&installed more detailed
-        val dsworkdir = File(context.filesDir, ds.id.toString())
+        val dsworkdir : File = File(context.filesDir, ds.id.toString()).absoluteFile
         Log.d(TAG, "dsworkdir in checkalreadydownloaded=" + dsworkdir)
 
         Log.d(TAG, "ds dirstr in dataset=" + ds.dirstr)
         Log.d(TAG, "ds exist in dataset=" + ds.direxist)
+        Log.d(TAG,"dsworkdir.exsits="+ dsworkdir.exists())
+        Log.d(TAG,"dsworkdir isdirectory"+ dsworkdir.isDirectory)
         return dsworkdir.exists()
     }
 
@@ -298,6 +341,15 @@ class DatasetProgressFragment2 : Fragment() {
     private fun downloadSuccessCallback() {
         // moving on to unzipping
         Log.d(TAG, "now unzipping")
+
+        // check dsdir exist
+        val checkfile = File(context.filesDir, ds.id.toString())
+        if(checkfile.exists()){
+            Log.d(TAG,"fuck: download success, /2 exists")
+        }
+        else{
+            Log.d(TAG,"fuck: download success, /2 not exists")
+        }
     }
 
     private fun unzipCompleteCallback() {

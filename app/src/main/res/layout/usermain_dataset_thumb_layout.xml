@@ -16,13 +16,16 @@
       android:layout_height="match_parent"
       android:id="@+id/thumbnailimageview"
       android:layout_gravity="center"
+      android:scaleType="centerCrop"
       />
     <TextView
-      android:layout_width="match_parent"
+      android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/thumbnailTitle"
       android:layout_gravity="center"
       android:textAlignment="center"
+      android:background="@color/usermain_thumbnail_tv_background"
+      android:textColor="@color/usermain_thumbnail_tv_textcolor"
       />
 
   </FrameLayout>

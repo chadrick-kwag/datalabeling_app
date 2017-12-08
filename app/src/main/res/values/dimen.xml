@@ -3,7 +3,7 @@
   <dimen name="pageNumberingTextSize">15sp</dimen>
   <dimen name="SigninNoticeTextSize">20sp</dimen>
 
-  <dimen name="dsprogressfrag_TitleTextSize">20sp</dimen>
+  <dimen name="dsprogressfrag_TitleTextSize">10sp</dimen>
 
   <dimen name="usermain_categoryfontsize">40sp</dimen>
   <dimen name="dsprogressfrag2_downloadTextSize">30sp</dimen>

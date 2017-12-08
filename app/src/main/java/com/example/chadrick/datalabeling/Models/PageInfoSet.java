@@ -157,25 +157,42 @@ public class PageInfoSet {
 
       try{
         JSONObject parsed = new JSONObject(readresult);
-        String bitmapfilename = parsed.getString("img");
-        JSONArray rects = parsed.getJSONArray("rects");
+        String bitmapfilename = parsed.getString("imgfile");
+        JSONArray objects = parsed.getJSONArray("objects");
+
+        for(int i=0;i< objects.length();i++){
+          JSONObject item = objects.getJSONObject(i);
+
+          String name = item.getString("name");
+          JSONObject rect = item.getJSONObject("rect");
+
+          int x1 = rect.getInt("x1");
+          int y1 = rect.getInt("y1");
+          int x2 = rect.getInt("x2");
+          int y2 = rect.getInt("y2");
+
+          Rect rectfromjson = new Rect(x1,y1,x2,y2);
+          rectArrayList.add(rectfromjson);
+
+
+        }
 
 
         // for all the rects in the jsonfile, parse it and save it in the rectarraylist.
-        if(rects.length()>0){
-          // rects item exists. transfer them to rectarray
-          for(int i =0;i<rects.length();i++){
-            JSONObject rectitem = rects.getJSONObject(i);
-            int x1 = rectitem.getInt("x1");
-            int y1 = rectitem.getInt("y1");
-            int x2 = rectitem.getInt("x2");
-            int y2 = rectitem.getInt("y2");
-
-            Rect rectfromjson = new Rect(x1,y1,x2,y2);
-            rectArrayList.add(rectfromjson);
-
-          }
-        }
+//        if(rects.length()>0){
+//          // rects item exists. transfer them to rectarray
+//          for(int i =0;i<rects.length();i++){
+//            JSONObject rectitem = rects.getJSONObject(i);
+//            int x1 = rectitem.getInt("x1");
+//            int y1 = rectitem.getInt("y1");
+//            int x2 = rectitem.getInt("x2");
+//            int y2 = rectitem.getInt("y2");
+//
+//            Rect rectfromjson = new Rect(x1,y1,x2,y2);
+//            rectArrayList.add(rectfromjson);
+//
+//          }
+//        }
 
       }
       catch(JSONException e){

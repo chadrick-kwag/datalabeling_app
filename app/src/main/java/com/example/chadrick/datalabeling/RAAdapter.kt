@@ -1,6 +1,8 @@
 package com.example.chadrick.datalabeling
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -14,7 +16,9 @@ import android.widget.TextView
 import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment2
 import com.example.chadrick.datalabeling.Models.BGColorRandomPicker
 import com.example.chadrick.datalabeling.Models.DataSet
+import com.example.chadrick.datalabeling.Models.thumbnailcachedownload
 import kotlinx.android.synthetic.main.usermain_dataset_thumb_layout.view.*
+import java.io.File
 import java.util.*
 
 /**
@@ -36,6 +40,8 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
             obj.context = context
             return obj
         }
+
+        val TAG: String = "RAAdapter"
     }
 
 
@@ -56,7 +62,43 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
         val colstr = colorgen.getRandomColor()
         Log.d("chadrick", "colstr=" + colstr)
         holder?.color = Color.parseColor(colstr)
-        holder?.imageview?.setBackgroundColor(holder.color)
+
+        // check if thumbnail exists
+        // first check if ds dir exist
+        val dsdir = File(dataset.dirstr)
+        if (dsdir.exists()) {
+            // check if thumbnail.png exist
+            val thumbnailpath = dataset.dirstr + "/info/thumbnail.jpg"
+            val thumbnailfile = File(thumbnailpath)
+
+            if (thumbnailfile.exists()) {
+                val options = BitmapFactory.Options()
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888
+                val thumbnailbitmap = BitmapFactory.decodeFile(thumbnailpath, options)
+                holder?.imageview?.setImageBitmap(thumbnailbitmap)
+            } else {
+                Log.d(TAG, "thumbnail file for dsid=" + dataset.id + "doesn't exist")
+            }
+        } else {
+            Log.d(TAG, "dsid=" + dataset.id + "dsdir doesn't exist")
+
+            // check if a thumbnail exists in the thumbnailcache dir.
+
+            val cachesavefilepath = context.filesDir.toString() + "/thumbnailcache/" + dataset.id.toString() + ".jpg"
+
+            if (File(cachesavefilepath).exists()) {
+                val loadbitmap = BitmapFactory.decodeFile(cachesavefilepath)
+                holder?.imageview?.setImageBitmap(loadbitmap)
+            } else {
+                val cachedownload = thumbnailcachedownload(holder?.imageview, dataset.id, File(cachesavefilepath))
+                cachedownload.execute()
+                Log.d(TAG, "thumbnail cache download executed")
+            }
+
+
+        }
+
+//        holder?.imageview?.setBackgroundColor(holder.color)
         holder?.imageview?.setOnClickListener({ v: View ->
             //            val frag = DatasetProgressFragment()
             val frag = DatasetProgressFragment2()

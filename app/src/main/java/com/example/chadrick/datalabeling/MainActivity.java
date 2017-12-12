@@ -1,5 +1,6 @@
 package com.example.chadrick.datalabeling;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,6 +28,7 @@ import com.example.chadrick.datalabeling.Models.JWTManager;
 import com.example.chadrick.datalabeling.Models.ServerInfo;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
@@ -282,6 +284,29 @@ public class MainActivity extends AppCompatActivity {
       Log.d(TAG, "authwithserver: bitcoin gsimail and jwtmail do not match");
       // we need to fetch with server
       authwithserver(signInResult);
+    }
+  }
+
+  @Override
+  protected void onActivityResult(int reqcode, int resultcode, Intent data) {
+    Log.d(TAG, "onActivityResult: bitcoin onactivityresult triggered inside mainactivity. reqcode="+reqcode);
+    if (reqcode == RC_SIGN_IN) {
+      GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+      //handle signin result
+      if (result.isSuccess()) {
+//        GoogleSignInAccount acct = result.getSignInAccount();
+//        Log.d(TAG, "sign in account =" + acct.getDisplayName());
+//        // if we succeed, then move on to dataselect
+//
+//        gotoMainPortalFragment(acct.getDisplayName(), acct.getPhotoUrl());
+        authwithjwt(result);
+
+      } else {
+        Log.d(TAG, "sign in failed");
+        Log.d(TAG, "onActivityResult: failed message=" + result.getStatus().getStatusMessage());
+        Log.d(TAG, "onActivityResult: failed detail=" + result.getStatus().toString());
+        Toast.makeText(getApplicationContext(), "sign in failed", Toast.LENGTH_SHORT).show();
+      }
     }
   }
 

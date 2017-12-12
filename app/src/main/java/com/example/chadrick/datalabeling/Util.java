@@ -2,6 +2,7 @@ package com.example.chadrick.datalabeling;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -255,16 +256,18 @@ public class Util {
 
       }
     }) {
-//      @Override
-//      protected Map<String, String> getParams() {
-//        Map<String, String> params = new HashMap<>();
+      @Override
+      protected Map<String, String> getParams() {
+        Map<String, String> params = new HashMap<>();
+//        params.put("userid",)
+
 //        params.put("api_token", "gh659gjhvdyudo973823tt9gvjf7i6ric75r76");
 //        params.put("name", mNameInput.getText().toString());
 //        params.put("location", mLocationInput.getText().toString());
 //        params.put("about", mAvatarInput.getText().toString());
 //        params.put("contact", mContactInput.getText().toString());
-//        return params;
-//      }
+        return params;
+      }
 
       @Override
       protected Map<String, DataPart> getByteData() {
@@ -302,6 +305,37 @@ public class Util {
       e.printStackTrace();
     }
     return bytes;
+  }
+
+  public static JSONObject decoded(String jwt){
+
+    String[] split = jwt.split("\\.");
+    String decodedstr = decodebase64(split[1]);
+    if(decodedstr==null){
+      return null;
+    }
+    try{
+      JSONObject ret = new JSONObject(decodedstr);
+      return ret;
+    }
+    catch(JSONException e){
+      return null;
+    }
+
+
+  }
+
+  private static String decodebase64(String encoded){
+    byte[] decoded = Base64.decode(encoded,Base64.URL_SAFE);
+    String ret;
+    try{
+      ret = new String(decoded, "UTF-8");
+    }
+    catch(UnsupportedEncodingException e){
+      ret = null;
+    }
+
+    return ret;
   }
 
 

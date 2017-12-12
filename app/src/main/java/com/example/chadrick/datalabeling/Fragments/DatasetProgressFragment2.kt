@@ -19,7 +19,9 @@ import com.example.chadrick.datalabeling.MainActivity
 import com.example.chadrick.datalabeling.Models.DataSet
 import com.example.chadrick.datalabeling.Models.DownloadTaskManager2
 import com.example.chadrick.datalabeling.Models.RecentActivityLogManager
+import com.example.chadrick.datalabeling.Models.ServerInfo
 import com.example.chadrick.datalabeling.R
+import com.example.chadrick.datalabeling.Tasks.createlabelziptask
 import com.example.chadrick.datalabeling.Tasks.dszipDownloadTask
 import com.example.chadrick.datalabeling.Util
 import kotlinx.android.synthetic.main.datasetprogressfragment2_layout.*
@@ -67,18 +69,16 @@ class DatasetProgressFragment2 : Fragment() {
 //        thumbnail_holder.setBackgroundColor(bgcolor)
 
         // check if thumbnail image exists in dataset dir
-        val datasetthumbnailfile = ds.dirstr+"/info/thumbnail.jpg"
-        if(File(datasetthumbnailfile).exists()){
+        val datasetthumbnailfile = ds.dirstr + "/info/thumbnail.jpg"
+        if (File(datasetthumbnailfile).exists()) {
             thumbnail_holder.setImageBitmap(BitmapFactory.decodeFile(datasetthumbnailfile))
-        }
-        else{
+        } else {
             // check if thumbnail image exists in cache.. it should be...
-            val cachepath = context.filesDir.toString() +"/thumbnailcache/" + ds.id.toString() + ".jpg"
-            if(File(cachepath).exists()){
+            val cachepath = context.filesDir.toString() + "/thumbnailcache/" + ds.id.toString() + ".jpg"
+            if (File(cachepath).exists()) {
                 thumbnail_holder.setImageBitmap(BitmapFactory.decodeFile(cachepath))
-            }
-            else{
-                Log.d(TAG,"thumbnail image not exist even in cache directory")
+            } else {
+                Log.d(TAG, "thumbnail image not exist even in cache directory")
                 thumbnail_holder.setBackgroundColor(bgcolor)
             }
 
@@ -127,20 +127,6 @@ class DatasetProgressFragment2 : Fragment() {
             ralogmanager.updateRAitem(ds, System.currentTimeMillis())
             // first check if progress is complete
 
-            // gathering .json files
-            val dir = File(ds.getDirstr())
-            val jsonfiles = Util.getJsonFileList(dir)
-
-            // check if number matches with imagefiles
-            if (jsonfiles!!.size != Util.getImageFileList(dir)!!.size) {
-                Log.d(TAG, "jsonfiles number doesn't match with image files number. abort")
-                Toast.makeText(context, "progress not complete", Toast.LENGTH_SHORT).show()
-                disableUploadBtn()
-                return@listener
-            }
-
-            Log.d(TAG, "jsonfiles number match")
-
 
             // change the icon to progress circle
             uploadprogressbar.visibility = View.VISIBLE
@@ -152,54 +138,49 @@ class DatasetProgressFragment2 : Fragment() {
 
 
             // if any zip file exists(probably with older date in name), delete it.
+            lateinit var createlabeltask: createlabelziptask
+            createlabeltask = createlabelziptask(ds,
+                    error = {
+                        Toast.makeText(context, "error while zipping", Toast.LENGTH_SHORT).show()
+                        restoreUploadBtn()
+                    },
+                    success = {
+                        //start uploading task
+                        val outputzipfile = createlabeltask.working_zipfile
+                        val uploadurl = ServerInfo.instance.serveraddress + "/upload/labelzip"
+                        val request = Util.createRequestFileUpload(outputzipfile,
+                                uploadurl
+                        ) {
+                            restoreUploadBtn()
+                            Toast.makeText(context, "Upload Success", Toast.LENGTH_SHORT).show()
+                        }
+
+                        val queue = (activity as MainActivity).queue
+
+                        if (queue != null) {
+                            queue.add<NetworkResponse>(request)
+                        } else {
+                            Log.d(TAG, "queue is null")
+                            restoreUploadBtn()
+                            Toast.makeText(context, "request queue error", Toast.LENGTH_SHORT).show()
+
+                        }
 
 
-            // create output zip file
-            val date = SimpleDateFormat("yyMMdd_HHmmss").format(Calendar.getInstance().time)
-            val outputzipfile_path = dir.getPath() + File.separator + ds.getName() + "-" + date + ".zip"
-            val outputzipfile = File(outputzipfile_path)
+                    })
 
-
-            // zip the json files into the output zip file
-
-            if (Util.createZipFilefromFiles(jsonfiles, outputzipfile)) {
-                Log.d(TAG, "zipping success")
-                Log.d(TAG, "output zip file name: " + outputzipfile.getPath())
-                Log.d(TAG, "output zip file size: " + outputzipfile.length())
-            } else {
-                Log.d(TAG, "zipping failed")
-            }
-
-            // send to server
-            // first create multipart request
-            val request = Util.createRequestFileUpload(outputzipfile,
-                    "http://13.124.175.119:4001/upload/labelzip"
-            ) {
-                restoreUploadBtn()
-                Toast.makeText(context, "Upload Success", Toast.LENGTH_SHORT).show()
-            }
-
-            val queue = (activity as MainActivity).queue
-
-            if (queue != null) {
-                queue.add<NetworkResponse>(request)
-            } else {
-                Log.d(TAG, "queue is null")
-                restoreUploadBtn()
-                Toast.makeText(context, "request queue error", Toast.LENGTH_SHORT).show()
-                return@listener
-            }
+            createlabeltask.execute()
         })
+        // end of upload btn listener
 
         fetchdescription()
 
         // manual check
         val checkfile = File(context.filesDir, ds.id.toString())
-        if(checkfile.exists()){
-            Log.d(TAG,"fuck: onviewcreated , /2 exists")
-        }
-        else{
-            Log.d(TAG,"fuck: onviewcreated, /2 not exists")
+        if (checkfile.exists()) {
+            Log.d(TAG, "fuck: onviewcreated , /2 exists")
+        } else {
+            Log.d(TAG, "fuck: onviewcreated, /2 not exists")
         }
 
 
@@ -240,11 +221,10 @@ class DatasetProgressFragment2 : Fragment() {
 
 
             val checkfile = File(context.filesDir, ds.id.toString())
-            if(checkfile.exists()){
-                Log.d(TAG,"fuck: goback btn pressed, /2 exists")
-            }
-            else{
-                Log.d(TAG,"fuck: goback btn pressed, /2 not exists")
+            if (checkfile.exists()) {
+                Log.d(TAG, "fuck: goback btn pressed, /2 exists")
+            } else {
+                Log.d(TAG, "fuck: goback btn pressed, /2 not exists")
             }
         })
 
@@ -301,13 +281,13 @@ class DatasetProgressFragment2 : Fragment() {
         // if the dir with ds id exists, then we assume that the directory is all set.
 
         // TODO: make the checking of downloaded_&installed more detailed
-        val dsworkdir : File = File(context.filesDir, ds.id.toString()).absoluteFile
+        val dsworkdir: File = File(context.filesDir, ds.id.toString()).absoluteFile
         Log.d(TAG, "dsworkdir in checkalreadydownloaded=" + dsworkdir)
 
         Log.d(TAG, "ds dirstr in dataset=" + ds.dirstr)
         Log.d(TAG, "ds exist in dataset=" + ds.direxist)
-        Log.d(TAG,"dsworkdir.exsits="+ dsworkdir.exists())
-        Log.d(TAG,"dsworkdir isdirectory"+ dsworkdir.isDirectory)
+        Log.d(TAG, "dsworkdir.exsits=" + dsworkdir.exists())
+        Log.d(TAG, "dsworkdir isdirectory" + dsworkdir.isDirectory)
         return dsworkdir.exists()
     }
 
@@ -344,11 +324,10 @@ class DatasetProgressFragment2 : Fragment() {
 
         // check dsdir exist
         val checkfile = File(context.filesDir, ds.id.toString())
-        if(checkfile.exists()){
-            Log.d(TAG,"fuck: download success, /2 exists")
-        }
-        else{
-            Log.d(TAG,"fuck: download success, /2 not exists")
+        if (checkfile.exists()) {
+            Log.d(TAG, "fuck: download success, /2 exists")
+        } else {
+            Log.d(TAG, "fuck: download success, /2 not exists")
         }
     }
 

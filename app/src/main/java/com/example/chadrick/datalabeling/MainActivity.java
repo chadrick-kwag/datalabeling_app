@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -16,11 +17,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.auth0.android.jwt.JWT;
 import com.example.chadrick.datalabeling.Fragments.MainPortalFragment;
 import com.example.chadrick.datalabeling.Fragments.NoInternetFragment;
 import com.example.chadrick.datalabeling.Fragments.SignInFragment;
 import com.example.chadrick.datalabeling.Fragments.SplashScreenFragment;
 import com.example.chadrick.datalabeling.Fragments.StartErrorFragment;
+import com.example.chadrick.datalabeling.Models.JWTManager;
 import com.example.chadrick.datalabeling.Models.ServerInfo;
 
 import com.google.android.gms.auth.api.Auth;
@@ -31,6 +34,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,34 +42,29 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
   private RequestQueue queue;
-//  private static String baseurl = "http://13.124.175.119:4001";
+  //  private static String baseurl = "http://13.124.175.119:4001";
   private final String TAG = "datalabel";
   private FragmentManager fragmentManager;
   private boolean firstentry = true;
   public GoogleApiClient googleApiClient;
   public static int RC_SIGN_IN = 1;
   private ServerInfo serverInfo = ServerInfo.Companion.getInstance();
-
+  private JWTManager jwtManager;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     queue = Volley.newRequestQueue(this);
     setContentView(R.layout.activity_main);
-
+    jwtManager = JWTManager.Companion.getInstance(getApplicationContext());
     // setup server info loading
-    try{
+    try {
       serverInfo.config(getAssets().open("serverinfo.txt"));
-    }
-    catch(IOException e){
+    } catch (IOException e) {
       e.printStackTrace();
     }
-
     // testing serverinfo read
-    Log.d(TAG, "onCreate: read from serverinfo="+serverInfo.serveraddress);
-
-
-
+    Log.d(TAG, "onCreate: read from serverinfo=" + serverInfo.serveraddress);
     fragmentManager = getSupportFragmentManager();
     GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
@@ -96,8 +95,6 @@ public class MainActivity extends AppCompatActivity {
         })
         .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
         .build();
-
-
     final Handler handler = new Handler();
     if (firstentry) {
       firstentry = false;
@@ -106,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
       handler.postDelayed(new Runnable() {
         @Override
         public void run() {
-
           initsequence();
         }
       }, 500);
@@ -153,7 +149,8 @@ public class MainActivity extends AppCompatActivity {
       Log.d(TAG, "idtoken=" + result.getSignInAccount().getIdToken());
       Log.d(TAG, "checksigninresult: photourl=" + result.getSignInAccount().getPhotoUrl());
       Log.d(TAG, "checksigninresult: display name" + result.getSignInAccount().getDisplayName());
-      authwithserver(result);
+      authwithjwt(result);
+//      authwithserver(result);
     } else {
       Log.d(TAG, "googlesigninresult failed");
       Log.d(TAG, "fail detail: " + result.getStatus().getStatusMessage());
@@ -188,6 +185,10 @@ public class MainActivity extends AppCompatActivity {
           Log.d(TAG, "response :" + resjson.toString());
           try {
             if (resjson.getBoolean("userverified")) {
+              // check if we have received the jwt
+              String jwt = resjson.getString("jwt");
+              Log.d(TAG, "authwithserver: bitcoin: received jwt=" + jwt);
+              jwtManager.savejwt(jwt);
               // if true, then we can move on to dataselectfragment
               Log.d(TAG, "fuck: goto mainportal from MainActivity authwithserver");
               gotoMainPortalFragment(signInResult.getSignInAccount().getDisplayName(), signInResult.getSignInAccount().getPhotoUrl());
@@ -212,13 +213,13 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void gotoMainPortalFragment(String displayname, Uri photourl) {
-    Log.d(TAG,"fuck: gotoMainPortal from MainActivity");
+    Log.d(TAG, "fuck: gotoMainPortal from MainActivity");
     MainPortalFragment fragment = new MainPortalFragment();
     Bundle passData = new Bundle();
     passData.putString("displayname", displayname);
     passData.putString("photourl", photourl.toString());
     fragment.setArguments(passData);
-    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment,"mainportal").commit();
+    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment, "mainportal").commit();
   }
 
   private void gotoSignInFragment() {
@@ -246,19 +247,42 @@ public class MainActivity extends AppCompatActivity {
 
   }
 
-  private void gotoStartErrorFragment(String msg){
+  private void gotoStartErrorFragment(String msg) {
     StartErrorFragment fragment = new StartErrorFragment();
     Bundle data = new Bundle();
-    data.putString("msg",msg);
-
-
+    data.putString("msg", msg);
     fragment.setArguments(data);
-    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer,fragment).commit();
+    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment).commit();
 
   }
 
-  public GoogleApiClient getGoogleApiClient(){
+  public GoogleApiClient getGoogleApiClient() {
     return this.googleApiClient;
+  }
+
+  private void authwithjwt(GoogleSignInResult signInResult) {
+    // check if we have jwt. if so, check if the mail matches. if so, then we have already auth with
+    // server. no need to send request.
+    String gsi_mail = signInResult.getSignInAccount().getEmail();
+    String localjwt = jwtManager.getJwt();
+    Log.d(TAG, "authwithserver: bitcoin: localjwt=" + localjwt);
+    String jwtusermail;
+    try {
+      jwtusermail = Util.decoded(localjwt).getString("user_mail");
+    } catch (JSONException e) {
+      jwtusermail = null;
+    }
+    //check if email matches the current gso login result's email
+    Log.d(TAG, "authwithserver: bitcoin gsimail=" + gsi_mail + ", jwtmail=" + jwtusermail);
+    if (gsi_mail.equals(jwtusermail)) {
+      Log.d(TAG, "authwithserver: bitcoin gsimail and jwtmail match");
+      // we can move to mainportal.
+      gotoMainPortalFragment(signInResult.getSignInAccount().getDisplayName(), signInResult.getSignInAccount().getPhotoUrl());
+    } else {
+      Log.d(TAG, "authwithserver: bitcoin gsimail and jwtmail do not match");
+      // we need to fetch with server
+      authwithserver(signInResult);
+    }
   }
 
 }

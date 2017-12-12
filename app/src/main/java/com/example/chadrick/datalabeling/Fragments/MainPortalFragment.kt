@@ -61,7 +61,7 @@ class MainPortalFragment : Fragment() {
         menulist.adapter = menuadapter
         menulist.setOnItemClickListener({ parent, view, position, id ->
 
-            val fraglist = fragmentManager.fragments
+            val fraglist = childFragmentManager.fragments
 
 
 
@@ -69,21 +69,21 @@ class MainPortalFragment : Fragment() {
             Log.d("kotlin", "itemtext=" + itemtext)
             if (itemtext.equals("Settings")) {
 
-                if (fragmentManager.findFragmentByTag("settings") != null) {
+                if (childFragmentManager.findFragmentByTag("settings") != null) {
 
                 } else {
-                    fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
+                    childFragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
                             SettingsFragment.instance, "settings").commit()
                 }
 
 
             } else if (itemtext.equals("Main")) {
 
-                for(frag in fragmentManager.fragments){
+                for(frag in childFragmentManager.fragments){
                     Log.d("bitcoin","print in main click frag="+frag.toString())
                 }
 
-                if (fragmentManager.findFragmentByTag("main") != null) {
+                if (childFragmentManager.findFragmentByTag("main") != null) {
 
                 } else {
 //                    val frag = DatasetSelectFragment()
@@ -92,7 +92,7 @@ class MainPortalFragment : Fragment() {
 
 
                     if(!frag.isAdded){
-                        fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
+                        childFragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
                                 frag, "usermain").commit()
                     }
 
@@ -112,11 +112,11 @@ class MainPortalFragment : Fragment() {
         Log.d("bitcoin","normal fetched usermain frag = "+frag.toString())
         if(!frag.isAdded){
             Log.d("bitcoin","usermain frag does not exist. creating one")
-            fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "usermain").commit()
-            fragmentManager.addOnBackStackChangedListener {
+            childFragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "usermain").commit()
+            childFragmentManager.addOnBackStackChangedListener {
                 Log.d("fuck", "inside backstackchangedlistener from Mainportalfragment")
 
-                val fetchedfrag = fragmentManager?.findFragmentByTag("usermain")
+                val fetchedfrag = childFragmentManager?.findFragmentByTag("usermain")
 
                 fetchedfrag?.let {
                     if (fetchedfrag.isVisible) {
@@ -126,13 +126,13 @@ class MainPortalFragment : Fragment() {
 
                 // for controlling the drawer
 
-                val fetchedfrag2 = fragmentManager?.findFragmentByTag("mainportal")
+                val fetchedfrag2 = childFragmentManager?.findFragmentByTag("mainportal")
 
                 // print fragments in stack
 
                 var isontop: Boolean = false
 
-                val stacks = fragmentManager.fragments
+                val stacks = childFragmentManager.fragments
 
                 for (item in stacks) {
                     Log.d("nvidia", "stack: " + item.toString())
@@ -165,14 +165,14 @@ class MainPortalFragment : Fragment() {
             // fetch the existing fragment and add it
 //            val fetchedfrag = fragmentManager.findFragmentByTag("usermain")
 
-            for(frag in fragmentManager.fragments){
+            for(frag in childFragmentManager.fragments){
                 Log.d("bitcoin","print frag = "+frag.toString())
             }
 
-            fragmentManager.beginTransaction().remove(UserMainFragment.instance).commit()
+            childFragmentManager.beginTransaction().remove(UserMainFragment.instance).commit()
 //            childFragmentManager.beginTransaction().remove(UserMainFragment.instance).commit()
 
-            for(frag in fragmentManager.fragments){
+            for(frag in childFragmentManager.fragments){
                 Log.d("bitcoin","print after frag = "+frag.toString())
             }
 

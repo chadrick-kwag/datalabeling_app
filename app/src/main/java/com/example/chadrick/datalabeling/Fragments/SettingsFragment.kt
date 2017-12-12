@@ -29,25 +29,27 @@ import kotlinx.android.synthetic.main.settings_layout.*
 
 class SettingsFragment : Fragment() {
 
-    object holder { val INSTANCE=SettingsFragment()}
+    object holder {
+        val INSTANCE = SettingsFragment()
+    }
 
-    lateinit var smAdapter : SettingsMenuAdapter
+    lateinit var smAdapter: SettingsMenuAdapter
 
-    private var initialized : Boolean = false
+    private var initialized: Boolean = false
 
 
     companion object {
         val instance = holder.INSTANCE
-        val menulist : ArrayList<SMitem> = ArrayList()
+        val menulist: ArrayList<SMitem> = ArrayList()
 
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        if(!initialized){
-            menulist.add(SMitem(type=SMitem.TYPE_TOGGLE,title="Night Mode"))
-            menulist.add(SMitem(type=SMitem.TYPE_PLAIN,title="Logout",clickable = true,
-                    titleColor = Color.parseColor("#ff0000") ,
+        if (!initialized) {
+            menulist.add(SMitem(type = SMitem.TYPE_TOGGLE, title = "Night Mode"))
+            menulist.add(SMitem(type = SMitem.TYPE_PLAIN, title = "Logout", clickable = true,
+                    titleColor = Color.parseColor("#ff0000"),
                     clickAction = ::asksignout
             ))
             smAdapter = SettingsMenuAdapter(menulist)
@@ -63,17 +65,16 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
         // recycler view manage
         settings_menu_rv.adapter = smAdapter
-        settings_menu_rv.layoutManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        settings_menu_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
     }
 
-    private fun asksignout(){
+    private fun asksignout() {
         val alertbuilder = AlertDialog.Builder(activity)
         alertbuilder.setMessage("Sign out for real?")
                 .setPositiveButton("Let's geddit", { x, y -> signout() })
-                .setNegativeButton("Nope", { x, y ->  })
+                .setNegativeButton("Nope", { x, y -> })
         val alert = alertbuilder.create()
         alert.show()
     }
@@ -93,6 +94,9 @@ class SettingsFragment : Fragment() {
         fragmentManager.beginTransaction().replace(R.id.fragmentcontainer, SignInFragment()).commit()
         val mainportalfrag = fragmentManager.findFragmentByTag("mainportal")
         fragmentManager.beginTransaction().remove(mainportalfrag).commit()
+        fragmentManager.beginTransaction().remove(this).commit()
+
+
     }
 
 }

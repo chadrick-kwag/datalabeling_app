@@ -35,7 +35,9 @@ class SignInFragment : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sign_in_button.setOnClickListener({ view -> signIn() });
+        sign_in_button.setOnClickListener({ view -> signIn() })
+
+
     }
 
     private fun signIn() {

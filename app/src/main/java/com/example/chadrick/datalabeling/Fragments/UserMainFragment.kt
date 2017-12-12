@@ -62,12 +62,15 @@ class UserMainFragment : Fragment() {
 
         RArvAdapter = RAAdapter.newInstance(context, RAlist)
 
+        for(frag in fragmentManager.fragments){
+            Log.d("bitcoin","in Usermainfragment oncreateview frag = "+frag.toString())
+        }
+
 
         return root
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-
 
         super.onViewCreated(view, savedInstanceState)
         AllDSrecyclerview.adapter = allDSrecyclerviewAdapter

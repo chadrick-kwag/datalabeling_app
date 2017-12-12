@@ -13,8 +13,14 @@ class ServerInfo private constructor() {
     private object holder {val INSTANCE = ServerInfo()}
     lateinit var serveraddress: String
 
+
+
     companion object {
+
+
+
         val instance = holder.INSTANCE
+
 
     }
 

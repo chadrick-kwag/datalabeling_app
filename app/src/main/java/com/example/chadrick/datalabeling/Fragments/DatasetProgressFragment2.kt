@@ -16,10 +16,7 @@ import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.example.chadrick.datalabeling.MainActivity
-import com.example.chadrick.datalabeling.Models.DataSet
-import com.example.chadrick.datalabeling.Models.DownloadTaskManager2
-import com.example.chadrick.datalabeling.Models.RecentActivityLogManager
-import com.example.chadrick.datalabeling.Models.ServerInfo
+import com.example.chadrick.datalabeling.Models.*
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.Tasks.createlabelziptask
 import com.example.chadrick.datalabeling.Tasks.dszipDownloadTask
@@ -139,6 +136,7 @@ class DatasetProgressFragment2 : Fragment() {
 
             // if any zip file exists(probably with older date in name), delete it.
             lateinit var createlabeltask: createlabelziptask
+            var userid = JWTManager.getInstance()?.userid ?: ""
             createlabeltask = createlabelziptask(ds,
                     error = {
                         Toast.makeText(context, "error while zipping", Toast.LENGTH_SHORT).show()
@@ -148,7 +146,7 @@ class DatasetProgressFragment2 : Fragment() {
                         //start uploading task
                         val outputzipfile = createlabeltask.working_zipfile
                         val uploadurl = ServerInfo.instance.serveraddress + "/upload/labelzip"
-                        val request = Util.createRequestFileUpload(outputzipfile,
+                        val request = Util.createRequestFileUpload(ds.id.toString(), userid, outputzipfile,
                                 uploadurl
                         ) {
                             restoreUploadBtn()

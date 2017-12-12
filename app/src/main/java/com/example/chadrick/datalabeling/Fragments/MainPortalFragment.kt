@@ -61,6 +61,10 @@ class MainPortalFragment : Fragment() {
         menulist.adapter = menuadapter
         menulist.setOnItemClickListener({ parent, view, position, id ->
 
+            val fraglist = fragmentManager.fragments
+
+
+
             val itemtext = parent.getItemAtPosition(position)
             Log.d("kotlin", "itemtext=" + itemtext)
             if (itemtext.equals("Settings")) {
@@ -75,13 +79,23 @@ class MainPortalFragment : Fragment() {
 
             } else if (itemtext.equals("Main")) {
 
+                for(frag in fragmentManager.fragments){
+                    Log.d("bitcoin","print in main click frag="+frag.toString())
+                }
+
                 if (fragmentManager.findFragmentByTag("main") != null) {
 
                 } else {
 //                    val frag = DatasetSelectFragment()
                     val frag = UserMainFragment.instance
-                    fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
-                            frag, "usermain").commit()
+                    // check if already added
+
+
+                    if(!frag.isAdded){
+                        fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
+                                frag, "usermain").commit()
+                    }
+
                 }
 
 
@@ -95,56 +109,79 @@ class MainPortalFragment : Fragment() {
         // show dataset select fragment as the default
 //        val frag = DatasetSelectFragment()
         val frag = UserMainFragment.instance
-        fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "usermain").commit()
-        fragmentManager.addOnBackStackChangedListener {
-            Log.d("fuck", "inside backstackchangedlistener from Mainportalfragment")
+        Log.d("bitcoin","normal fetched usermain frag = "+frag.toString())
+        if(!frag.isAdded){
+            Log.d("bitcoin","usermain frag does not exist. creating one")
+            fragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "usermain").commit()
+            fragmentManager.addOnBackStackChangedListener {
+                Log.d("fuck", "inside backstackchangedlistener from Mainportalfragment")
 
-            val fetchedfrag = fragmentManager?.findFragmentByTag("usermain")
+                val fetchedfrag = fragmentManager?.findFragmentByTag("usermain")
 
-            fetchedfrag?.let {
-                if (fetchedfrag.isVisible) {
-                    fetchedfrag.onResume()
+                fetchedfrag?.let {
+                    if (fetchedfrag.isVisible) {
+                        fetchedfrag.onResume()
+                    }
                 }
 
-            }
+                // for controlling the drawer
 
-            // for controlling the drawer
+                val fetchedfrag2 = fragmentManager?.findFragmentByTag("mainportal")
 
-            val fetchedfrag2 = fragmentManager?.findFragmentByTag("mainportal")
+                // print fragments in stack
 
-            // print fragments in stack
+                var isontop: Boolean = false
 
-            var isontop: Boolean = false
+                val stacks = fragmentManager.fragments
 
-            val stacks = fragmentManager.fragments
-
-            for (item in stacks) {
-                Log.d("nvidia", "stack: " + item.toString())
-            }
-
-            val lastfrag = stacks.last()
-
-            Log.d("nvidia", "lastfrag=" + lastfrag.toString())
-
-
-            fetchedfrag2?.let {
-
-
-                if (lastfrag is MainPortalFragment || lastfrag is UserMainFragment) {
-                    Log.d("nvidia", "mainportal on top. enable drawer")
-                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                } else {
-                    Log.d("nvidia", "mainportal not on top. disable drawer")
-                    drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                for (item in stacks) {
+                    Log.d("nvidia", "stack: " + item.toString())
                 }
 
+                val lastfrag = stacks.last()
+
+                Log.d("nvidia", "lastfrag=" + lastfrag.toString())
+
+
+                fetchedfrag2?.let {
+
+
+                    if (lastfrag is MainPortalFragment || lastfrag is UserMainFragment) {
+                        Log.d("nvidia", "mainportal on top. enable drawer")
+                        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                    } else {
+                        Log.d("nvidia", "mainportal not on top. disable drawer")
+                        drawer_layout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                    }
+
+                }
+
+
             }
-
-
         }
+        else{
+            Log.d("bitcoin","usermain exist. showing it")
+            //if already added
+            // fetch the existing fragment and add it
+//            val fetchedfrag = fragmentManager.findFragmentByTag("usermain")
+
+            for(frag in fragmentManager.fragments){
+                Log.d("bitcoin","print frag = "+frag.toString())
+            }
+
+            fragmentManager.beginTransaction().remove(UserMainFragment.instance).commit()
+//            childFragmentManager.beginTransaction().remove(UserMainFragment.instance).commit()
+
+            for(frag in fragmentManager.fragments){
+                Log.d("bitcoin","print after frag = "+frag.toString())
+            }
 
 
+//
+//            val fetchedfrag = UserMainFragment.instance
+////            fragmentManager.beginTransaction().show(fetchedfrag).commit();
+//            fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
+//                    fetchedfrag, "usermain").commit()
+        }
     }
-
-
 }

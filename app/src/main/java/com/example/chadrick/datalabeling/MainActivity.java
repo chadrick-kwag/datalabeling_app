@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    Log.d(TAG,"beer activity oncreate");
     super.onCreate(savedInstanceState);
     queue = Volley.newRequestQueue(this);
     setContentView(R.layout.activity_main);
@@ -221,7 +222,8 @@ public class MainActivity extends AppCompatActivity {
     passData.putString("displayname", displayname);
     passData.putString("photourl", photourl.toString());
     fragment.setArguments(passData);
-    getSupportFragmentManager().beginTransaction().add(R.id.fragmentcontainer, fragment, "mainportal").commit();
+
+    getSupportFragmentManager().beginTransaction().replace(R.id.fragmentcontainer, fragment, "mainportal").commit();
   }
 
   private void gotoSignInFragment() {

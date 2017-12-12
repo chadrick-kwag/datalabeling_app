@@ -12,6 +12,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
+import com.auth0.android.jwt.JWT;
+import com.example.chadrick.datalabeling.Models.JWTManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -159,7 +161,7 @@ public class Util {
   }
 
 
-  public static VolleyMultipartRequest createRequestFileUpload(File uploadfile, String url, Runnable finishedcallback){
+  public static VolleyMultipartRequest createRequestFileUpload(String dsid, String userid, File uploadfile, String url, Runnable finishedcallback){
 
     VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, url,
         new Response.Listener<NetworkResponse>() {
@@ -259,7 +261,8 @@ public class Util {
       @Override
       protected Map<String, String> getParams() {
         Map<String, String> params = new HashMap<>();
-//        params.put("userid",)
+        params.put("dsid",dsid);
+        params.put("userid",userid);
 
 //        params.put("api_token", "gh659gjhvdyudo973823tt9gvjf7i6ric75r76");
 //        params.put("name", mNameInput.getText().toString());
@@ -275,6 +278,7 @@ public class Util {
         // file name could found file base or direct access from real path
         // for now just get bitmap data from ImageView
         params.put("labelzip", new DataPart(uploadfile.getName(), fileToBytearray(uploadfile), "application/zip"));
+
 
         return params;
       }

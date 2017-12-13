@@ -51,6 +51,14 @@ class UserMainFragment : Fragment() {
 
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d(TAG,"bitcoin: Usermainfragment created")
+        for( frag in fragmentManager.fragments){
+            Log.d("bitcoin","print frags in settingsfragment frag = "+frag.toString())
+        }
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 

@@ -52,70 +52,92 @@ public class MainActivity extends AppCompatActivity {
   public static int RC_SIGN_IN = 1;
   private ServerInfo serverInfo = ServerInfo.Companion.getInstance();
   private JWTManager jwtManager;
+  private Boolean isRestoring = false;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    Log.d(TAG,"beer activity oncreate");
+    Log.d(TAG, "beer activity oncreate");
     super.onCreate(savedInstanceState);
-    queue = Volley.newRequestQueue(this);
+
+    // check if we are restoring
     setContentView(R.layout.activity_main);
-    jwtManager = JWTManager.Companion.getInstance(getApplicationContext());
-    // setup server info loading
-    try {
-      serverInfo.config(getAssets().open("serverinfo.txt"));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    // testing serverinfo read
-    Log.d(TAG, "onCreate: read from serverinfo=" + serverInfo.serveraddress);
-    fragmentManager = getSupportFragmentManager();
-    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-        .requestEmail()
-        .requestIdToken(getString(R.string.server_client_id))
-        .requestProfile()
-        .build();
-    googleApiClient = new GoogleApiClient.Builder(this)
-        .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-          @Override
-          public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-            Log.d(TAG, "googleapiclient onconnectionfailed" + connectionResult);
-            gotoSignInFragment();
-          }
-        })
-        .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-          // when connected, do what?
+    if (savedInstanceState != null) {
+      Log.d("bitcoin","restoring from mainactivity");
+      isRestoring = true;
+      // check if serverInfo exists properly
 
-          @Override
-          public void onConnected(@Nullable Bundle bundle) {
-            Log.d(TAG, "googleapiclient connected!!");
-            return;
-          }
-
-          @Override
-          public void onConnectionSuspended(int i) {
-            Log.d(TAG, "googleapi connection suspended");
-          }
-        })
-        .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-        .build();
-    final Handler handler = new Handler();
-    if (firstentry) {
-      firstentry = false;
-      SplashScreenFragment splashScreenFragment = new SplashScreenFragment();
-      fragmentManager.beginTransaction().add(R.id.fragmentcontainer, splashScreenFragment).commit();
-      handler.postDelayed(new Runnable() {
-        @Override
-        public void run() {
-          initsequence();
-        }
-      }, 500);
     } else {
+      Log.d("bitcoin","first creating from mainactivity");
+      queue = Volley.newRequestQueue(this);
+
+      jwtManager = JWTManager.Companion.getInstance(getApplicationContext());
+      // setup server info loading
+      try {
+        serverInfo.config(getAssets().open("serverinfo.txt"));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      // testing serverinfo read
+      Log.d(TAG, "onCreate: read from serverinfo=" + serverInfo.serveraddress);
+      fragmentManager = getSupportFragmentManager();
+      GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+          .requestEmail()
+          .requestIdToken(getString(R.string.server_client_id))
+          .requestProfile()
+          .build();
+      googleApiClient = new GoogleApiClient.Builder(this)
+          .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+            @Override
+            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+              Log.d(TAG, "googleapiclient onconnectionfailed" + connectionResult);
+              gotoSignInFragment();
+            }
+          })
+          .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+            // when connected, do what?
+
+            @Override
+            public void onConnected(@Nullable Bundle bundle) {
+              Log.d(TAG, "googleapiclient connected!!");
+              return;
+            }
+
+            @Override
+            public void onConnectionSuspended(int i) {
+              Log.d(TAG, "googleapi connection suspended");
+            }
+          })
+          .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+          .build();
+      final Handler handler = new Handler();
+      if (firstentry) {
+        firstentry = false;
+        SplashScreenFragment splashScreenFragment = new SplashScreenFragment();
+        fragmentManager.beginTransaction().add(R.id.fragmentcontainer, splashScreenFragment).commit();
+        handler.postDelayed(new Runnable() {
+          @Override
+          public void run() {
+            initsequence();
+          }
+        }, 500);
+      } else {
+      }
     }
+
   }
 
   @Override
   protected void onResume() {
     super.onResume();
+    // check if serverinfo has been initialized
+    String serveraddress =  ServerInfo.Companion.getInstance().serveraddress;
+    if(serveraddress==null){
+      Log.d("noob","serveraddress is null");
+    }
+    else{
+      Log.d("noob","serveraddress is not null");
+    }
+
   }
 
   @Override
@@ -222,7 +244,6 @@ public class MainActivity extends AppCompatActivity {
     passData.putString("displayname", displayname);
     passData.putString("photourl", photourl.toString());
     fragment.setArguments(passData);
-
     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentcontainer, fragment, "mainportal").commit();
   }
 
@@ -291,7 +312,7 @@ public class MainActivity extends AppCompatActivity {
 
   @Override
   protected void onActivityResult(int reqcode, int resultcode, Intent data) {
-    Log.d(TAG, "onActivityResult: bitcoin onactivityresult triggered inside mainactivity. reqcode="+reqcode);
+    Log.d(TAG, "onActivityResult: bitcoin onactivityresult triggered inside mainactivity. reqcode=" + reqcode);
     if (reqcode == RC_SIGN_IN) {
       GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
       //handle signin result

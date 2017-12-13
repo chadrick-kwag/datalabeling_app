@@ -38,6 +38,12 @@ class MainPortalFragment : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
 
+        var isRecreating = false
+
+        savedInstanceState?.let { isRecreating = true }
+
+        Log.d("bitcoin", "isRecreating=" + isRecreating)
+
 
         photourl = arguments.getString("photourl")
         username = arguments.getString("displayname")
@@ -64,7 +70,6 @@ class MainPortalFragment : Fragment() {
             val fraglist = childFragmentManager.fragments
 
 
-
             val itemtext = parent.getItemAtPosition(position)
             Log.d("kotlin", "itemtext=" + itemtext)
             if (itemtext.equals("Settings")) {
@@ -72,30 +77,33 @@ class MainPortalFragment : Fragment() {
                 if (childFragmentManager.findFragmentByTag("settings") != null) {
 
                 } else {
-                    childFragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
-                            SettingsFragment.instance, "settings").commit()
+                    if (!isRecreating) {
+                        childFragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
+                                SettingsFragment.instance, "settings").commit()
+                    }
+
                 }
 
 
             } else if (itemtext.equals("Main")) {
 
-                for(frag in childFragmentManager.fragments){
-                    Log.d("bitcoin","print in main click frag="+frag.toString())
+                for (frag in childFragmentManager.fragments) {
+                    Log.d("bitcoin", "print in main click frag=" + frag.toString())
                 }
 
                 if (childFragmentManager.findFragmentByTag("main") != null) {
 
-                } else {
+                } else if (!isRecreating) {
 //                    val frag = DatasetSelectFragment()
                     val frag = UserMainFragment.instance
-                    // check if already added
+                    // check if already exist in childfragmentmanager
+
+                    Log.d("bitcoin", "usermainfragment not found in childfragmentmanager")
+                    childFragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
+                            frag, "usermain").commit()
 
 
-                    if(!frag.isAdded){
-                        childFragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
-                                frag, "usermain").commit()
-                    }
-
+                } else {
                 }
 
 
@@ -108,10 +116,14 @@ class MainPortalFragment : Fragment() {
 
         // show dataset select fragment as the default
 //        val frag = DatasetSelectFragment()
-        val frag = UserMainFragment.instance
-        Log.d("bitcoin","normal fetched usermain frag = "+frag.toString())
-        if(!frag.isAdded){
-            Log.d("bitcoin","usermain frag does not exist. creating one")
+
+        // check if usermainfragment exists in childfragmentmanager
+        val checkfrag = childFragmentManager.findFragmentByTag("usermain")
+
+        if (checkfrag == null && !isRecreating) {
+
+            val frag = UserMainFragment.instance
+            Log.d("bitcoin", "usermain frag does not exist. creating one")
             childFragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "usermain").commit()
             childFragmentManager.addOnBackStackChangedListener {
                 Log.d("fuck", "inside backstackchangedlistener from Mainportalfragment")
@@ -160,28 +172,8 @@ class MainPortalFragment : Fragment() {
             }
         }
         else{
-            Log.d("bitcoin","usermain exist. showing it")
-            //if already added
-            // fetch the existing fragment and add it
-//            val fetchedfrag = fragmentManager.findFragmentByTag("usermain")
-
-            for(frag in childFragmentManager.fragments){
-                Log.d("bitcoin","print frag = "+frag.toString())
-            }
-
-            childFragmentManager.beginTransaction().remove(UserMainFragment.instance).commit()
-//            childFragmentManager.beginTransaction().remove(UserMainFragment.instance).commit()
-
-            for(frag in childFragmentManager.fragments){
-                Log.d("bitcoin","print after frag = "+frag.toString())
-            }
-
-
-//
-//            val fetchedfrag = UserMainFragment.instance
-////            fragmentManager.beginTransaction().show(fetchedfrag).commit();
-//            fragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
-//                    fetchedfrag, "usermain").commit()
+            Log.d("bitcoin","usermainfrag not created in mainportal")
         }
+
     }
 }

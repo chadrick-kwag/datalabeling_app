@@ -42,13 +42,14 @@ class DatasetProgressFragment2 : Fragment() {
     lateinit var ralogmanager: RecentActivityLogManager
 
     companion object {
-        val TAG: String = this.javaClass.simpleName
+        val TAG: String = "DatasetProgressFragment"
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bgcolor = Color.parseColor(arguments.getString("bgcolor"))
+        Log.d(TAG,"oncreate")
         Log.d("chadrick", "bgcolor fetched at oncreate=" + bgcolor)
     }
 

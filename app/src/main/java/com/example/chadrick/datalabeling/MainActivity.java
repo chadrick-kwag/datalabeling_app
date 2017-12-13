@@ -185,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         gotoSignInFragment();
       } else {
         Log.d(TAG, "checksigninresult: some weird signin case");
-        Toast.makeText(getApplicationContext(), "Sing in critical error. Quiting App", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "Signin critical error. Quiting App", Toast.LENGTH_SHORT).show();
         finish();
       }
     }

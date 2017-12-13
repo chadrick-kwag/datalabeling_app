@@ -6,8 +6,10 @@ import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.*
+import java.lang.ref.WeakReference
 import java.nio.charset.Charset
 import java.util.*
+import java.util.concurrent.CancellationException
 import kotlin.collections.ArrayList
 
 /**
@@ -17,7 +19,8 @@ import kotlin.collections.ArrayList
 class RecentActivityLogManager {
 
 
-    var mcontext: Context
+//    var mcontext: Context
+    var mcontext: Context by WeakRefHolder()
 
     companion object {
 
@@ -42,8 +45,15 @@ class RecentActivityLogManager {
     }
 
     private constructor(context: Context) {
-        mcontext = context
-        readparse()
+//        mcontext = context
+        try {
+            mcontext = context
+            readparse()
+        }
+        catch(e: CancellationException){
+
+        }
+
     }
 
 

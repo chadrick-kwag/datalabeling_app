@@ -20,6 +20,8 @@ import com.example.chadrick.datalabeling.Callback;
 import com.example.chadrick.datalabeling.CustomViewPager;
 import com.example.chadrick.datalabeling.Models.PageInfoSet;
 import com.example.chadrick.datalabeling.Util;
+
+import java.lang.ref.WeakReference;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -56,7 +58,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
   ScaleGestureDetector mScaleDetector;
 
-  Context context;
+  WeakReference<Context> context;
 
   private CustomViewPager customViewPager;
   private Callback drawBtnpressedcallback;
@@ -92,7 +94,7 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
   private void sharedConstructing(Context context) {
     super.setClickable(true);
-    this.context = context;
+    this.context = new WeakReference<>(context);
     mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
     matrix = new Matrix();
     m = new float[9];

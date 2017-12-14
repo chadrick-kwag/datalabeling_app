@@ -12,6 +12,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import com.example.chadrick.datalabeling.Callback;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by chadrick on 17. 11. 4.
  */
@@ -19,6 +21,8 @@ import com.example.chadrick.datalabeling.Callback;
 public class BasicZoomImageView extends AppCompatImageView {
   Matrix matrix;
   private Matrix inverseMatrix;
+
+
 
   // We can be in one of these 3 states
   static final int NONE = 0;
@@ -41,7 +45,7 @@ public class BasicZoomImageView extends AppCompatImageView {
 
   ScaleGestureDetector mScaleDetector;
 
-  Context context;
+  WeakReference<Context> context;
   private boolean touchEnable = true;
   private final String TAG = this.getClass().getSimpleName();
   private Callback drawBtnpressedcallback;
@@ -50,20 +54,23 @@ public class BasicZoomImageView extends AppCompatImageView {
   private int MOVE_CLICK_LIMIT=5;
 
   public BasicZoomImageView(Context context) {
-    super(context);
+
+//    super( context);
+    super(new WeakReference<>(context).get());
     sharedConstructing(context);
   }
 
   public BasicZoomImageView(Context context, AttributeSet attrs) {
-    super(context, attrs);
+//    super(context, attrs);
+    super(new WeakReference<>(context).get(),attrs);
     sharedConstructing(context);
   }
 
 
   private void sharedConstructing(Context context) {
     super.setClickable(true);
-    this.context = context;
-    mScaleDetector = new ScaleGestureDetector(context, new ScaleListener());
+    this.context = new WeakReference<>(context);
+    mScaleDetector = new ScaleGestureDetector(this.context.get(), new ScaleListener());
     matrix = new Matrix();
     m = new float[9];
     setImageMatrix(matrix);

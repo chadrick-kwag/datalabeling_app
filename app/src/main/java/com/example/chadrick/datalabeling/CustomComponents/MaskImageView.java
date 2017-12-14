@@ -16,13 +16,15 @@ import com.example.chadrick.datalabeling.Callback;
 import com.example.chadrick.datalabeling.CallbackWithRect;
 import com.example.chadrick.datalabeling.Util;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by chadrick on 17. 10. 18.
  */
 
 public class MaskImageView extends android.support.v7.widget.AppCompatImageView {
 
-  private Context context;
+  private WeakReference<Context> context;
   private Paint paint = new Paint();
   private int width, height;
   private Canvas canvas;
@@ -39,17 +41,18 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
   private final String TAG = this.getClass().getSimpleName();
 
   public MaskImageView(Context c) {
-    super(c);
+
+    super(new WeakReference<>(c).get());
     sharedconstruct(c);
   }
 
   public MaskImageView(Context context, AttributeSet attrs) {
-    super(context, attrs);
+    super(new WeakReference<>(context).get(), attrs);
     sharedconstruct(context);
   }
 
   private void sharedconstruct(Context context) {
-    this.context = context;
+    this.context = new WeakReference<>(context);
 
     paint.setColor(Color.rgb(255, 63, 20));
     paint.setStrokeWidth(5);

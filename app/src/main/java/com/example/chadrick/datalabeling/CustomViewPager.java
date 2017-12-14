@@ -6,6 +6,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by chadrick on 17. 10. 14.
  */
@@ -16,12 +18,12 @@ public class CustomViewPager extends ViewPager {
     private final String TAG = this.getClass().getSimpleName();
 
     public CustomViewPager(Context context){
-        super(context);
+        super(new WeakReference<>(context).get());
 
     }
 
     public CustomViewPager(Context context, AttributeSet attrs){
-        super(context, attrs);
+        super(new WeakReference<>(context).get(), attrs);
     }
 
     @Override

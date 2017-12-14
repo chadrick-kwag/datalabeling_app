@@ -1,11 +1,13 @@
 package com.example.chadrick.datalabeling;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -41,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
   private RequestQueue queue;
@@ -53,11 +56,13 @@ public class MainActivity extends AppCompatActivity {
   private ServerInfo serverInfo = ServerInfo.Companion.getInstance();
   private JWTManager jwtManager;
   private Boolean isRestoring = false;
+  private WeakReference<Context> context;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     Log.d(TAG, "beer activity oncreate");
     super.onCreate(savedInstanceState);
+    context = new WeakReference<Context>(this);
 
     // check if we are restoring
     setContentView(R.layout.activity_main);
@@ -85,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
           .requestIdToken(getString(R.string.server_client_id))
           .requestProfile()
           .build();
-      googleApiClient = new GoogleApiClient.Builder(this)
+      googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
           .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
             @Override
             public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -146,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   public RequestQueue getQueue() {
-    return this.queue;
+    return queue;
   }
 
   private void checkinternetandAction() {
@@ -282,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
   }
 
   public GoogleApiClient getGoogleApiClient() {
-    return this.googleApiClient;
+    return googleApiClient;
   }
 
   private void authwithjwt(GoogleSignInResult signInResult) {

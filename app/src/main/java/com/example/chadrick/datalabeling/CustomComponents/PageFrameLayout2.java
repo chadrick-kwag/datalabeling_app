@@ -7,6 +7,8 @@ import android.view.MotionEvent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Created by chadrick on 17. 11. 4.
  */
@@ -20,11 +22,11 @@ public class PageFrameLayout2 extends FrameLayout {
   private final String TAG = this.getClass().getSimpleName();
 
   public PageFrameLayout2(Context context) {
-    super(context);
+    super(new WeakReference<>(context).get());
   }
 
   public PageFrameLayout2(Context context, AttributeSet attrs){
-    super(context,attrs);
+    super( new WeakReference<>(context).get(),attrs);
   }
 
 

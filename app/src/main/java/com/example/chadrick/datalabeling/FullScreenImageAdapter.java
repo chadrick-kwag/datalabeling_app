@@ -10,24 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.example.chadrick.datalabeling.CustomComponents.MaskImageView;
-import com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout;
-import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
 import com.example.chadrick.datalabeling.Models.LabelDrawPad;
-import com.example.chadrick.datalabeling.Models.LabelDrawPad.LabelDrawPadBuilder;
 import com.example.chadrick.datalabeling.Models.PageInfoSet;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.Consumer;
 
 /**
  * Created by chadrick on 17. 10. 12.
  */
 
 public class FullScreenImageAdapter extends PagerAdapter {
-  private Context context;
+  private WeakReference<Context> context;
 
   private ArrayList<File> imagefiles;
   private CustomViewPager customViewPager;
@@ -50,7 +46,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
   private final String TAG = this.getClass().getSimpleName();
 
   public FullScreenImageAdapter(Context context, ArrayList<File> imagefiles, CustomViewPager customViewPager, Callback drawBtnpressedcallback, int screenwidth, int screenheight) {
-    this.context = context;
+    this.context = new WeakReference<>(context);
     this.imagefiles = imagefiles;
     this.customViewPager = customViewPager;
 
@@ -75,7 +71,7 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     Log.d(TAG,"instantiating position: "+position);
 
-    LayoutInflater inflater = (LayoutInflater) context
+    LayoutInflater inflater = (LayoutInflater) context.get()
         .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     LabelDrawPad labelDrawPad =  new LabelDrawPad.LabelDrawPadBuilder(inflater,container,position)
         .setDrawBtnPressedCallback(drawBtnpressedcallback)
@@ -95,33 +91,6 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     return rootview;
 
-//
-////        ImageView imgDisplay;
-//    TouchImageView mainIV;
-//    MaskImageView maskIV;
-//    PageFrameLayout pageframelayout;
-//
-//
-//
-//    View viewLayout = inflater.inflate(R.layout.layout_fullscreen_image, container,
-//        false);
-//
-//
-//    mainIV = (TouchImageView) viewLayout.findViewById(R.id.touchimageview);
-//    maskIV = (MaskImageView) viewLayout.findViewById(R.id.tempdrawarea);
-//    pageframelayout = (PageFrameLayout) viewLayout.findViewById(R.id.pageFramelayout);
-//
-//    PageInfoSet pageInfoSet = new PageInfoSet(mainIV, maskIV, pageframelayout, customViewPager,
-//        drawBtnpressedcallback, callback2, imagefiles.get(position));
-//
-//    ((ViewPager) container).addView(viewLayout);
-//
-//    // save this object in the hashmap
-//    savedpages.put(position,viewLayout);
-//    pageInfoSetHashMap.put(position,pageInfoSet);
-//    Log.d(TAG,"pageinfoset of position: "+ position + " is added to hashmap");
-//
-//    return viewLayout;
   }
 
   @Override
@@ -131,11 +100,6 @@ public class FullScreenImageAdapter extends PagerAdapter {
 
     labelDrawPadHashMap.remove(position);
 
-//    // removed from savedpages
-//    savedpages.remove(position);
-//
-//    // remove from pageinfosethashmap
-//    pageInfoSetHashMap.remove(position);
   }
 
   // this is called by the ImageViewerfragment which holds the control over

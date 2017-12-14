@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.chadrick.datalabeling.Models.App
 import com.example.chadrick.datalabeling.Models.SMitem
 import kotlinx.android.synthetic.main.sm_plaintype_layout.view.*
 import kotlinx.android.synthetic.main.sm_toggletype_layout.view.*
@@ -39,13 +40,19 @@ class SettingsMenuAdapter(menuitemlist: ArrayList<SMitem>) : RecyclerView.Adapte
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
         when (viewType) {
-            SMitem.TYPE_TOGGLE -> return toggleTypeViewHolder(LayoutInflater.from(parent?.context)
+//            SMitem.TYPE_TOGGLE -> return toggleTypeViewHolder(LayoutInflater.from(parent?.context)
+//                    .inflate(R.layout.sm_toggletype_layout, parent, false))
+                    SMitem.TYPE_TOGGLE -> return toggleTypeViewHolder(LayoutInflater.from(App.applicationContext())
                     .inflate(R.layout.sm_toggletype_layout, parent, false))
-            SMitem.TYPE_PLAIN -> return plainTypeViewHolder(LayoutInflater.from(parent?.context)
+
+
+            SMitem.TYPE_PLAIN -> return plainTypeViewHolder(LayoutInflater.from(App.applicationContext())
                     .inflate(R.layout.sm_plaintype_layout, parent, false))
             else -> {
                 Log.d(TAG, "unrecognized viewtype detected")
-                return plainTypeViewHolder(LayoutInflater.from(parent?.context)
+//                return plainTypeViewHolder(LayoutInflater.from(parent?.context)
+//                        .inflate(R.layout.sm_plaintype_layout, parent, false))
+                return plainTypeViewHolder(LayoutInflater.from(App.applicationContext())
                         .inflate(R.layout.sm_plaintype_layout, parent, false))
             }
         }

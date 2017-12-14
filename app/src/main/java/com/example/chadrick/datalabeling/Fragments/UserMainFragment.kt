@@ -11,6 +11,7 @@ import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
+import com.example.chadrick.datalabeling.Models.App
 import com.example.chadrick.datalabeling.Models.DataSet
 import com.example.chadrick.datalabeling.Models.RecentActivityLogManager
 import com.example.chadrick.datalabeling.Models.ServerInfo
@@ -65,8 +66,8 @@ class UserMainFragment : Fragment() {
         val root: View? = inflater?.inflate(R.layout.usermainfragment_layout, container, false)
 
         // setup adapter for RA
-        allDSrecyclerviewAdapter = RAAdapter.newInstance(context, serverFectchedDSlist)
-        recentactivitylogmanager = RecentActivityLogManager.getInstance(context)
+        allDSrecyclerviewAdapter = RAAdapter.newInstance(App.applicationContext(), serverFectchedDSlist)
+        recentactivitylogmanager = RecentActivityLogManager.getInstance(App.applicationContext())
 
         RArvAdapter = RAAdapter.newInstance(context, RAlist)
 

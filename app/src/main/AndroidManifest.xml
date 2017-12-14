@@ -16,6 +16,7 @@
         android:roundIcon="@drawable/datalabel_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:name=".Models.App"
         >
         <activity android:name=".MainActivity"
                   android:configChanges="orientation"

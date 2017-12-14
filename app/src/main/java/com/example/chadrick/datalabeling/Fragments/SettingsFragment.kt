@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.chadrick.datalabeling.MainActivity
+import com.example.chadrick.datalabeling.Models.App
 import com.example.chadrick.datalabeling.Models.SMitem
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.SettingsMenuAdapter
@@ -75,7 +76,7 @@ class SettingsFragment : Fragment() {
 
         // recycler view manage
         settings_menu_rv.adapter = smAdapter
-        settings_menu_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        settings_menu_rv.layoutManager = LinearLayoutManager(App.applicationContext(), LinearLayoutManager.VERTICAL, false)
     }
 
     private fun asksignout() {

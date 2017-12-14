@@ -1,14 +1,11 @@
 package com.example.chadrick.datalabeling.Fragments
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import com.example.chadrick.datalabeling.MainActivity
 import com.example.chadrick.datalabeling.R
 import com.google.android.gms.auth.api.Auth

@@ -1,7 +1,5 @@
 package com.example.chadrick.datalabeling.Models
 
-import android.graphics.Color
-
 /**
  * Created by chadrick on 17. 12. 4.
  */

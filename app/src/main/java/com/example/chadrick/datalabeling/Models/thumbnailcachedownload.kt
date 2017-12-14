@@ -1,6 +1,5 @@
 package com.example.chadrick.datalabeling.Models
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.util.Log
@@ -9,7 +8,6 @@ import com.example.chadrick.datalabeling.Fragments.UserMainFragment
 import com.example.chadrick.datalabeling.Tasks.dszipDownloadTask
 import java.io.File
 import java.io.FileOutputStream
-import java.io.OutputStream
 import java.net.HttpURLConnection
 import java.net.URL
 

@@ -16,6 +16,7 @@ import android.widget.TextView
 import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment2
 import com.example.chadrick.datalabeling.Models.BGColorRandomPicker
 import com.example.chadrick.datalabeling.Models.DataSet
+import com.example.chadrick.datalabeling.Models.WeakRefHolder
 import com.example.chadrick.datalabeling.Models.thumbnailcachedownload
 import kotlinx.android.synthetic.main.usermain_dataset_thumb_layout.view.*
 import java.io.File
@@ -30,7 +31,7 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
 
     lateinit var DSlist: ArrayList<DataSet>
     private val colorgen = BGColorRandomPicker()
-    lateinit var context: Context
+    var context: Context by WeakRefHolder()
 
 
     companion object {

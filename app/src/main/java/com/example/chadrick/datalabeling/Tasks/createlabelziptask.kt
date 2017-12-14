@@ -2,8 +2,6 @@ package com.example.chadrick.datalabeling.Tasks
 
 import android.os.AsyncTask
 import android.util.Log
-import android.widget.Toast
-import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment2
 import com.example.chadrick.datalabeling.Models.DataSet
 import com.example.chadrick.datalabeling.Models.JWTManager
 import com.example.chadrick.datalabeling.Util

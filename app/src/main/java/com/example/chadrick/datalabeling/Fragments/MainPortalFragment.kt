@@ -1,5 +1,6 @@
 package com.example.chadrick.datalabeling.Fragments
 
+import android.app.Application
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -12,6 +13,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageView
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.Volley
+import com.example.chadrick.datalabeling.Models.App
 import com.example.chadrick.datalabeling.R
 import kotlinx.android.synthetic.main.mainportalfragment_layout.*
 
@@ -53,7 +55,7 @@ class MainPortalFragment : Fragment() {
         val imagerequest = ImageRequest(photourl, { bitmap -> profile_icon.setImageBitmap(bitmap) },
                 0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565
                 , { err -> err.printStackTrace() })
-        val queue = Volley.newRequestQueue(context);
+        val queue = Volley.newRequestQueue(App.applicationContext())
         queue.add(imagerequest)
 
 
@@ -61,7 +63,7 @@ class MainPortalFragment : Fragment() {
         menulistarray.add("Main")
         menulistarray.add("Settings")
 
-        val menuadapter: ArrayAdapter<String> = ArrayAdapter<String>(context, R.layout.menulist_item_layout, menulistarray)
+        val menuadapter: ArrayAdapter<String> = ArrayAdapter<String>(App.applicationContext(), R.layout.menulist_item_layout, menulistarray)
 
 
         menulist.adapter = menuadapter

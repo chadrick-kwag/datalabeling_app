@@ -2,6 +2,7 @@ package com.example.chadrick.datalabeling.Fragments
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -66,10 +67,12 @@ class UserMainFragment : Fragment() {
         val root: View? = inflater?.inflate(R.layout.usermainfragment_layout, container, false)
 
         // setup adapter for RA
-        allDSrecyclerviewAdapter = RAAdapter.newInstance(App.applicationContext(), serverFectchedDSlist)
+
+
+        allDSrecyclerviewAdapter = RAAdapter.newInstance(context, serverFectchedDSlist, ::getfragmentmanager)
         recentactivitylogmanager = RecentActivityLogManager.getInstance(App.applicationContext())
 
-        RArvAdapter = RAAdapter.newInstance(context, RAlist)
+        RArvAdapter = RAAdapter.newInstance(context, RAlist, ::getfragmentmanager)
 
         for(frag in fragmentManager.fragments){
             Log.d("bitcoin","in Usermainfragment oncreateview frag = "+frag.toString())
@@ -79,14 +82,18 @@ class UserMainFragment : Fragment() {
         return root
     }
 
+    fun getfragmentmanager():FragmentManager{
+        return fragmentManager
+    }
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
         AllDSrecyclerview.adapter = allDSrecyclerviewAdapter
-        AllDSrecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        AllDSrecyclerview.layoutManager = LinearLayoutManager(context.applicationContext, LinearLayoutManager.HORIZONTAL, false)
 
         RArecyclerview.adapter = RArvAdapter
-        RArecyclerview.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        RArecyclerview.layoutManager = LinearLayoutManager(context.applicationContext, LinearLayoutManager.HORIZONTAL, false)
 
     }
 
@@ -116,13 +123,13 @@ class UserMainFragment : Fragment() {
                         val item = response.getJSONObject(i)
                         var direxist: Boolean = false
                         val filename = item.get("id").toString()
-                        val file: File = File(context.filesDir, filename)
+                        val file: File = File(App.applicationContext().filesDir, filename)
 
                         if (file.exists()) {
                             direxist = true
                         }
 
-                        val ds: DataSet = DataSet(item.getInt("id"), item.getString("title"), direxist, context.filesDir.toString())
+                        val ds: DataSet = DataSet(item.getInt("id"), item.getString("title"), direxist, App.applicationContext().filesDir.toString())
 
                         serverFectchedDSlist.add(ds)
 
@@ -131,11 +138,11 @@ class UserMainFragment : Fragment() {
 
                     }
                 },
-                { error -> Toast.makeText(context, "failed to fetch dslist", Toast.LENGTH_SHORT).show() }
+                { error -> Toast.makeText(context.applicationContext, "failed to fetch dslist", Toast.LENGTH_SHORT).show() }
 
         )
 
-        val queue = Volley.newRequestQueue(context)
+        val queue = Volley.newRequestQueue(context.applicationContext)
 
         queue.add(jsonarrayreq)
 

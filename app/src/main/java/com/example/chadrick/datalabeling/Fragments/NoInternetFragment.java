@@ -70,7 +70,7 @@ public class NoInternetFragment extends Fragment {
           @Override
           public void onErrorResponse(VolleyError e) {
             Log.d(TAG, "still no internet connection");
-            Toast.makeText(getContext(), "still no internet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext().getApplicationContext(), "still no internet", Toast.LENGTH_SHORT).show();
           }
         });
         queue.add(stringRequest);

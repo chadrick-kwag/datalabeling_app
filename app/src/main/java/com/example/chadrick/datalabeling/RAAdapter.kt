@@ -1,10 +1,12 @@
 package com.example.chadrick.datalabeling
 
+import android.app.FragmentManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -32,13 +34,15 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
     lateinit var DSlist: ArrayList<DataSet>
     private val colorgen = BGColorRandomPicker()
     var context: Context by WeakRefHolder()
+    lateinit var getfragmentmanagercallback : ()-> android.support.v4.app.FragmentManager
 
 
     companion object {
-        fun newInstance(context: Context, dslist: ArrayList<DataSet>): RAAdapter {
+        fun newInstance(context: Context, dslist: ArrayList<DataSet>, fragmanagercallback : ()->android.support.v4.app.FragmentManager): RAAdapter {
             val obj: RAAdapter = RAAdapter()
             obj.DSlist = dslist
             obj.context = context
+            obj.getfragmentmanagercallback = fragmanagercallback
             return obj
         }
 
@@ -108,6 +112,15 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
             Log.d("chadrick", "put bgcolor=" + colstr)
             bundle.putString("bgcolor", colstr)
             frag.arguments = bundle
+
+
+
+
+//            context.
+//            getfragmentmanagercallback().beginTransaction()
+//                    .add(R.id.fragmentcontainer,frag)
+//                    .addToBackStack("name1")
+//                    .commit()
             (context as AppCompatActivity).supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentcontainer, frag)
                     .addToBackStack("name1")

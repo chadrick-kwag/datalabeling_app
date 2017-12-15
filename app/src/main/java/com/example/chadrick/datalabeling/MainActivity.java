@@ -28,6 +28,7 @@ import com.example.chadrick.datalabeling.Fragments.SplashScreenFragment;
 import com.example.chadrick.datalabeling.Fragments.StartErrorFragment;
 import com.example.chadrick.datalabeling.Models.JWTManager;
 import com.example.chadrick.datalabeling.Models.ServerInfo;
+import com.example.chadrick.datalabeling.Models.requestqueueSingleton;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -74,8 +75,9 @@ public class MainActivity extends AppCompatActivity {
 
     } else {
       Log.d("bitcoin","first creating from mainactivity");
-      queue = Volley.newRequestQueue(this);
+//      queue = Volley.newRequestQueue(getApplicationContext());
 
+      queue = requestqueueSingleton.Companion.getQueue();
       jwtManager = JWTManager.Companion.getInstance(getApplicationContext());
       // setup server info loading
       try {
@@ -344,6 +346,9 @@ public class MainActivity extends AppCompatActivity {
   @Override
   public void onDestroy(){
     Log.d(TAG, "onDestroy: bitcoin mainactivity destroyed");
+
+    requestqueueSingleton.Companion.getQueue().stop();
+    requestqueueSingleton.Companion.getQueue().start();
     super.onDestroy();
   }
   

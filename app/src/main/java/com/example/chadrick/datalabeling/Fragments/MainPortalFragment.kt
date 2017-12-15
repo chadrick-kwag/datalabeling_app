@@ -14,6 +14,7 @@ import android.widget.ImageView
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.Volley
 import com.example.chadrick.datalabeling.Models.App
+import com.example.chadrick.datalabeling.Models.requestqueueSingleton
 import com.example.chadrick.datalabeling.R
 import kotlinx.android.synthetic.main.mainportalfragment_layout.*
 
@@ -55,7 +56,8 @@ class MainPortalFragment : Fragment() {
         val imagerequest = ImageRequest(photourl, { bitmap -> profile_icon.setImageBitmap(bitmap) },
                 0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565
                 , { err -> err.printStackTrace() })
-        val queue = Volley.newRequestQueue(App.applicationContext())
+//        val queue = Volley.newRequestQueue(App.applicationContext())
+        val queue = requestqueueSingleton.getQueue()
         queue.add(imagerequest)
 
 
@@ -93,12 +95,13 @@ class MainPortalFragment : Fragment() {
                     Log.d("bitcoin", "print in main click frag=" + frag.toString())
                 }
 
-                if (childFragmentManager.findFragmentByTag("main") != null) {
+                if (childFragmentManager.findFragmentByTag("usermain") != null) {
 
                 } else if (!isRecreating) {
-//                    val frag = DatasetSelectFragment()
-                    val frag = UserMainFragment.instance
                     // check if already exist in childfragmentmanager
+//                    val frag = DatasetSelectFragment()
+                    val frag = UserMainFragment()
+
 
                     Log.d("bitcoin", "usermainfragment not found in childfragmentmanager")
                     childFragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
@@ -124,7 +127,7 @@ class MainPortalFragment : Fragment() {
 
         if (checkfrag == null && !isRecreating) {
 
-            val frag = UserMainFragment.instance
+            val frag = UserMainFragment()
             Log.d("bitcoin", "usermain frag does not exist. creating one")
             childFragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "usermain").commit()
             childFragmentManager.addOnBackStackChangedListener {

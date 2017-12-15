@@ -16,6 +16,7 @@ class App : Application() {
     companion object {
         private var instance: App? = null
 
+
         fun applicationContext() : Context {
             return instance!!.applicationContext
         }
@@ -33,5 +34,9 @@ class App : Application() {
             return;
         }
         LeakCanary.install(this)
+
+        requestqueueSingleton.getInstance(applicationContext)
+        // init requestqueueSingleton
+
     }
 }

@@ -2,8 +2,8 @@ package com.example.chadrick.datalabeling.Tasks
 
 import android.os.AsyncTask
 import android.util.Log
-import com.example.chadrick.datalabeling.Fragments.UserMainFragment
 import com.example.chadrick.datalabeling.Models.DataSet
+import com.example.chadrick.datalabeling.Models.ServerInfo
 import java.io.File
 import java.io.FileOutputStream
 import java.net.HttpURLConnection
@@ -35,7 +35,7 @@ class dszipDownloadTask(param_dataset: DataSet,
 
 
     override fun doInBackground(vararg p0: String?): String {
-        val url: URL = URL(UserMainFragment.baseurl + "/download/dszip" + "?id=" + dataset.id.toString())
+        val url: URL = URL(ServerInfo.instance.serveraddress + "/download/dszip" + "?id=" + dataset.id.toString())
         val outputpath: File = File(dataset.zipfilestr)
 
         if (!outputpath.exists()) {

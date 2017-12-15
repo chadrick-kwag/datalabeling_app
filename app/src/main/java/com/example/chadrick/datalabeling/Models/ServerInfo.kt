@@ -28,6 +28,7 @@ class ServerInfo private constructor() {
         val reader = BufferedReader(InputStreamReader(configfilestream))
         // assumes the first line is the serveraddress
         serveraddress = reader.readLine().trim()
+        configfilestream.close()
     }
 
 }

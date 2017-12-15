@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
-    Log.d(TAG, "beer activity oncreate");
+    Log.d(TAG, "bitcoin activity oncreate");
     super.onCreate(savedInstanceState);
     context = new WeakReference<Context>(this);
 
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
       Log.d("bitcoin","restoring from mainactivity");
       isRestoring = true;
       // check if serverInfo exists properly
+
 
     } else {
       Log.d("bitcoin","first creating from mainactivity");
@@ -130,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
   }
+
+  @Override
+  public void onRe
 
   @Override
   protected void onResume() {
@@ -336,6 +340,18 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "sign in failed", Toast.LENGTH_SHORT).show();
       }
     }
+  }
+  
+  @Override
+  public void onDestroy(){
+    Log.d(TAG, "onDestroy: bitcoin mainactivity destroyed");
+    super.onDestroy();
+  }
+  
+  @Override
+  public void onSaveInstanceState(Bundle s){
+    super.onSaveInstanceState(s);
+    Log.d(TAG, "onSaveInstanceState: bitcoin mainactivity onSaveInstanceState");
   }
 
 }

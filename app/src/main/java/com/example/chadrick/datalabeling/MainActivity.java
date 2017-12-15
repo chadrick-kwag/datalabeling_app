@@ -132,8 +132,7 @@ public class MainActivity extends AppCompatActivity {
 
   }
 
-  @Override
-  public void onRe
+
 
   @Override
   protected void onResume() {

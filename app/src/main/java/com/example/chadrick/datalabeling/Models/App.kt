@@ -2,6 +2,7 @@ package com.example.chadrick.datalabeling.Models
 
 import android.app.Application
 import android.content.Context
+import com.squareup.leakcanary.LeakCanary
 
 /**
  * Created by chadrick on 17. 12. 14.
@@ -27,5 +28,10 @@ class App : Application() {
         // Use ApplicationContext.
         // example: SharedPreferences etc...
         val context: Context = App.applicationContext()
+
+        if(LeakCanary.isInAnalyzerProcess(this)){
+            return;
+        }
+        LeakCanary.install(this)
     }
 }

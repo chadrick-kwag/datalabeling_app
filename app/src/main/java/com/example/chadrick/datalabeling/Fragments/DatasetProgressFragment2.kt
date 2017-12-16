@@ -154,14 +154,14 @@ class DatasetProgressFragment2 : Fragment() {
                             Toast.makeText(context, "Upload Success", Toast.LENGTH_SHORT).show()
                         }
 
-                        val queue = (activity as MainActivity).queue
+                        val queue = requestqueueSingleton.getQueue()
 
                         if (queue != null) {
                             queue.add<NetworkResponse>(request)
                         } else {
                             Log.d(TAG, "queue is null")
                             restoreUploadBtn()
-                            Toast.makeText(context, "request queue error", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context.applicationContext, "request queue error", Toast.LENGTH_SHORT).show()
 
                         }
 

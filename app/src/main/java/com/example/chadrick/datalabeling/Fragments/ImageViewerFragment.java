@@ -21,6 +21,7 @@ import com.example.chadrick.datalabeling.CustomViewPager;
 import com.example.chadrick.datalabeling.Models.DataSet;
 import com.example.chadrick.datalabeling.FullScreenImageAdapter;
 import com.example.chadrick.datalabeling.Models.LabelDrawPad;
+import com.example.chadrick.datalabeling.Models.ZoomOutPageTransformer;
 import com.example.chadrick.datalabeling.R;
 import com.example.chadrick.datalabeling.Util;
 
@@ -197,6 +198,8 @@ public class ImageViewerFragment extends Fragment {
     int screenheight = size.y;
     adapter = new FullScreenImageAdapter(getContext(), imagefiles, customviewPager,
         drawbtnpressedcallback, screenwidth, screenheight);
+    ZoomOutPageTransformer zoomOutPageTransformer = new ZoomOutPageTransformer();
+    customviewPager.setPageTransformer(true, zoomOutPageTransformer);
     customviewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       @Override
       public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

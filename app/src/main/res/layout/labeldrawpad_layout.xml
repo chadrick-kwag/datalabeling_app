@@ -6,21 +6,21 @@
   android:layout_height="match_parent"
   >
 
-  <com.example.chadrick.datalabeling.CustomComponents.BasicZoomImageView
+  <com.example.chadrick.datalabeling.CustomComponents.BgImageView
     android:id="@+id/baseiv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scaleType="fitCenter"/>
 
 
-  <com.example.chadrick.datalabeling.CustomComponents.TouchImageView
+  <com.example.chadrick.datalabeling.CustomComponents.SavedRectsImageView
     android:id="@+id/rectiv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scaleType="fitCenter"
     />
 
-  <com.example.chadrick.datalabeling.CustomComponents.MaskImageView
+  <com.example.chadrick.datalabeling.CustomComponents.RectDrawImageView
     android:id="@+id/drawiv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

@@ -11,8 +11,8 @@ import android.widget.FrameLayout;
 
 public class PageFrameLayout extends FrameLayout {
 
-  private TouchImageView mainIV;
-  private MaskImageView maskIV;
+  private SavedRectsImageView mainIV;
+  private RectDrawImageView maskIV;
 
   private final String TAG = this.getClass().getSimpleName();
 
@@ -37,7 +37,7 @@ public class PageFrameLayout extends FrameLayout {
     return true;
   }
 
-  public void registerIVs(TouchImageView mainIV, MaskImageView maskIV){
+  public void registerIVs(SavedRectsImageView mainIV, RectDrawImageView maskIV){
     this.mainIV = mainIV;
     this.maskIV = maskIV;
   }

@@ -1,11 +1,9 @@
 package com.example.chadrick.datalabeling.CustomComponents;
 
 import android.content.Context;
-import android.text.method.Touch;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
@@ -14,9 +12,9 @@ import java.lang.ref.WeakReference;
  */
 
 public class PageFrameLayout2 extends FrameLayout {
-  private BasicZoomImageView baseIV;
-  private MaskImageView maskIV;
-  private TouchImageView rectIV;
+  private BgImageView baseIV;
+  private RectDrawImageView maskIV;
+  private SavedRectsImageView rectIV;
 
 
   private final String TAG = this.getClass().getSimpleName();
@@ -49,7 +47,7 @@ public class PageFrameLayout2 extends FrameLayout {
     return true;
   }
 
-  public void registerIVs(BasicZoomImageView mainIV, MaskImageView maskIV, TouchImageView rectIV){
+  public void registerIVs(BgImageView mainIV, RectDrawImageView maskIV, SavedRectsImageView rectIV){
     this.baseIV = mainIV;
     this.maskIV = maskIV;
     this.rectIV = rectIV;

@@ -22,7 +22,7 @@ import java.lang.ref.WeakReference;
  * Created by chadrick on 17. 10. 18.
  */
 
-public class MaskImageView extends android.support.v7.widget.AppCompatImageView {
+public class RectDrawImageView extends android.support.v7.widget.AppCompatImageView {
 
   private WeakReference<Context> context;
   private Paint paint = new Paint();
@@ -36,17 +36,17 @@ public class MaskImageView extends android.support.v7.widget.AppCompatImageView 
   private boolean isdown = false;
   private boolean isMove = false;
   private boolean touchEnable = true;
-  private TouchImageView mainiv;
+  private SavedRectsImageView mainiv;
 
   private final String TAG = this.getClass().getSimpleName();
 
-  public MaskImageView(Context c) {
+  public RectDrawImageView(Context c) {
 
     super(new WeakReference<>(c).get());
     sharedconstruct(c);
   }
 
-  public MaskImageView(Context context, AttributeSet attrs) {
+  public RectDrawImageView(Context context, AttributeSet attrs) {
     super(new WeakReference<>(context).get(), attrs);
     sharedconstruct(context);
   }

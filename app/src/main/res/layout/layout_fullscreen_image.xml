@@ -10,13 +10,13 @@
   <!--android:layout_height="fill_parent"-->
   <!--android:scaleType="fitCenter" />-->
 
-  <com.example.chadrick.datalabeling.CustomComponents.TouchImageView
+  <com.example.chadrick.datalabeling.CustomComponents.SavedRectsImageView
       android:id="@+id/touchimageview"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:scaleType="fitCenter"/>
 
-  <com.example.chadrick.datalabeling.CustomComponents.MaskImageView
+  <com.example.chadrick.datalabeling.CustomComponents.RectDrawImageView
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@android:color/transparent"

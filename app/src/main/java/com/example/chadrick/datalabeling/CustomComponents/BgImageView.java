@@ -18,7 +18,7 @@ import java.lang.ref.WeakReference;
  * Created by chadrick on 17. 11. 4.
  */
 
-public class BasicZoomImageView extends AppCompatImageView {
+public class BgImageView extends AppCompatImageView {
   Matrix matrix;
   private Matrix inverseMatrix;
 
@@ -53,14 +53,14 @@ public class BasicZoomImageView extends AppCompatImageView {
 
   private int MOVE_CLICK_LIMIT=5;
 
-  public BasicZoomImageView(Context context) {
+  public BgImageView(Context context) {
 
 //    super( context);
     super(new WeakReference<>(context).get());
     sharedConstructing(context);
   }
 
-  public BasicZoomImageView(Context context, AttributeSet attrs) {
+  public BgImageView(Context context, AttributeSet attrs) {
 //    super(context, attrs);
     super(new WeakReference<>(context).get(),attrs);
     sharedConstructing(context);

@@ -11,15 +11,12 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.chadrick.datalabeling.Callback;
 import com.example.chadrick.datalabeling.CallbackWithRect;
-import com.example.chadrick.datalabeling.CustomComponents.MaskImageView;
-import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
 import com.example.chadrick.datalabeling.CustomViewPager;
 import com.example.chadrick.datalabeling.Models.DataSet;
 import com.example.chadrick.datalabeling.FullScreenImageAdapter;

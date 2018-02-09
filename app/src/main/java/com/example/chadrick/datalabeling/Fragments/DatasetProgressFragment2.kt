@@ -69,11 +69,13 @@ class DatasetProgressFragment2 : Fragment() {
         // check if thumbnail image exists in dataset dir
         val datasetthumbnailfile = ds.dirstr + "/info/thumbnail.jpg"
         if (File(datasetthumbnailfile).exists()) {
+            Log.d(TAG,"info/thumbnail.jpg exist for dsid="+ds.id)
             thumbnail_holder.setImageBitmap(BitmapFactory.decodeFile(datasetthumbnailfile))
         } else {
             // check if thumbnail image exists in cache.. it should be...
             val cachepath = context.filesDir.toString() + "/thumbnailcache/" + ds.id.toString() + ".jpg"
             if (File(cachepath).exists()) {
+                Log.d(TAG,"thumbnail image exists in cache for dsid="+ds.id)
                 thumbnail_holder.setImageBitmap(BitmapFactory.decodeFile(cachepath))
             } else {
                 Log.d(TAG, "thumbnail image not exist even in cache directory")
@@ -269,7 +271,7 @@ class DatasetProgressFragment2 : Fragment() {
                 },
                 { error: VolleyError? ->
                     Log.d("chadrick", "error occured while fetching description. err=" + error.toString())
-                    description_tv.text = "failed to get description"
+                    description_tv?.text = "failed to get description"
                 }
         )
 //        val queue = Volley.newRequestQueue(context.applicationContext)

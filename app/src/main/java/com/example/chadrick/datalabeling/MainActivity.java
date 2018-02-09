@@ -306,7 +306,10 @@ public class MainActivity extends AppCompatActivity {
       jwtusermail = Util.decoded(localjwt).getString("user_mail");
     } catch (JSONException e) {
       jwtusermail = null;
+    } catch( ArrayIndexOutOfBoundsException e){
+      jwtusermail = null;
     }
+
     //check if email matches the current gso login result's email
     Log.d(TAG, "authwithserver: bitcoin gsimail=" + gsi_mail + ", jwtmail=" + jwtusermail);
     if (gsi_mail.equals(jwtusermail)) {

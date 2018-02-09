@@ -30,20 +30,15 @@ import kotlinx.android.synthetic.main.settings_layout.*
 
 class SettingsFragment : Fragment() {
 
-    object holder {
-        val INSTANCE = SettingsFragment()
-    }
+
 
     lateinit var smAdapter: SettingsMenuAdapter
 
     private var initialized: Boolean = false
 
+    val menulist: ArrayList<SMitem> = ArrayList()
 
-    companion object {
-        val instance = holder.INSTANCE
-        val menulist: ArrayList<SMitem> = ArrayList()
 
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

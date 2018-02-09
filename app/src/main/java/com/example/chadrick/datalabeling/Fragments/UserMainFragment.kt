@@ -12,10 +12,7 @@ import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
-import com.example.chadrick.datalabeling.Models.App
-import com.example.chadrick.datalabeling.Models.DataSet
-import com.example.chadrick.datalabeling.Models.RecentActivityLogManager
-import com.example.chadrick.datalabeling.Models.ServerInfo
+import com.example.chadrick.datalabeling.Models.*
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.RAAdapter
 import kotlinx.android.synthetic.main.usermainfragment_layout.*
@@ -37,17 +34,11 @@ class UserMainFragment : Fragment() {
 
     private val RAlist: ArrayList<DataSet> = ArrayList<DataSet>()
 
-    private object Holder {
-        val INSTANCE = UserMainFragment()
-    }
+
 
     lateinit var recentactivitylogmanager: RecentActivityLogManager
 
     companion object {
-        //        val instance : UserMainFragment by lazy { Holder.INSTANCE}
-        val instance: UserMainFragment = Holder.INSTANCE
-        //        val baseurl = "http://13.124.175.119:4001"
-        val baseurl = ServerInfo.instance.serveraddress
 
         val TAG = "UserMainFragment"
 
@@ -115,7 +106,7 @@ class UserMainFragment : Fragment() {
 
 
         val jsonarrayreq: JsonArrayRequest = JsonArrayRequest(Request.Method.POST,
-                baseurl + "/dslist",
+                ServerInfo.instance.serveraddress + "/dslist",
                 reqobj,
                 { response: JSONArray ->
 
@@ -142,7 +133,8 @@ class UserMainFragment : Fragment() {
 
         )
 
-        val queue = Volley.newRequestQueue(context.applicationContext)
+//        val queue = Volley.newRequestQueue(context.applicationContext)
+        val queue = requestqueueSingleton.getQueue()
 
         queue.add(jsonarrayreq)
 

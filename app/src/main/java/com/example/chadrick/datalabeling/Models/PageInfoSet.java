@@ -11,9 +11,9 @@ import android.view.ViewTreeObserver;
 
 import com.example.chadrick.datalabeling.Callback;
 import com.example.chadrick.datalabeling.CallbackWithRect;
-import com.example.chadrick.datalabeling.CustomComponents.MaskImageView;
+import com.example.chadrick.datalabeling.CustomComponents.RectDrawImageView;
 import com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout;
-import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
+import com.example.chadrick.datalabeling.CustomComponents.SavedRectsImageView;
 import com.example.chadrick.datalabeling.CustomViewPager;
 import com.example.chadrick.datalabeling.Util;
 
@@ -34,8 +34,8 @@ import java.util.ArrayList;
  */
 
 public class PageInfoSet {
-  private TouchImageView mainIV;
-  private MaskImageView maskIV;
+  private SavedRectsImageView mainIV;
+  private RectDrawImageView maskIV;
   private PageFrameLayout pageFrameLayout;
   private CustomViewPager customViewPager;
   private Callback drawBtnpressedcallback;
@@ -49,7 +49,7 @@ public class PageInfoSet {
 
   private final String TAG = this.getClass().getSimpleName();
 
-  public PageInfoSet(TouchImageView mainIV, MaskImageView maskIV, PageFrameLayout pageFrameLayout,
+  public PageInfoSet(SavedRectsImageView mainIV, RectDrawImageView maskIV, PageFrameLayout pageFrameLayout,
                      CustomViewPager customViewPager, Callback drawBtnpressedcallback, CallbackWithRect maskRectReadyCallback,
                      File bitmapFile){
 

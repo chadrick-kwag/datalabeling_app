@@ -32,7 +32,7 @@ import java.util.function.Supplier;
  * Created by chadrick on 17. 10. 12.
  */
 
-public class TouchImageView extends android.support.v7.widget.AppCompatImageView {
+public class SavedRectsImageView extends android.support.v7.widget.AppCompatImageView {
 
   Matrix matrix;
   private Matrix inverseMatrix;
@@ -82,12 +82,12 @@ public class TouchImageView extends android.support.v7.widget.AppCompatImageView
 
   private int MOVE_CLICK_LIMIT=5;
 
-  public TouchImageView(Context context) {
+  public SavedRectsImageView(Context context) {
     super(context);
     sharedConstructing(context);
   }
 
-  public TouchImageView(Context context, AttributeSet attrs) {
+  public SavedRectsImageView(Context context, AttributeSet attrs) {
     super(context, attrs);
     sharedConstructing(context);
   }

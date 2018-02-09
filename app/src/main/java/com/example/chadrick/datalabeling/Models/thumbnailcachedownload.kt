@@ -4,7 +4,6 @@ import android.graphics.BitmapFactory
 import android.os.AsyncTask
 import android.util.Log
 import android.widget.ImageView
-import com.example.chadrick.datalabeling.Fragments.UserMainFragment
 import com.example.chadrick.datalabeling.Tasks.dszipDownloadTask
 import java.io.File
 import java.io.FileOutputStream
@@ -27,7 +26,7 @@ class thumbnailcachedownload(iv: ImageView?, dsid: Int, savefile: File) : AsyncT
     }
 
     override fun doInBackground(vararg p0: Void?): Int {
-        val url: URL = URL(UserMainFragment.baseurl + "/thumbnail" + "?id=" + dsid.toString())
+        val url: URL = URL(serveraddr + "/thumbnail" + "?id=" + dsid.toString())
         if (!savefile.exists()) {
             savefile.parentFile.mkdirs()
             savefile.createNewFile()
@@ -81,7 +80,7 @@ class thumbnailcachedownload(iv: ImageView?, dsid: Int, savefile: File) : AsyncT
         output?.close()
         connection?.disconnect()
 
-        Log.d(TAG,"download finished")
+        Log.d(TAG, "download finished")
 
         return 0
 
@@ -99,15 +98,15 @@ class thumbnailcachedownload(iv: ImageView?, dsid: Int, savefile: File) : AsyncT
 
 
 
-        when(result){
+        when (result) {
             0 -> {
                 val savedbitmap = BitmapFactory.decodeFile(savefile.toString())
-                iv?.let{ it.setImageBitmap(savedbitmap)}
+                iv?.let { it.setImageBitmap(savedbitmap) }
 
 
             }
             else -> {
-                Log.d(TAG,"error with cache thumbnail download")
+                Log.d(TAG, "error with cache thumbnail download")
             }
         }
     }

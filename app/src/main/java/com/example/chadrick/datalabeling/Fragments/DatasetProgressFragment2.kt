@@ -154,14 +154,14 @@ class DatasetProgressFragment2 : Fragment() {
                             Toast.makeText(context, "Upload Success", Toast.LENGTH_SHORT).show()
                         }
 
-                        val queue = (activity as MainActivity).queue
+                        val queue = requestqueueSingleton.getQueue()
 
                         if (queue != null) {
                             queue.add<NetworkResponse>(request)
                         } else {
                             Log.d(TAG, "queue is null")
                             restoreUploadBtn()
-                            Toast.makeText(context, "request queue error", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context.applicationContext, "request queue error", Toast.LENGTH_SHORT).show()
 
                         }
 
@@ -251,7 +251,7 @@ class DatasetProgressFragment2 : Fragment() {
         jsonreqobj.put("id", ds.id)
         val jsonarray = JSONArray("['description']")
         jsonreqobj.put("reqfield", jsonarray)
-        val jsonreq = JsonObjectRequest(Request.Method.POST, UserMainFragment.baseurl + "/dsinfo",
+        val jsonreq = JsonObjectRequest(Request.Method.POST, ServerInfo.instance.serveraddress + "/dsinfo",
                 jsonreqobj,
                 { response: JSONObject? ->
 
@@ -272,7 +272,8 @@ class DatasetProgressFragment2 : Fragment() {
                     description_tv.text = "failed to get description"
                 }
         )
-        val queue = Volley.newRequestQueue(context)
+//        val queue = Volley.newRequestQueue(context.applicationContext)
+        val queue = requestqueueSingleton.getQueue()
         queue.add(jsonreq)
     }
 

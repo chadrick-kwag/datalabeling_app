@@ -26,4 +26,7 @@
   <color name="usermain_thumbnail_tv_background">#000000</color>
   <color name="usermain_thumbnail_tv_textcolor">#ffffff</color>
 
+  <color name="yesbtnbgcolor">#35822a</color>
+  <color name="nobtnbgcolor">#aa0f14</color>
+
 </resources>

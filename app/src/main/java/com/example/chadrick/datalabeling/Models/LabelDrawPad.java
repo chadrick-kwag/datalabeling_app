@@ -13,14 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 
 import com.example.chadrick.datalabeling.Callback;
 import com.example.chadrick.datalabeling.CallbackWithRect;
-import com.example.chadrick.datalabeling.CustomComponents.BasicZoomImageView;
-import com.example.chadrick.datalabeling.CustomComponents.MaskImageView;
+import com.example.chadrick.datalabeling.CustomComponents.BgImageView;
+import com.example.chadrick.datalabeling.CustomComponents.RectDrawImageView;
 import com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout2;
-import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
+import com.example.chadrick.datalabeling.CustomComponents.SavedRectsImageView;
 import com.example.chadrick.datalabeling.CustomViewPager;
 import com.example.chadrick.datalabeling.R;
 import com.example.chadrick.datalabeling.Util;
@@ -48,9 +47,9 @@ public class LabelDrawPad {
   private int position;
   private View rootview;
 
-  private BasicZoomImageView baseIV;
-  private TouchImageView rectIV;
-  private MaskImageView drawIV;
+  private BgImageView baseIV;
+  private SavedRectsImageView rectIV;
+  private RectDrawImageView drawIV;
   private Callback drawBtnpressedcallback;
   private CallbackWithRect maskRectReadyCallback;
 
@@ -76,9 +75,9 @@ public class LabelDrawPad {
   private void initElements() {
     rootview = inflater.inflate(R.layout.labeldrawpad_layout, container,
         false);
-    baseIV = (BasicZoomImageView) rootview.findViewById(R.id.baseiv);
-    rectIV = (TouchImageView) rootview.findViewById(R.id.rectiv);
-    drawIV = (MaskImageView) rootview.findViewById(R.id.drawiv);
+    baseIV = (BgImageView) rootview.findViewById(R.id.baseiv);
+    rectIV = (SavedRectsImageView) rootview.findViewById(R.id.rectiv);
+    drawIV = (RectDrawImageView) rootview.findViewById(R.id.drawiv);
     // need to register the IVs so that it can receive touch events
     PageFrameLayout2 pageframelayout2 = (PageFrameLayout2) rootview
         .findViewById(R.id.pageframelayout2);

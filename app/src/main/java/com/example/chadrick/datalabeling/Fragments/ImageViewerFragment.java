@@ -11,19 +11,17 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.chadrick.datalabeling.Callback;
 import com.example.chadrick.datalabeling.CallbackWithRect;
-import com.example.chadrick.datalabeling.CustomComponents.MaskImageView;
-import com.example.chadrick.datalabeling.CustomComponents.TouchImageView;
 import com.example.chadrick.datalabeling.CustomViewPager;
 import com.example.chadrick.datalabeling.Models.DataSet;
 import com.example.chadrick.datalabeling.FullScreenImageAdapter;
 import com.example.chadrick.datalabeling.Models.LabelDrawPad;
+import com.example.chadrick.datalabeling.Models.ZoomOutPageTransformer;
 import com.example.chadrick.datalabeling.R;
 import com.example.chadrick.datalabeling.Util;
 
@@ -200,6 +198,8 @@ public class ImageViewerFragment extends Fragment {
     int screenheight = size.y;
     adapter = new FullScreenImageAdapter(getContext(), imagefiles, customviewPager,
         drawbtnpressedcallback, screenwidth, screenheight);
+    ZoomOutPageTransformer zoomOutPageTransformer = new ZoomOutPageTransformer();
+    customviewPager.setPageTransformer(true, zoomOutPageTransformer);
     customviewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
       @Override
       public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

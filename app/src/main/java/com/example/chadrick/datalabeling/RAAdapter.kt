@@ -34,11 +34,11 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
     lateinit var DSlist: ArrayList<DataSet>
     private val colorgen = BGColorRandomPicker()
     var context: Context by WeakRefHolder()
-    lateinit var getfragmentmanagercallback : ()-> android.support.v4.app.FragmentManager
+    lateinit var getfragmentmanagercallback: () -> android.support.v4.app.FragmentManager
 
 
     companion object {
-        fun newInstance(context: Context, dslist: ArrayList<DataSet>, fragmanagercallback : ()->android.support.v4.app.FragmentManager): RAAdapter {
+        fun newInstance(context: Context, dslist: ArrayList<DataSet>, fragmanagercallback: () -> android.support.v4.app.FragmentManager): RAAdapter {
             val obj: RAAdapter = RAAdapter()
             obj.DSlist = dslist
             obj.context = context
@@ -71,19 +71,18 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
         // check if thumbnail exists
         // first check if ds dir exist
         val dsdir = File(dataset.dirstr)
-        if (dsdir.exists()) {
-            // check if thumbnail.png exist
-            val thumbnailpath = dataset.dirstr + "/info/thumbnail.jpg"
-            val thumbnailfile = File(thumbnailpath)
+        val thumbnailpath = dataset.dirstr + "/info/thumbnail.jpg"
+        val thumbnailfile = File(thumbnailpath)
 
-            if (thumbnailfile.exists()) {
-                val options = BitmapFactory.Options()
-                options.inPreferredConfig = Bitmap.Config.ARGB_8888
-                val thumbnailbitmap = BitmapFactory.decodeFile(thumbnailpath, options)
-                holder?.imageview?.setImageBitmap(thumbnailbitmap)
-            } else {
-                Log.d(TAG, "thumbnail file for dsid=" + dataset.id + "doesn't exist")
-            }
+        if (dsdir.exists() && thumbnailfile.exists()) {
+            // check if thumbnail.png exist
+
+            Log.d(TAG, "thumbnail file for dsid=" + dataset.id + " exists.")
+            val options = BitmapFactory.Options()
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888
+            val thumbnailbitmap = BitmapFactory.decodeFile(thumbnailpath, options)
+            holder?.imageview?.setImageBitmap(thumbnailbitmap)
+
         } else {
             Log.d(TAG, "dsid=" + dataset.id + "dsdir doesn't exist")
 
@@ -91,13 +90,16 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
 
             val cachesavefilepath = context.filesDir.toString() + "/thumbnailcache/" + dataset.id.toString() + ".jpg"
 
+            Log.d(TAG,"check cache image file size for dsid="+dataset.id+" , size="+ cachesavefilepath.length)
+
             if (File(cachesavefilepath).exists()) {
                 val loadbitmap = BitmapFactory.decodeFile(cachesavefilepath)
                 holder?.imageview?.setImageBitmap(loadbitmap)
+                Log.d(TAG, "cache image exists and setting it as background. dsid=" + dataset.id)
             } else {
                 val cachedownload = thumbnailcachedownload(holder?.imageview, dataset.id, File(cachesavefilepath))
                 cachedownload.execute()
-                Log.d(TAG, "thumbnail cache download executed")
+                Log.d(TAG, "thumbnail cache download executed for dsid=" + dataset.id)
             }
 
 
@@ -112,8 +114,6 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
             Log.d("chadrick", "put bgcolor=" + colstr)
             bundle.putString("bgcolor", colstr)
             frag.arguments = bundle
-
-
 
 
 //            context.

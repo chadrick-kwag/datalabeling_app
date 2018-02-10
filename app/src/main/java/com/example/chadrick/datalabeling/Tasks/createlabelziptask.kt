@@ -13,21 +13,21 @@ import java.util.*
  * Created by chadrick on 17. 12. 12.
  */
 
-class createlabelziptask(dataset: DataSet, error: ()->Unit = {}, success : ()->Unit = {}) : AsyncTask<Void, Int, Int>() {
+class createlabelziptask(dataset: DataSet, error: () -> Unit = {}, success: () -> Unit = {}) : AsyncTask<Void, Int, Int>() {
 
     companion object {
         val TAG = "createlabelziptask"
-        val IMAGE_FILE_NUM_MISMATCH=-2
-        val ERROR_WHILE_ZIPPING=-1
-        val ERROR_USERID_NULL=-3
+        val IMAGE_FILE_NUM_MISMATCH = -2
+        val ERROR_WHILE_ZIPPING = -1
+        val ERROR_USERID_NULL = -3
     }
 
     val ds = dataset
     val error_callback = error
     val success_callback = success
-//    val userid = JWTManager.getInstance(null)?.userid
-    var userid:String? = JWTManager.getInstance()?.userid
-    lateinit var working_zipfile:File
+    //    val userid = JWTManager.getInstance(null)?.userid
+    var userid: String? = JWTManager.getInstance()?.userid
+    lateinit var working_zipfile: File
 
     override fun doInBackground(vararg p0: Void?): Int {
 
@@ -41,10 +41,10 @@ class createlabelziptask(dataset: DataSet, error: ()->Unit = {}, success : ()->U
             return IMAGE_FILE_NUM_MISMATCH
         }
 
-        val date = SimpleDateFormat("yyMMdd_HHmmss",Locale.KOREA).format(Calendar.getInstance().time)
+        val date = SimpleDateFormat("yyMMdd_HHmmss", Locale.KOREA).format(Calendar.getInstance().time)
 
-        if(userid==null){
-            Log.d(TAG,"userid is null")
+        if (userid == null) {
+            Log.d(TAG, "userid is null")
             return ERROR_USERID_NULL
         }
 
@@ -68,14 +68,28 @@ class createlabelziptask(dataset: DataSet, error: ()->Unit = {}, success : ()->U
 
     override fun onPostExecute(result: Int?) {
         result?.let {
-            if(result<0){
-                Log.d(TAG,"error occured")
-                error_callback()
-            }
-            else{
+            if (result < 0) {
+                when (result) {
+                    IMAGE_FILE_NUM_MISMATCH -> {
+                        Log.d(TAG, "image files mismatch")
+                        error_callback()
+                    }
+                    ERROR_WHILE_ZIPPING -> {
+                        Log.d(TAG, "error while zipping")
+                        error_callback()
+                    }
+                    ERROR_USERID_NULL -> {
+                        Log.d(TAG, "error suerid null")
+                        error_callback()
+                    }
+                }
+
+
+            } else {
                 success_callback()
             }
         }
 
     }
 }
+

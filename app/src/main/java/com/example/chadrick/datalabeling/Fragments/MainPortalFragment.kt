@@ -83,7 +83,7 @@ class MainPortalFragment : Fragment() {
                 } else {
                     if (!isRecreating) {
                         childFragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
-                                SettingsFragment.instance, "settings").commit()
+                                SettingsFragment(), "settings").commit()
                     }
 
                 }
@@ -175,9 +175,8 @@ class MainPortalFragment : Fragment() {
 
 
             }
-        }
-        else{
-            Log.d("bitcoin","usermainfrag not created in mainportal")
+        } else {
+            Log.d("bitcoin", "usermainfrag not created in mainportal")
         }
 
     }

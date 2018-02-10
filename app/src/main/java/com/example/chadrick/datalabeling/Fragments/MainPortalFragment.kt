@@ -26,6 +26,7 @@ class MainPortalFragment : Fragment() {
 
     lateinit var photourl: String
     lateinit var username: String
+    lateinit var usermainfrag : UserMainFragment
 
 
     companion object {
@@ -36,6 +37,16 @@ class MainPortalFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("fuck", "creatview of mainPortalFragment")
+
+        // when created, add a backstack listener to the main activity backstack to call
+        // updateElements of usermainfragment whenever the mainportalfragment is resurfaced.
+        fragmentManager.addOnBackStackChangedListener {
+            Log.d("nvidia","added mainportalfragment's backstacklistener to mainfragmentmanager")
+            // if the fragment to show is mainportalfragment,
+            // then call UserMainFragment#updateElement
+            usermainfrag?.updateElements()
+        }
+
         return inflater?.inflate(R.layout.mainportalfragment_layout, container, false)
     }
 
@@ -75,7 +86,7 @@ class MainPortalFragment : Fragment() {
 
 
             val itemtext = parent.getItemAtPosition(position)
-            Log.d("kotlin", "itemtext=" + itemtext)
+            Log.d("nvidia", "itemtext=" + itemtext)
             if (itemtext.equals("Settings")) {
 
                 if (childFragmentManager.findFragmentByTag("settings") != null) {
@@ -90,9 +101,9 @@ class MainPortalFragment : Fragment() {
 
 
             } else if (itemtext.equals("Main")) {
-
+                Log.d("nvidia","clicked userMain")
                 for (frag in childFragmentManager.fragments) {
-                    Log.d("bitcoin", "print in main click frag=" + frag.toString())
+                    Log.d("nvidia", "printing frags in childFM fragments=" + frag.toString())
                 }
 
                 if (childFragmentManager.findFragmentByTag("usermain") != null) {
@@ -100,10 +111,10 @@ class MainPortalFragment : Fragment() {
                 } else if (!isRecreating) {
                     // check if already exist in childfragmentmanager
 //                    val frag = DatasetSelectFragment()
-                    val frag = UserMainFragment()
+                    val frag = usermainfrag
 
 
-                    Log.d("bitcoin", "usermainfragment not found in childfragmentmanager")
+                    Log.d("nvidia", "usermainfragment not found in childfragmentmanager")
                     childFragmentManager.beginTransaction().replace(R.id.mainportal_fragmentcontainer,
                             frag, "usermain").commit()
 
@@ -119,8 +130,7 @@ class MainPortalFragment : Fragment() {
 
         })
 
-        // show dataset select fragment as the default
-//        val frag = DatasetSelectFragment()
+
 
         // check if usermainfragment exists in childfragmentmanager
         val checkfrag = childFragmentManager.findFragmentByTag("usermain")
@@ -128,6 +138,7 @@ class MainPortalFragment : Fragment() {
         if (checkfrag == null && !isRecreating) {
 
             val frag = UserMainFragment()
+            usermainfrag = frag
             Log.d("bitcoin", "usermain frag does not exist. creating one")
             childFragmentManager.beginTransaction().add(R.id.mainportal_fragmentcontainer, frag, "usermain").commit()
             childFragmentManager.addOnBackStackChangedListener {

@@ -92,8 +92,9 @@ class UserMainFragment : Fragment() {
     override fun onResume() {
         Log.d(TAG, "fuck: inside onresume")
         super.onResume()
-        populateDSrv()
-        populateRAlist()
+
+        updateElements()
+
     }
 
 
@@ -160,6 +161,11 @@ class UserMainFragment : Fragment() {
 
         RArvAdapter.notifyDataSetChanged()
 
+    }
+
+    fun updateElements(){
+        populateDSrv()
+        populateRAlist()
     }
 
 

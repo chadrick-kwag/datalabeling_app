@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         serverInfo.config(getAssets().open("serverinfo.txt"));
       } catch (IOException e) {
         e.printStackTrace();
+        // serverinfo has not been included. fatal error
       }
       // testing serverinfo read
       Log.d(TAG, "onCreate: read from serverinfo=" + serverInfo.serveraddress);
@@ -255,6 +256,8 @@ public class MainActivity extends AppCompatActivity {
     passData.putString("photourl", photourl.toString());
     fragment.setArguments(passData);
     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentcontainer, fragment, "mainportal").commit();
+
+
   }
 
   private void gotoSignInFragment() {

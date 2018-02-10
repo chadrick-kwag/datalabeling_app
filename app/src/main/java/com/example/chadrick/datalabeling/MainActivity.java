@@ -48,7 +48,7 @@ import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
   private RequestQueue queue;
-  //  private static String baseurl = "http://13.124.175.119:4001";
+
   private final String TAG = "datalabel";
   private FragmentManager fragmentManager;
   private boolean firstentry = true;
@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
 
     } else {
       Log.d("bitcoin","first creating from mainactivity");
-//      queue = Volley.newRequestQueue(getApplicationContext());
 
       queue = requestqueueSingleton.Companion.getQueue();
       jwtManager = JWTManager.Companion.getInstance(getApplicationContext());
@@ -249,14 +248,12 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void gotoMainPortalFragment(String displayname, Uri photourl) {
-    Log.d(TAG, "fuck: gotoMainPortal from MainActivity");
     MainPortalFragment fragment = new MainPortalFragment();
     Bundle passData = new Bundle();
     passData.putString("displayname", displayname);
     passData.putString("photourl", photourl.toString());
     fragment.setArguments(passData);
     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentcontainer, fragment, "mainportal").commit();
-
 
   }
 
@@ -333,11 +330,6 @@ public class MainActivity extends AppCompatActivity {
       GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
       //handle signin result
       if (result.isSuccess()) {
-//        GoogleSignInAccount acct = result.getSignInAccount();
-//        Log.d(TAG, "sign in account =" + acct.getDisplayName());
-//        // if we succeed, then move on to dataselect
-//
-//        gotoMainPortalFragment(acct.getDisplayName(), acct.getPhotoUrl());
         authwithjwt(result);
 
       } else {
@@ -351,7 +343,6 @@ public class MainActivity extends AppCompatActivity {
   
   @Override
   public void onDestroy(){
-    Log.d(TAG, "onDestroy: bitcoin mainactivity destroyed");
 
     requestqueueSingleton.Companion.getQueue().stop();
     requestqueueSingleton.Companion.getQueue().start();
@@ -361,7 +352,6 @@ public class MainActivity extends AppCompatActivity {
   @Override
   public void onSaveInstanceState(Bundle s){
     super.onSaveInstanceState(s);
-    Log.d(TAG, "onSaveInstanceState: bitcoin mainactivity onSaveInstanceState");
   }
 
 }

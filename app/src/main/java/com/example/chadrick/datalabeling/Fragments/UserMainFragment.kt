@@ -27,7 +27,6 @@ import java.io.File
 class UserMainFragment : Fragment() {
 
 
-    //    private val baseurl1 = "http://13.124.175.119:4001"
     private val serverFectchedDSlist: ArrayList<DataSet> = ArrayList<DataSet>()
     lateinit var allDSrecyclerviewAdapter: RAAdapter
     lateinit var RArvAdapter: RAAdapter

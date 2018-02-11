@@ -55,24 +55,23 @@ public class ImageViewerFragment extends Fragment {
   private int totalImageNumber = 0;
 
   @Override
-  public void onCreate(Bundle s){
+  public void onCreate(Bundle s) {
     super.onCreate(s);
-    Log.d("kanu","imageviewerfragment oncreate");
-    if(s!=null){
-      Log.d("kanu","imageviewerfragment restoring");
+    Log.d("kanu", "imageviewerfragment oncreate");
+    if (s != null) {
+      Log.d("kanu", "imageviewerfragment restoring");
       // is updatestatcallback null?
-      if(updateStatCallback!=null){
-        Log.d("kanu","updatestatcallback is not null");
-      }
-      else{
-        Log.d("kanu","updatestatcallback is null");
+      if (updateStatCallback != null) {
+        Log.d("kanu", "updatestatcallback is not null");
+      } else {
+        Log.d("kanu", "updatestatcallback is null");
       }
     }
   }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
+      Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     View root = inflater.inflate(R.layout.imageviewerfrag_layout, container, false);
     customviewPager = (CustomViewPager) root.findViewById(R.id.customviewpager);
@@ -104,32 +103,23 @@ public class ImageViewerFragment extends Fragment {
     yesbtn.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        Log.d(TAG, "inside yesbtn onclick listener");
-        //enable the touch events in the two main IVs
-        // in order to do this, get reference of the labelDrawPad object
-        // and call method that does this job for us.
-//        View pageview = adapter.getPage(viewpager_currentposition);
+
         LabelDrawPad labelDrawPad = adapter.getLabelDrawPad(viewpager_currentposition);
         labelDrawPad.enableTouches();
-//
-//        // fetch the two IVs
-//        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
-//        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
-//
-//        // enable the touch of these two IVs
-//        mainIV.setTouchEnable(true);
-//        maskIV.setTouchEnable(true);
+
         // hide yes and no btn from layout
         yesbtn.setVisibility(View.INVISIBLE);
         nobtn.setVisibility(View.INVISIBLE);
+
         // enable draw btn
         drawButton.setVisibility(View.VISIBLE);
+
         // actually draw rectangle in mainIV
         labelDrawPad.drawRect();
-//        mainIV.drawRect();
+
         // clear the temp rectangle in maskIV
         labelDrawPad.eraseDrawnRect();
-//        maskIV.eraseall();
+
       }
     });
     nobtn = (Button) root.findViewById(R.id.nobtn);
@@ -137,15 +127,7 @@ public class ImageViewerFragment extends Fragment {
       @Override
       public void onClick(View v) {
         //enable the touch events in the two main IVs
-//        View pageview = adapter.getPage(viewpager_currentposition);
         LabelDrawPad labelDrawPad = adapter.getLabelDrawPad(viewpager_currentposition);
-//        // fetch the two IVs
-//        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
-//        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
-//
-//        // disable the touch of these two IVs
-//        mainIV.setTouchEnable(true);
-//        maskIV.setTouchEnable(true);
         labelDrawPad.enableTouches();
         // hide yes and no btn from layout
         yesbtn.setVisibility(View.INVISIBLE);
@@ -154,7 +136,7 @@ public class ImageViewerFragment extends Fragment {
         drawButton.setVisibility(View.VISIBLE);
         //erase maskIV
         labelDrawPad.eraseDrawnRect();
-//        maskIV.eraseall();
+
       }
     });
     // setup delete btn
@@ -232,7 +214,6 @@ public class ImageViewerFragment extends Fragment {
     RectReadycallback = new CallbackWithRect() {
       @Override
       public void doit(Rect rect) {
-        Log.d(TAG, "inside testcallback");
         // make sure that drawbtnpressed is reset to false
         // so that subsequent draws can be processed
         drawBtnpressed = false;
@@ -242,15 +223,8 @@ public class ImageViewerFragment extends Fragment {
         receivedRect = rect;
         // disable the touch handler in the two IVs
         // first access the appropriate page
-//        View pageview = adapter.getPage(viewpager_currentposition);
         LabelDrawPad labelDrawPad = adapter.getLabelDrawPad(viewpager_currentposition);
         // fetch the two IVs
-//        TouchImageView mainIV = pageview.findViewById(R.id.touchimageview);
-//        MaskImageView maskIV = pageview.findViewById(R.id.tempdrawarea);
-//
-//        // disable the touch of these two IVs
-//        mainIV.setTouchEnable(false);
-//        maskIV.setTouchEnable(false);
         labelDrawPad.disableTouches();
         // show yes/no btns
         yesbtn.setVisibility(View.VISIBLE);
@@ -268,12 +242,6 @@ public class ImageViewerFragment extends Fragment {
   @Override
   public void onPause() {
     // update the label finished values
-    Log.d("kanu", "imageviewerfragment onpause");
-
-    List<Fragment> fraglist =  getFragmentManager().getFragments();
-    for(Fragment frag : fraglist){
-      Log.d("kanu","frag print = "+frag.toString());
-    }
 
     if (updateStatCallback == null) {
       Log.d("kanu", "imageviewerfragment onPause: updateStatCallback is null");
@@ -297,7 +265,8 @@ public class ImageViewerFragment extends Fragment {
   }
 
   private void updatePageNumberText(int currentpageindex) {
-    String newstring = new String(Integer.toString(currentpageindex + 1) + "/" + Integer.toString(totalImageNumber));
+    String newstring = new String(
+        Integer.toString(currentpageindex + 1) + "/" + Integer.toString(totalImageNumber));
     pageNumberTV.setText(newstring);
   }
 }

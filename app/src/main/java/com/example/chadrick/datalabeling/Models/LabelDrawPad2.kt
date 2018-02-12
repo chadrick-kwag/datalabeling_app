@@ -5,10 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import com.example.chadrick.datalabeling.CustomComponents.BgImageView
-import com.example.chadrick.datalabeling.CustomComponents.LabelPadFrameLayout
-import com.example.chadrick.datalabeling.CustomComponents.RectDrawImageView2
-import com.example.chadrick.datalabeling.CustomComponents.RenderedRectsImageView
+import com.example.chadrick.datalabeling.CustomComponents.*
 import com.example.chadrick.datalabeling.CustomViewPager
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.Util
@@ -40,7 +37,7 @@ class LabelDrawPad2(inflater: LayoutInflater,
     private val drawBtnPressedCallback = drawBtnPressedCallback
 
     //    private var baseIV: BgImageView? = null
-    lateinit var baseIV: BgImageView
+    lateinit var baseIV: DataImageImageView
     lateinit var rectIV: RenderedRectsImageView
     lateinit var drawIV: RectDrawImageView2
 
@@ -134,7 +131,7 @@ class LabelDrawPad2(inflater: LayoutInflater,
         val rectCanvas = Canvas(rectBitmap)
         // set baseIV
         baseIV.setImageBitmap(baseBitmap)
-        baseIV.setdrawBtnpressedcallback(drawBtnPressedCallback)
+        baseIV.drawBtnpressedcallback = drawBtnPressedCallback
 
 
         // set rectIV

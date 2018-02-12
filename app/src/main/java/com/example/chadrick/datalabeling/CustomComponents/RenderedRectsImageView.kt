@@ -9,12 +9,8 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.ImageView
-import com.example.chadrick.datalabeling.Callback
 import com.example.chadrick.datalabeling.CustomViewPager
 import com.example.chadrick.datalabeling.Util
-import java.lang.ref.WeakReference
-import java.util.function.Consumer
-import java.util.function.Function
 
 /**
  * Created by chadrick on 18. 2. 12.

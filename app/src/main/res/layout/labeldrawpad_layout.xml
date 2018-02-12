@@ -6,7 +6,7 @@
   android:layout_height="match_parent"
   >
 
-  <com.example.chadrick.datalabeling.CustomComponents.BgImageView
+  <com.example.chadrick.datalabeling.CustomComponents.DataImageImageView
     android:id="@+id/baseiv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

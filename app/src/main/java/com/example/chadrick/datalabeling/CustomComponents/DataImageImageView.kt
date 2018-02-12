@@ -9,10 +9,8 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
-import android.widget.FrameLayout
+import android.view.View.OnTouchListener
 import android.widget.ImageView
-import com.example.chadrick.datalabeling.Callback
-import java.lang.ref.WeakReference
 
 /**
  * Created by chadrick on 18. 2. 12.
@@ -23,7 +21,7 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
                                                    defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
     internal var matrix: Matrix
-    lateinit var inverseMatrix: Matrix
+    private lateinit var inverseMatrix: Matrix
 
 
     // We can be in one of these 3 states
@@ -163,7 +161,7 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
 
 
 //            setImageMatrix(matrix)
-            imageMatrix= matrix
+            imageMatrix = matrix
             invalidate()
             true // indicate event was handled
         })
@@ -283,7 +281,6 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
         }
         fixTrans()
     }
-
 
 
     fun setTouchEnable(value: Boolean) {

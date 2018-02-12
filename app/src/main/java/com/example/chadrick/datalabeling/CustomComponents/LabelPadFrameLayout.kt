@@ -16,7 +16,7 @@ class LabelPadFrameLayout @JvmOverloads constructor(context:Context,
                                                     defStyleAttr : Int =0
                                                     ): FrameLayout(context,attrs,defStyleAttr){
 
-     lateinit var baseIV : BgImageView
+     lateinit var baseIV : DataImageImageView
      lateinit var maskIV : RectDrawImageView2
      lateinit var rectIV : RenderedRectsImageView
 

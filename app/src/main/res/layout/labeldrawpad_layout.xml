@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout2
+<com.example.chadrick.datalabeling.CustomComponents.LabelPadFrameLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/pageframelayout2"
+  android:id="@+id/labelpadframelayout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   >
@@ -13,14 +13,14 @@
     android:scaleType="fitCenter"/>
 
 
-  <com.example.chadrick.datalabeling.CustomComponents.SavedRectsImageView
+  <com.example.chadrick.datalabeling.CustomComponents.RenderedRectsImageView
     android:id="@+id/rectiv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scaleType="fitCenter"
     />
 
-  <com.example.chadrick.datalabeling.CustomComponents.RectDrawImageView
+  <com.example.chadrick.datalabeling.CustomComponents.RectDrawImageView2
     android:id="@+id/drawiv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,4 +28,4 @@
     />
 
 
-</com.example.chadrick.datalabeling.CustomComponents.PageFrameLayout2>
+</com.example.chadrick.datalabeling.CustomComponents.LabelPadFrameLayout>

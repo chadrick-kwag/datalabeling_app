@@ -20,7 +20,7 @@
     android:scaleType="fitCenter"
     />
 
-  <com.example.chadrick.datalabeling.CustomComponents.RectDrawImageView2
+  <com.example.chadrick.datalabeling.CustomComponents.RectDrawImageView
     android:id="@+id/drawiv"
     android:layout_width="match_parent"
     android:layout_height="match_parent"

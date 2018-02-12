@@ -11,9 +11,9 @@ import com.example.chadrick.datalabeling.Util
  * Created by chadrick on 18. 2. 12.
  */
 
-class RectDrawImageView2 @JvmOverloads constructor(context: Context,
-                                                   attrs: AttributeSet? = null,
-                                                   defStyleAttr: Int = 0
+class RectDrawImageView @JvmOverloads constructor(context: Context,
+                                                  attrs: AttributeSet? = null,
+                                                  defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
     val paint: Paint = Paint()
     val start = PointF()

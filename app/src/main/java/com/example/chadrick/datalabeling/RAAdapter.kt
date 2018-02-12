@@ -1,12 +1,10 @@
 package com.example.chadrick.datalabeling
 
-import android.app.FragmentManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -15,7 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment2
+import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment
 import com.example.chadrick.datalabeling.Models.BGColorRandomPicker
 import com.example.chadrick.datalabeling.Models.DataSet
 import com.example.chadrick.datalabeling.Models.WeakRefHolder
@@ -108,7 +106,7 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
 //        holder?.imageview?.setBackgroundColor(holder.color)
         holder?.imageview?.setOnClickListener({ v: View ->
             //            val frag = DatasetProgressFragment()
-            val frag = DatasetProgressFragment2()
+            val frag = DatasetProgressFragment()
             val bundle = Bundle()
             bundle.putString("ds", dataset.serialize())
             Log.d("chadrick", "put bgcolor=" + colstr)

@@ -1,7 +1,6 @@
 package com.example.chadrick.datalabeling.CustomComponents
 
 import android.content.Context
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.widget.FrameLayout
@@ -17,7 +16,7 @@ class LabelPadFrameLayout @JvmOverloads constructor(context:Context,
                                                     ): FrameLayout(context,attrs,defStyleAttr){
 
      lateinit var baseIV : DataImageImageView
-     lateinit var maskIV : RectDrawImageView2
+     lateinit var maskIV : RectDrawImageView
      lateinit var rectIV : RenderedRectsImageView
 
 

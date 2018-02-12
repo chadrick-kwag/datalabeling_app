@@ -14,8 +14,6 @@ import com.android.volley.NetworkResponse
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
-import com.example.chadrick.datalabeling.MainActivity
 import com.example.chadrick.datalabeling.Models.*
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.Tasks.createlabelziptask
@@ -25,19 +23,18 @@ import kotlinx.android.synthetic.main.datasetprogressfragment2_layout.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
  * Created by chadrick on 17. 12. 3.
  */
 
-class DatasetProgressFragment2 : Fragment() {
+class DatasetProgressFragment : Fragment() {
 
     private val ds: DataSet by lazy { DataSet.deserialize(arguments.get("ds") as String) }
     private var bgcolor: Int = 0
 
-    private val downloadTaskManger = DownloadTaskManager2.instance
+    private val downloadTaskManger = DownloadTaskManager.instance
     lateinit var ralogmanager: RecentActivityLogManager
 
     companion object {
@@ -90,7 +87,7 @@ class DatasetProgressFragment2 : Fragment() {
                             param_errorCallback = { downloadErrorCallback() },
                             param_successCallback = { downloadSuccessCallback() },
                             param_unzipcompletecallback = { unzipCompleteCallback() },
-                            param_progressUIupdate = this@DatasetProgressFragment2::updateDownloadprogresscircle)
+                            param_progressUIupdate = this@DatasetProgressFragment::updateDownloadprogresscircle)
                     downloadTaskManger.addDownloadTask(ds, downloadtask)
                     downloadtask.execute()
                 }
@@ -105,8 +102,6 @@ class DatasetProgressFragment2 : Fragment() {
 
             // when continue button is clicked, go to ImageViewerFragment
             // to start labeling
-//            val imageViewerFragment = ImageViewerFragment()
-//            imageViewerFragment.passUpdateStatCallback({ updateStats() })
             val labelfrag = LabelingFragment()
             labelfrag.passUpdateStatCallback { this::updateStats }
             val b = Bundle()
@@ -201,7 +196,7 @@ class DatasetProgressFragment2 : Fragment() {
 
         })
 
-        goback_btn.setOnClickListener({ view ->
+        goback_btn.setOnClickListener({ _ ->
             fragmentManager.popBackStack()
 
         })

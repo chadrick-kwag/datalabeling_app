@@ -37,7 +37,7 @@ class LabelDrawPad(inflater: LayoutInflater,
 
     lateinit var baseIV: DataImageImageView
     lateinit var rectIV: RenderedRectsImageView
-    lateinit var drawIV: RectDrawImageView2
+    lateinit var drawIV: RectDrawImageView
 
     var image_width: Int = 0
     var image_height: Int = 0

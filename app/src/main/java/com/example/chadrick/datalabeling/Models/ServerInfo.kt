@@ -10,22 +10,23 @@ import java.io.*
 class ServerInfo private constructor() {
 
 
-    private object holder {val INSTANCE = ServerInfo()}
-    lateinit var serveraddress: String
+    private object holder {
+        val INSTANCE = ServerInfo()
+    }
 
+    lateinit var serveraddress: String
 
 
     companion object {
 
-
-
         val instance = holder.INSTANCE
-
 
     }
 
-    fun config(configfilestream: InputStream){
+    fun config(configfilestream: InputStream) {
+
         val reader = BufferedReader(InputStreamReader(configfilestream))
+
         // assumes the first line is the serveraddress
         serveraddress = reader.readLine().trim()
         configfilestream.close()

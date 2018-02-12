@@ -140,7 +140,7 @@ class LabelingFragment : Fragment() {
 
         pagerAdapter = LabelDrawPadPagerAdapter(context = context,
                 imagefiles = imagefiles,
-                labeldrawpadPager = customviewpager,
+                dataImageViewPager = dataImageViewPager,
                 drawBtnpressedcallback = this::getIsDrawBtnPressed,
                 rectReadyCallback = this::rectReadyCallback,
                 rectSelectedCallback = this::rectSelectedCallback,
@@ -155,8 +155,8 @@ class LabelingFragment : Fragment() {
     private fun initPager() {
         val zoomOutPageTransformer = ZoomOutPageTransformer()
 
-        customviewpager.setPageTransformer(true, zoomOutPageTransformer)
-        customviewpager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        dataImageViewPager.setPageTransformer(true, zoomOutPageTransformer)
+        dataImageViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
 
             }
@@ -177,8 +177,8 @@ class LabelingFragment : Fragment() {
             }
         })
 
-        customviewpager.adapter = pagerAdapter
-        customviewpager.currentItem = 0
+        dataImageViewPager.adapter = pagerAdapter
+        dataImageViewPager.currentItem = 0
         updatePageNumberText(0)
     }
 

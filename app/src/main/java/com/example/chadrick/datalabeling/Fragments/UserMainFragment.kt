@@ -11,10 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.example.chadrick.datalabeling.Models.*
 import com.example.chadrick.datalabeling.R
-import com.example.chadrick.datalabeling.RAAdapter
+import com.example.chadrick.datalabeling.Adapters.RAAdapter
 import kotlinx.android.synthetic.main.usermainfragment_layout.*
 import org.json.JSONArray
 import org.json.JSONObject

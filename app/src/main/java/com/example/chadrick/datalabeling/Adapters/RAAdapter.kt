@@ -1,4 +1,4 @@
-package com.example.chadrick.datalabeling
+package com.example.chadrick.datalabeling.Adapters
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -18,6 +18,7 @@ import com.example.chadrick.datalabeling.Models.BGColorRandomPicker
 import com.example.chadrick.datalabeling.Models.DataSet
 import com.example.chadrick.datalabeling.Models.WeakRefHolder
 import com.example.chadrick.datalabeling.Models.thumbnailcachedownload
+import com.example.chadrick.datalabeling.R
 import kotlinx.android.synthetic.main.usermain_dataset_thumb_layout.view.*
 import java.io.File
 import java.util.*
@@ -103,22 +104,14 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
 
         }
 
-//        holder?.imageview?.setBackgroundColor(holder.color)
-        holder?.imageview?.setOnClickListener({ v: View ->
-            //            val frag = DatasetProgressFragment()
+        holder?.imageview?.setOnClickListener({ _ ->
             val frag = DatasetProgressFragment()
             val bundle = Bundle()
             bundle.putString("ds", dataset.serialize())
-            Log.d("chadrick", "put bgcolor=" + colstr)
             bundle.putString("bgcolor", colstr)
             frag.arguments = bundle
 
 
-//            context.
-//            getfragmentmanagercallback().beginTransaction()
-//                    .add(R.id.fragmentcontainer,frag)
-//                    .addToBackStack("name1")
-//                    .commit()
             (context as AppCompatActivity).supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentcontainer, frag)
                     .addToBackStack("name1")
@@ -137,7 +130,7 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
 
         companion object {
             fun newInstance(iv: View): RAViewHolder {
-                val raviewholder: RAViewHolder = RAViewHolder(iv)
+                val raviewholder = RAViewHolder(iv)
                 raviewholder.imageview = iv.thumbnailimageview
                 raviewholder.titleTextView = iv.thumbnailTitle
                 return raviewholder

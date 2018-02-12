@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.example.chadrick.datalabeling.CustomViewPager
+import com.example.chadrick.datalabeling.CustomComponents.DataImageViewPager
 import com.example.chadrick.datalabeling.Models.LabelDrawPad
 import java.io.File
 
@@ -17,7 +17,7 @@ import java.io.File
  */
 
 class LabelDrawPadPagerAdapter(context: Context, imagefiles : ArrayList<File>,
-                               labeldrawpadPager : CustomViewPager,
+                               dataImageViewPager : DataImageViewPager,
                                drawBtnpressedcallback: ()->Boolean,
                                rectReadyCallback : (Rect)->Unit,
                                rectSelectedCallback : ()->Unit,
@@ -30,13 +30,11 @@ class LabelDrawPadPagerAdapter(context: Context, imagefiles : ArrayList<File>,
 
     private val context = context
     private val imagefiles = imagefiles
-    private val labeldrawpadPager = labeldrawpadPager
+    private val dataImageViewPager = dataImageViewPager
     private val drawBtnpressedcallback = drawBtnpressedcallback
     private val rectReadyCallback = rectReadyCallback
     private val rectSelectedCallback = rectSelectedCallback
     private val hideDeleteBtnCallback = hideDeleteBtnCallback
-    private val screenwidth = screenwidth
-    private val screenheight = screenheight
 
 
     private val labelDrawPadHashMap : HashMap<Int, LabelDrawPad> = HashMap<Int, LabelDrawPad>()
@@ -51,24 +49,15 @@ class LabelDrawPadPagerAdapter(context: Context, imagefiles : ArrayList<File>,
     }
 
     override fun instantiateItem(container: ViewGroup?, position: Int): Any {
-//        val rootview = super.instantiateItem(container, position)
         val inflator = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
-//        val labeldrawpad = LabelDrawPad.LabelDrawPadBuilder(inflator,container,position)
-//                .setDrawBtnPressedCallback(drawBtnpressedcallback)
-//                .setCustomViewPager(labeldrawpadPager)
-//                .setMaskRectReadyCallback(rectReadyCallback)
-//                .setImageFile(imagefiles.get(position))
-//                .setRectSelectedCallback(rectSelectedCallback)
-//                .setHideDeleteBtnCallback(hideDeleteBtnCallback)
-//                .build()
 
         val labeldrawpad = LabelDrawPad(inflater = inflator,
                 container = container,
                 drawBtnPressedCallback = drawBtnpressedcallback,
                 rectReadyCallback = rectReadyCallback,
                 imageFile = imagefiles[position],
-                customViewPager = labeldrawpadPager,
+                dataImageViewPager = dataImageViewPager,
                 rectSelectedCallback = rectSelectedCallback,
                 hideDeleteBtnCallback = hideDeleteBtnCallback
                 )
@@ -83,7 +72,6 @@ class LabelDrawPadPagerAdapter(context: Context, imagefiles : ArrayList<File>,
     }
 
     override fun destroyItem(container: ViewGroup?, position: Int, `object`: Any?) {
-//        super.destroyItem(container, position, `object`)
 
         (container as ViewPager).removeView(`object` as FrameLayout)
 

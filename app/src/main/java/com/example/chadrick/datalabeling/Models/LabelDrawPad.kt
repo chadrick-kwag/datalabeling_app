@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import com.example.chadrick.datalabeling.CustomComponents.*
-import com.example.chadrick.datalabeling.CustomViewPager
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.Util
 import org.json.JSONArray
@@ -24,7 +23,7 @@ class LabelDrawPad(inflater: LayoutInflater,
                    drawBtnPressedCallback: () -> Boolean,
                    rectReadyCallback: (Rect) -> Unit,
                    imageFile: File,
-                   customViewPager: CustomViewPager,
+                   dataImageViewPager: DataImageViewPager,
                    rectSelectedCallback: () -> Unit,
                    hideDeleteBtnCallback: () -> Unit
 ) {
@@ -45,7 +44,7 @@ class LabelDrawPad(inflater: LayoutInflater,
 
     private val rectReadyCallback = rectReadyCallback
 
-    private val customViewPager = customViewPager
+    private val dataImageViewPager = dataImageViewPager
 
     lateinit var mainCanvasPaint: Paint
 
@@ -125,7 +124,7 @@ class LabelDrawPad(inflater: LayoutInflater,
         // set rectIV
         rectIV.setImageBitmap(rectBitmap)
         rectIV.canvas = rectCanvas
-        rectIV.customViewPager = customViewPager
+        rectIV.dataImageViewPager = dataImageViewPager
         rectIV.addRectCallback = { rect -> rectArrayList.add(rect) }
         rectIV.saveLabelCallback = this::saveLabelFile
         rectIV.drawBtnpressedcallback = drawBtnPressedCallback

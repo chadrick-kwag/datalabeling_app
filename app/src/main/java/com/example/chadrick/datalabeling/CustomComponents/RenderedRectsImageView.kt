@@ -9,7 +9,6 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.ImageView
-import com.example.chadrick.datalabeling.CustomViewPager
 import com.example.chadrick.datalabeling.Util
 
 /**
@@ -52,7 +51,7 @@ class RenderedRectsImageView @JvmOverloads constructor(context: Context,
     internal var mScaleDetector: ScaleGestureDetector
 
 
-    lateinit var customViewPager: CustomViewPager
+    lateinit var dataImageViewPager: DataImageViewPager
     lateinit var drawBtnpressedcallback: () -> Boolean
     lateinit var canvas : Canvas
     private val paint = Paint()
@@ -259,15 +258,15 @@ class RenderedRectsImageView @JvmOverloads constructor(context: Context,
             // if not, (which would be when the slightset zoom in has occured,
             // then we disable the swipe of viewpager.
 
-            if (customViewPager != null) {
-                if (saveScale == minScale) {
-                    Log.i(TAG, "enable swipe")
-                    customViewPager.enableSwipe()
-                } else {
-                    Log.i(TAG, "disable swipe")
-                    customViewPager.disableSwipe()
-                }
+
+            if (saveScale == minScale) {
+                Log.i(TAG, "enable swipe")
+                dataImageViewPager.isSwipeEnabled = true
+            } else {
+                Log.i(TAG, "disable swipe")
+                dataImageViewPager.isSwipeEnabled = false
             }
+
 
             if (origWidth * saveScale <= viewWidth || origHeight * saveScale <= viewHeight) {
                 matrix.postScale(mScaleFactor, mScaleFactor, (viewWidth / 2).toFloat(),

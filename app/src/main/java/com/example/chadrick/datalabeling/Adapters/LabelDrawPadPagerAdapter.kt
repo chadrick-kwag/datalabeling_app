@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.example.chadrick.datalabeling.CustomViewPager
-import com.example.chadrick.datalabeling.Models.LabelDrawPad2
+import com.example.chadrick.datalabeling.Models.LabelDrawPad
 import java.io.File
 
 /**
@@ -39,7 +39,7 @@ class LabelDrawPadPagerAdapter(context: Context, imagefiles : ArrayList<File>,
     private val screenheight = screenheight
 
 
-    private val labelDrawPadHashMap : HashMap<Int, LabelDrawPad2> = HashMap<Int, LabelDrawPad2>()
+    private val labelDrawPadHashMap : HashMap<Int, LabelDrawPad> = HashMap<Int, LabelDrawPad>()
 
 
     override fun getCount(): Int {
@@ -63,7 +63,7 @@ class LabelDrawPadPagerAdapter(context: Context, imagefiles : ArrayList<File>,
 //                .setHideDeleteBtnCallback(hideDeleteBtnCallback)
 //                .build()
 
-        val labeldrawpad = LabelDrawPad2(inflater = inflator,
+        val labeldrawpad = LabelDrawPad(inflater = inflator,
                 container = container,
                 drawBtnPressedCallback = drawBtnpressedcallback,
                 rectReadyCallback = rectReadyCallback,
@@ -90,7 +90,7 @@ class LabelDrawPadPagerAdapter(context: Context, imagefiles : ArrayList<File>,
         labelDrawPadHashMap.remove(position)
     }
 
-    fun getLabelDrawPad(position: Int): LabelDrawPad2?{
+    fun getLabelDrawPad(position: Int): LabelDrawPad?{
         return labelDrawPadHashMap[position]
     }
 

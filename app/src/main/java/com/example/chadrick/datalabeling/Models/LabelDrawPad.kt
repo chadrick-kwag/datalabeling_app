@@ -19,24 +19,22 @@ import java.util.*
  * Created by chadrick on 18. 2. 12.
  */
 
-class LabelDrawPad2(inflater: LayoutInflater,
-                    container: ViewGroup?,
-                    drawBtnPressedCallback: () -> Boolean,
-                    rectReadyCallback: (Rect) -> Unit,
-                    imageFile: File,
-                    customViewPager: CustomViewPager,
-                    rectSelectedCallback: () -> Unit,
-                    hideDeleteBtnCallback: () -> Unit
+class LabelDrawPad(inflater: LayoutInflater,
+                   container: ViewGroup?,
+                   drawBtnPressedCallback: () -> Boolean,
+                   rectReadyCallback: (Rect) -> Unit,
+                   imageFile: File,
+                   customViewPager: CustomViewPager,
+                   rectSelectedCallback: () -> Unit,
+                   hideDeleteBtnCallback: () -> Unit
 ) {
     private val inflater = inflater
     private val container = container
 
-    //    private var rootview: View? = null
     lateinit var rootview: View
 
     private val drawBtnPressedCallback = drawBtnPressedCallback
 
-    //    private var baseIV: BgImageView? = null
     lateinit var baseIV: DataImageImageView
     lateinit var rectIV: RenderedRectsImageView
     lateinit var drawIV: RectDrawImageView2
@@ -44,23 +42,17 @@ class LabelDrawPad2(inflater: LayoutInflater,
     var image_width: Int = 0
     var image_height: Int = 0
 
-//    private var rectIV: SavedRectsImageView? = null
-//    private var drawIV: RectDrawImageView2? = null
 
     private val rectReadyCallback = rectReadyCallback
 
     private val customViewPager = customViewPager
 
     lateinit var mainCanvasPaint: Paint
-//    private var mainCanvasPaint: Paint? = null
 
     private val imageFile = imageFile
     lateinit var labelFile: File
-//    private var labelFile: File? = null
     private var baseBitmap: Bitmap? = null
     private var rectBitmap: Bitmap? = null
-//    private var rectCanvas: Canvas? = null
-//    private var selectedRect: Rect? = null
     private val rectSelectedCallback = rectSelectedCallback
     private val hideDeleteBtnCallback = hideDeleteBtnCallback
 
@@ -99,7 +91,6 @@ class LabelDrawPad2(inflater: LayoutInflater,
         mainCanvasPaint.style = Paint.Style.STROKE
 
         // dynamic width/height measure for drawIV
-//        val viewTreeObserver = drawIV.getViewTreeObserver()
         val viewTreeObserver = drawIV.viewTreeObserver
         viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
 
@@ -114,9 +105,6 @@ class LabelDrawPad2(inflater: LayoutInflater,
         val options = BitmapFactory.Options()
         options.inPreferredConfig = Bitmap.Config.ARGB_8888
         options.inMutable = true
-//        Log.d(TAG, "initElements: imageFile=" + imageFile.toString())
-//        Log.d(TAG, "initElements: imageFile exist=" + imageFile.exists())
-//        Log.d(TAG, "initElements: imageFile size=" + imageFile.length())
         val originalbitmap = BitmapFactory.decodeFile(imageFile.toString(), options)
         image_width = originalbitmap.width
         image_height = originalbitmap.height
@@ -131,12 +119,11 @@ class LabelDrawPad2(inflater: LayoutInflater,
         val rectCanvas = Canvas(rectBitmap)
         // set baseIV
         baseIV.setImageBitmap(baseBitmap)
-        baseIV.drawBtnpressedcallback = drawBtnPressedCallback
+        baseIV.drawBtnPressedCallback = drawBtnPressedCallback
 
 
         // set rectIV
         rectIV.setImageBitmap(rectBitmap)
-//        rectIV.passCanvas(rectCanvas)
         rectIV.canvas = rectCanvas
         rectIV.customViewPager = customViewPager
         rectIV.addRectCallback = { rect -> rectArrayList.add(rect) }
@@ -145,20 +132,9 @@ class LabelDrawPad2(inflater: LayoutInflater,
         rectIV.checkRectSelectCallback = this::checkRectSelect
         rectIV.unselectAnyIfExistCallback = this::unselectAnyIfExist
 
-//        rectIV.setCustomViewPager(
-//                customViewPager) // need this since swipe dis/enable will be controlled here
-//        rectIV.setdrawBtnpressedcallback(drawBtnPressedCallback)
-//        rectIV.passAddRectCallback { rect -> rectArrayList.add(rect) }
-//        rectIV.passSaveLabelCallback( this::saveLabelFile)
-
-//        rectIV.passCheckRectSelectCallback(this::checkRectSelect)
-//        rectIV.passUnselectAnyIfExist( this::unselectAnyIfExist)
-        // drawIV has its own canvas
-
-        //    drawIV.setdrawBtnpressedcallback(drawBtnpressedcallback);
         drawIV.drawBtnpressedcallback = drawBtnPressedCallback
-        //    drawIV.passRectReadyCallback(maskRectReadyCallback);
         drawIV.rectReadyCallback = rectReadyCallback
+
         // generate label json file based on image file
         val imagefilename = Util.getOnlyFilename(imageFile.name)
         val parentpath = imageFile.parent
@@ -213,7 +189,7 @@ class LabelDrawPad2(inflater: LayoutInflater,
             // now draw each rect in the maincanvas
             for (i in rectArrayList.indices) {
                 val rectToDraw = rectArrayList.get(i)
-                rectCanvas?.drawRect(rectToDraw, mainCanvasPaint)
+                rectCanvas.drawRect(rectToDraw, mainCanvasPaint)
             }
             // invalidate to make sure that the new drawing are displayed
             rectIV.invalidate()
@@ -222,7 +198,7 @@ class LabelDrawPad2(inflater: LayoutInflater,
     }
 
 
-    fun saveLabelFile(): Boolean {
+    private fun saveLabelFile(): Boolean {
         // when called, rewrite the labelfile with current info
         // first create a jsonobject and populate with current info
         val newRoot = JSONObject()
@@ -309,7 +285,7 @@ class LabelDrawPad2(inflater: LayoutInflater,
             if (smallerRect.contains(touch_x, touch_y)) {
                 smallercontain = true
             }
-            if (biggercontain == true && smallercontain == false) {
+            if (biggercontain  && !smallercontain) {
                 // okay so a hit was found, and we know which rectangle it is.
                 // we need to redraw it, and it will eventually be done with
                 // rectIV
@@ -319,13 +295,9 @@ class LabelDrawPad2(inflater: LayoutInflater,
                 // first draw unselected rect of the previous existing selectedRect
 
                 selectedRect?.let { rectIV.drawUnselectedRect(it) }
-//                if (selectedRect != null) {
-//                    rectIV.drawUnselectedRect(selectedRect)
-//                }
                 selectedRect = rect
 
                 selectedRect?.let { rectIV.drawSelectedRect(it) }
-//                rectIV.drawSelectedRect(selectedRect)
                 // display delete btn
                 rectSelectedCallback()
                 return true
@@ -354,17 +326,10 @@ class LabelDrawPad2(inflater: LayoutInflater,
         if (selectedRect == null) {
             return
         }
-        //    rectIV.drawDeleteRect(selectedRect);
         // remove it from rectarray
         selectedRect?.let { rectArrayList.remove(it) }
-//        rectArrayList.remove(selectedRect)
         // nullify the selectedrect variable
         selectedRect = null
-        //    // clear the rectIV, and redraw all rects in rectarray
-        //    rectBitmap.eraseColor(Color.TRANSPARENT);
-        //    for (Rect rect : rectArrayList) {
-        //      rectIV.drawUnselectedRect(rect);
-        //    }
         redrawrects()
         // updatelabelfile
         saveLabelFile()

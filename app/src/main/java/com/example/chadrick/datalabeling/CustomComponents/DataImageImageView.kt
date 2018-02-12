@@ -25,48 +25,47 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
 
 
     // We can be in one of these 3 states
-    internal val NONE = 0
-    internal val DRAG = 1
-    internal val ZOOM = 2
-    internal var mode = NONE
+    private val NONE = 0
+    private val DRAG = 1
+    private val ZOOM = 2
+    private var mode = NONE
 
     // Remember some things for zooming
-    internal var last = PointF()
+    private var last = PointF()
     internal var start = PointF()
     internal var minScale = 1f
     internal var maxScale = 5f
-    internal var m: FloatArray
+    private var m: FloatArray
 
     internal var viewWidth: Int = 0
     internal var viewHeight: Int = 0
-    internal val CLICK = 3
     internal var saveScale = 1f
     private var origWidth: Float = 0.toFloat()
     private var origHeight: Float = 0.toFloat()
-    internal var oldMeasuredWidth: Int = 0
-    internal var oldMeasuredHeight: Int = 0
+    private var oldMeasuredWidth: Int = 0
+    private var oldMeasuredHeight: Int = 0
 
-    internal var mScaleDetector: ScaleGestureDetector
+    private var mScaleDetector: ScaleGestureDetector
 
-    private val savedcontext = context
+    private val savedContext = context
     private var touchEnable = true
 
-    lateinit var drawBtnpressedcallback: () -> Boolean
+    lateinit var drawBtnPressedCallback: () -> Boolean
 
 
     private val MOVE_CLICK_LIMIT = 5
 
     init {
         super.setClickable(true)
-        mScaleDetector = ScaleGestureDetector(savedcontext, ScaleListener())
+        mScaleDetector = ScaleGestureDetector(savedContext, ScaleListener())
         matrix = Matrix()
         m = FloatArray(9)
 
-        setImageMatrix(matrix)
-        setScaleType(ImageView.ScaleType.MATRIX)
+        imageMatrix = matrix
+        scaleType = ImageView.ScaleType.MATRIX
 
 
-        setOnTouchListener(OnTouchListener { v, event ->
+        setOnTouchListener(OnTouchListener { _, event ->
             //        Log.d(TAG,"touch handler of touchIV");
 
             // if touch is disabled, do nothing.
@@ -79,12 +78,10 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
 
 
             // check if the drawBtn is pressed or not.
-            val drawbtnpressed: Boolean
-
-            if (::drawBtnpressedcallback.isInitialized) {
-                drawbtnpressed = drawBtnpressedcallback()
+            val isDrawBtnPressed: Boolean = if (::drawBtnPressedCallback.isInitialized) {
+                drawBtnPressedCallback()
             } else {
-                drawbtnpressed = false
+                false
             }
 
 
@@ -92,7 +89,7 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
                 MotionEvent.ACTION_DOWN -> {
 
 
-                    if (drawbtnpressed) {
+                    if (isDrawBtnPressed) {
 
                         // calcuate the inversematrix
                         inverseMatrix = Matrix(matrix)
@@ -116,7 +113,7 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
                 MotionEvent.ACTION_MOVE -> run {
                     if (mode == DRAG) {
 
-                        if (drawbtnpressed) {
+                        if (isDrawBtnPressed) {
                             // we are not drawing temp rects here. so do nothing.
 
 
@@ -145,7 +142,7 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
 
                 MotionEvent.ACTION_UP -> {
                     mode = NONE
-                    if (drawbtnpressed) {
+                    if (isDrawBtnPressed) {
 
 
                     } else {
@@ -212,7 +209,7 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
             matrix.postTranslate(fixTransX, fixTransY)
     }
 
-    fun getFixTrans(trans: Float, viewSize: Float, contentSize: Float): Float {
+    private fun getFixTrans(trans: Float, viewSize: Float, contentSize: Float): Float {
         val minTrans: Float
         val maxTrans: Float
 
@@ -229,7 +226,7 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
         return if (trans > maxTrans) -trans + maxTrans else 0f
     }
 
-    fun getFixDragTrans(delta: Float, viewSize: Float, contentSize: Float): Float {
+    private fun getFixDragTrans(delta: Float, viewSize: Float, contentSize: Float): Float {
         return if (contentSize <= viewSize) {
             0f
         } else delta
@@ -253,19 +250,20 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
             // Fit to screen.
             val scale: Float
 
-            val drawable = getDrawable()
-            if (drawable == null || drawable!!.getIntrinsicWidth() == 0
-                    || drawable!!.getIntrinsicHeight() == 0)
+//            val drawable = getDrawable()
+            val drawable = drawable
+            if (drawable == null || drawable.intrinsicWidth == 0
+                    || drawable.intrinsicHeight == 0)
                 return
-            val bmWidth = drawable!!.getIntrinsicWidth()
-            val bmHeight = drawable!!.getIntrinsicHeight()
+            val bmWidth = drawable.intrinsicWidth
+            val bmHeight = drawable.intrinsicHeight
 
-            Log.d("bmSize", "bmWidth: $bmWidth bmHeight : $bmHeight")
 
             val scaleX = viewWidth.toFloat() / bmWidth.toFloat()
             val scaleY = viewHeight.toFloat() / bmHeight.toFloat()
             scale = Math.min(scaleX, scaleY)
             matrix.setScale(scale, scale)
+
 
             // Center the image
             var redundantYSpace = viewHeight.toFloat() - scale * bmHeight.toFloat()
@@ -277,7 +275,7 @@ class DataImageImageView @JvmOverloads constructor(context: Context,
 
             origWidth = viewWidth - 2 * redundantXSpace
             origHeight = viewHeight - 2 * redundantYSpace
-            setImageMatrix(matrix)
+            imageMatrix = matrix
         }
         fixTrans()
     }

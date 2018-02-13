@@ -10,6 +10,9 @@ Backend for this application is not included in this project.
 - dataset download
 - user authentication through google account
 
+## How it looks like
+!(screenshots/Screenshot_20180210-175941.png)
+
 ## Setup
 - please create `serverinfo.txt` in `/assets` directory which contains a single line of ip address towards the back-end.
 

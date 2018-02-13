@@ -11,10 +11,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonArrayRequest
-import com.android.volley.toolbox.Volley
 import com.example.chadrick.datalabeling.Models.*
 import com.example.chadrick.datalabeling.R
-import com.example.chadrick.datalabeling.RAAdapter
+import com.example.chadrick.datalabeling.Adapters.RAAdapter
 import kotlinx.android.synthetic.main.usermainfragment_layout.*
 import org.json.JSONArray
 import org.json.JSONObject
@@ -27,7 +26,6 @@ import java.io.File
 class UserMainFragment : Fragment() {
 
 
-    //    private val baseurl1 = "http://13.124.175.119:4001"
     private val serverFectchedDSlist: ArrayList<DataSet> = ArrayList<DataSet>()
     lateinit var allDSrecyclerviewAdapter: RAAdapter
     lateinit var RArvAdapter: RAAdapter
@@ -92,8 +90,9 @@ class UserMainFragment : Fragment() {
     override fun onResume() {
         Log.d(TAG, "fuck: inside onresume")
         super.onResume()
-        populateDSrv()
-        populateRAlist()
+
+        updateElements()
+
     }
 
 
@@ -160,6 +159,11 @@ class UserMainFragment : Fragment() {
 
         RArvAdapter.notifyDataSetChanged()
 
+    }
+
+    fun updateElements(){
+        populateDSrv()
+        populateRAlist()
     }
 
 

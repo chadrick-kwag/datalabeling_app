@@ -14,8 +14,6 @@ import com.android.volley.NetworkResponse
 import com.android.volley.Request
 import com.android.volley.VolleyError
 import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
-import com.example.chadrick.datalabeling.MainActivity
 import com.example.chadrick.datalabeling.Models.*
 import com.example.chadrick.datalabeling.R
 import com.example.chadrick.datalabeling.Tasks.createlabelziptask
@@ -25,20 +23,18 @@ import kotlinx.android.synthetic.main.datasetprogressfragment2_layout.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
-import java.text.SimpleDateFormat
 import java.util.*
 
 /**
  * Created by chadrick on 17. 12. 3.
  */
 
-class DatasetProgressFragment2 : Fragment() {
+class DatasetProgressFragment : Fragment() {
 
-    //    private  ds : DataSet =  DataSet.deserialize(arguments.get("ds") as String)
     private val ds: DataSet by lazy { DataSet.deserialize(arguments.get("ds") as String) }
     private var bgcolor: Int = 0
 
-    private val downloadTaskManger = DownloadTaskManager2.instance
+    private val downloadTaskManger = DownloadTaskManager.instance
     lateinit var ralogmanager: RecentActivityLogManager
 
     companion object {
@@ -49,8 +45,6 @@ class DatasetProgressFragment2 : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bgcolor = Color.parseColor(arguments.getString("bgcolor"))
-        Log.d(TAG,"oncreate")
-        Log.d("chadrick", "bgcolor fetched at oncreate=" + bgcolor)
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -63,22 +57,17 @@ class DatasetProgressFragment2 : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         title_tv.text = ds.name
-        Log.d("chadrick", "bgcolor=" + bgcolor)
-//        thumbnail_holder.setBackgroundColor(bgcolor)
 
         // check if thumbnail image exists in dataset dir
         val datasetthumbnailfile = ds.dirstr + "/info/thumbnail.jpg"
         if (File(datasetthumbnailfile).exists()) {
-            Log.d(TAG,"info/thumbnail.jpg exist for dsid="+ds.id)
             thumbnail_holder.setImageBitmap(BitmapFactory.decodeFile(datasetthumbnailfile))
         } else {
             // check if thumbnail image exists in cache.. it should be...
             val cachepath = context.filesDir.toString() + "/thumbnailcache/" + ds.id.toString() + ".jpg"
             if (File(cachepath).exists()) {
-                Log.d(TAG,"thumbnail image exists in cache for dsid="+ds.id)
                 thumbnail_holder.setImageBitmap(BitmapFactory.decodeFile(cachepath))
             } else {
-                Log.d(TAG, "thumbnail image not exist even in cache directory")
                 thumbnail_holder.setBackgroundColor(bgcolor)
             }
 
@@ -98,7 +87,7 @@ class DatasetProgressFragment2 : Fragment() {
                             param_errorCallback = { downloadErrorCallback() },
                             param_successCallback = { downloadSuccessCallback() },
                             param_unzipcompletecallback = { unzipCompleteCallback() },
-                            param_progressUIupdate = this@DatasetProgressFragment2::updateDownloadprogresscircle)
+                            param_progressUIupdate = this@DatasetProgressFragment::updateDownloadprogresscircle)
                     downloadTaskManger.addDownloadTask(ds, downloadtask)
                     downloadtask.execute()
                 }
@@ -108,24 +97,30 @@ class DatasetProgressFragment2 : Fragment() {
 
         continuebtn_background_iv.setOnClickListener({ view ->
 
+            // update recent activity timestamp for this ds
             ralogmanager.updateRAitem(ds, System.currentTimeMillis())
 
-            val imageViewerFragment = ImageViewerFragment()
-            imageViewerFragment.passUpdateStatCallback({ updateStats() })
+            // when continue button is clicked, go to ImageViewerFragment
+            // to start labeling
+            val labelfrag = LabelingFragment()
+            labelfrag.passUpdateStatCallback { this::updateStats }
             val b = Bundle()
+
             b.putString("ds", ds.serialize())
 
-            imageViewerFragment.arguments = b
+
+
+            labelfrag.arguments = b
             val fragmentManager = fragmentManager
-            fragmentManager.beginTransaction().add(R.id.fragmentcontainer, imageViewerFragment)
+            fragmentManager.beginTransaction().add(R.id.fragmentcontainer, labelfrag)
                     .addToBackStack(null).commit()
         })
 
         uploadbtn_bg_iv.setOnClickListener(listener@ { view ->
-            Log.d(TAG, "upload clicked")
 
+
+            // update recent activity for this ds
             ralogmanager.updateRAitem(ds, System.currentTimeMillis())
-            // first check if progress is complete
 
 
             // change the icon to progress circle
@@ -176,16 +171,6 @@ class DatasetProgressFragment2 : Fragment() {
 
         fetchdescription()
 
-        // manual check
-        val checkfile = File(context.filesDir, ds.id.toString())
-        if (checkfile.exists()) {
-            Log.d(TAG, "fuck: onviewcreated , /2 exists")
-        } else {
-            Log.d(TAG, "fuck: onviewcreated, /2 not exists")
-        }
-
-
-
         if (checkAlreadyDownloaded()) {
             // if already downloaded, goto statcheck
             showUploadAndContButton()
@@ -201,11 +186,6 @@ class DatasetProgressFragment2 : Fragment() {
             val alertbuilder = AlertDialog.Builder(activity)
             alertbuilder.setMessage("Delete this dataset?")
                     .setPositiveButton("Delete", { _, _ ->
-                        val workdir = File(ds.dirstr)
-                        Log.d(TAG, "fuck deleting filepath=" + workdir.toString())
-                        val deleteresult = workdir.deleteRecursively()
-                        Log.d(TAG, "fuck delete result = " + deleteresult)
-
                         showDownloadButton()
                         updateStats()
                     })
@@ -216,17 +196,9 @@ class DatasetProgressFragment2 : Fragment() {
 
         })
 
-        goback_btn.setOnClickListener({ view ->
-            Log.d(TAG, "goback clicked")
+        goback_btn.setOnClickListener({ _ ->
             fragmentManager.popBackStack()
 
-
-            val checkfile = File(context.filesDir, ds.id.toString())
-            if (checkfile.exists()) {
-                Log.d(TAG, "fuck: goback btn pressed, /2 exists")
-            } else {
-                Log.d(TAG, "fuck: goback btn pressed, /2 not exists")
-            }
         })
 
         downloadprogresscircle.progress = 0f
@@ -239,11 +211,6 @@ class DatasetProgressFragment2 : Fragment() {
         // remove any downloading task. if it was in download, delete the
         // dsdir too it if was in the middle of creating it.
         downloadTaskManger.remove(ds)
-
-//        val dsdir = File(ds.dirstr)
-//        if (dsdir.exists()) {
-//            dsdir.deleteRecursively()
-//        }
 
     }
 
@@ -274,7 +241,6 @@ class DatasetProgressFragment2 : Fragment() {
                     description_tv?.text = "failed to get description"
                 }
         )
-//        val queue = Volley.newRequestQueue(context.applicationContext)
         val queue = requestqueueSingleton.getQueue()
         queue.add(jsonreq)
     }
@@ -284,12 +250,6 @@ class DatasetProgressFragment2 : Fragment() {
 
         // TODO: make the checking of downloaded_&installed more detailed
         val dsworkdir: File = File(context.filesDir, ds.id.toString()).absoluteFile
-        Log.d(TAG, "dsworkdir in checkalreadydownloaded=" + dsworkdir)
-
-        Log.d(TAG, "ds dirstr in dataset=" + ds.dirstr)
-        Log.d(TAG, "ds exist in dataset=" + ds.direxist)
-        Log.d(TAG, "dsworkdir.exsits=" + dsworkdir.exists())
-        Log.d(TAG, "dsworkdir isdirectory" + dsworkdir.isDirectory)
         return dsworkdir.exists()
     }
 
@@ -324,13 +284,7 @@ class DatasetProgressFragment2 : Fragment() {
         // moving on to unzipping
         Log.d(TAG, "now unzipping")
 
-        // check dsdir exist
-        val checkfile = File(context.filesDir, ds.id.toString())
-        if (checkfile.exists()) {
-            Log.d(TAG, "fuck: download success, /2 exists")
-        } else {
-            Log.d(TAG, "fuck: download success, /2 not exists")
-        }
+
     }
 
     private fun unzipCompleteCallback() {
@@ -404,7 +358,6 @@ class DatasetProgressFragment2 : Fragment() {
     private fun updateDownloadprogresscircle(progress: Int) {
         downloadprogresscircle?.let {
             it.progress = progress.toFloat()
-            Log.d(TAG, "updating progress=" + progress)
         }
 
     }

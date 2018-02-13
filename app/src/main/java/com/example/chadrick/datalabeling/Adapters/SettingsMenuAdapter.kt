@@ -1,4 +1,4 @@
-package com.example.chadrick.datalabeling
+package com.example.chadrick.datalabeling.Adapters
 
 import android.graphics.Color
 import android.support.v7.widget.RecyclerView
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.chadrick.datalabeling.Models.App
 import com.example.chadrick.datalabeling.Models.SMitem
+import com.example.chadrick.datalabeling.R
 import kotlinx.android.synthetic.main.sm_plaintype_layout.view.*
 import kotlinx.android.synthetic.main.sm_toggletype_layout.view.*
 
@@ -43,7 +44,7 @@ class SettingsMenuAdapter(menuitemlist: ArrayList<SMitem>) : RecyclerView.Adapte
 //            SMitem.TYPE_TOGGLE -> return toggleTypeViewHolder(LayoutInflater.from(parent?.context)
 //                    .inflate(R.layout.sm_toggletype_layout, parent, false))
                     SMitem.TYPE_TOGGLE -> return toggleTypeViewHolder(LayoutInflater.from(App.applicationContext())
-                    .inflate(R.layout.sm_toggletype_layout, parent, false))
+                            .inflate(R.layout.sm_toggletype_layout, parent, false))
 
 
             SMitem.TYPE_PLAIN -> return plainTypeViewHolder(LayoutInflater.from(App.applicationContext())

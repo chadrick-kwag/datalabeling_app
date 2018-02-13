@@ -39,8 +39,8 @@
   />
 
 
-  <com.example.chadrick.datalabeling.CustomViewPager
-      android:id="@+id/customviewpager"
+  <com.example.chadrick.datalabeling.CustomComponents.DataImageViewPager
+      android:id="@+id/dataImageViewPager"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:background="@android:color/background_dark"/>

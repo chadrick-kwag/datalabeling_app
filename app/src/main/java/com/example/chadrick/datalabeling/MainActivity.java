@@ -1,5 +1,14 @@
 package com.example.chadrick.datalabeling;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -7,7 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,8 +27,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.auth0.android.jwt.JWT;
 import com.example.chadrick.datalabeling.Fragments.MainPortalFragment;
 import com.example.chadrick.datalabeling.Fragments.NoInternetFragment;
 import com.example.chadrick.datalabeling.Fragments.SignInFragment;
@@ -30,16 +36,6 @@ import com.example.chadrick.datalabeling.Models.JWTManager;
 import com.example.chadrick.datalabeling.Models.ServerInfo;
 import com.example.chadrick.datalabeling.Models.requestqueueSingleton;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -48,7 +44,7 @@ import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
   private RequestQueue queue;
-  //  private static String baseurl = "http://13.124.175.119:4001";
+
   private final String TAG = "datalabel";
   private FragmentManager fragmentManager;
   private boolean firstentry = true;
@@ -75,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
     } else {
       Log.d("bitcoin","first creating from mainactivity");
-//      queue = Volley.newRequestQueue(getApplicationContext());
 
       queue = requestqueueSingleton.Companion.getQueue();
       jwtManager = JWTManager.Companion.getInstance(getApplicationContext());
@@ -84,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         serverInfo.config(getAssets().open("serverinfo.txt"));
       } catch (IOException e) {
         e.printStackTrace();
+        // serverinfo has not been included. fatal error
       }
       // testing serverinfo read
       Log.d(TAG, "onCreate: read from serverinfo=" + serverInfo.serveraddress);
@@ -248,13 +244,13 @@ public class MainActivity extends AppCompatActivity {
   }
 
   private void gotoMainPortalFragment(String displayname, Uri photourl) {
-    Log.d(TAG, "fuck: gotoMainPortal from MainActivity");
     MainPortalFragment fragment = new MainPortalFragment();
     Bundle passData = new Bundle();
     passData.putString("displayname", displayname);
     passData.putString("photourl", photourl.toString());
     fragment.setArguments(passData);
     getSupportFragmentManager().beginTransaction().replace(R.id.fragmentcontainer, fragment, "mainportal").commit();
+
   }
 
   private void gotoSignInFragment() {
@@ -330,11 +326,6 @@ public class MainActivity extends AppCompatActivity {
       GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
       //handle signin result
       if (result.isSuccess()) {
-//        GoogleSignInAccount acct = result.getSignInAccount();
-//        Log.d(TAG, "sign in account =" + acct.getDisplayName());
-//        // if we succeed, then move on to dataselect
-//
-//        gotoMainPortalFragment(acct.getDisplayName(), acct.getPhotoUrl());
         authwithjwt(result);
 
       } else {
@@ -348,7 +339,6 @@ public class MainActivity extends AppCompatActivity {
   
   @Override
   public void onDestroy(){
-    Log.d(TAG, "onDestroy: bitcoin mainactivity destroyed");
 
     requestqueueSingleton.Companion.getQueue().stop();
     requestqueueSingleton.Companion.getQueue().start();
@@ -358,7 +348,6 @@ public class MainActivity extends AppCompatActivity {
   @Override
   public void onSaveInstanceState(Bundle s){
     super.onSaveInstanceState(s);
-    Log.d(TAG, "onSaveInstanceState: bitcoin mainactivity onSaveInstanceState");
   }
 
 }

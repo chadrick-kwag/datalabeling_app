@@ -6,14 +6,14 @@ import com.example.chadrick.datalabeling.Tasks.dszipDownloadTask
  * Created by chadrick on 17. 12. 4.
  */
 
-class DownloadTaskManager2 private constructor(){
+class DownloadTaskManager private constructor(){
 
 
     private val hashmap : HashMap<DataSet, dszipDownloadTask> = HashMap()
-    private object holder { val INSTANCE = DownloadTaskManager2()}
+    private object holder { val INSTANCE = DownloadTaskManager()}
 
     companion object {
-        val instance : DownloadTaskManager2 = holder.INSTANCE
+        val instance : DownloadTaskManager = holder.INSTANCE
     }
 
     @Synchronized fun isAlreadyRegistered(ds : DataSet) : Boolean {

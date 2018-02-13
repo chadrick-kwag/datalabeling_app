@@ -1,12 +1,10 @@
-package com.example.chadrick.datalabeling
+package com.example.chadrick.datalabeling.Adapters
 
-import android.app.FragmentManager
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -15,11 +13,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment2
+import com.example.chadrick.datalabeling.Fragments.DatasetProgressFragment
 import com.example.chadrick.datalabeling.Models.BGColorRandomPicker
 import com.example.chadrick.datalabeling.Models.DataSet
 import com.example.chadrick.datalabeling.Models.WeakRefHolder
 import com.example.chadrick.datalabeling.Models.thumbnailcachedownload
+import com.example.chadrick.datalabeling.R
 import kotlinx.android.synthetic.main.usermain_dataset_thumb_layout.view.*
 import java.io.File
 import java.util.*
@@ -105,22 +104,14 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
 
         }
 
-//        holder?.imageview?.setBackgroundColor(holder.color)
-        holder?.imageview?.setOnClickListener({ v: View ->
-            //            val frag = DatasetProgressFragment()
-            val frag = DatasetProgressFragment2()
+        holder?.imageview?.setOnClickListener({ _ ->
+            val frag = DatasetProgressFragment()
             val bundle = Bundle()
             bundle.putString("ds", dataset.serialize())
-            Log.d("chadrick", "put bgcolor=" + colstr)
             bundle.putString("bgcolor", colstr)
             frag.arguments = bundle
 
 
-//            context.
-//            getfragmentmanagercallback().beginTransaction()
-//                    .add(R.id.fragmentcontainer,frag)
-//                    .addToBackStack("name1")
-//                    .commit()
             (context as AppCompatActivity).supportFragmentManager.beginTransaction()
                     .add(R.id.fragmentcontainer, frag)
                     .addToBackStack("name1")
@@ -139,7 +130,7 @@ class RAAdapter : RecyclerView.Adapter<RAAdapter.RAViewHolder>() {
 
         companion object {
             fun newInstance(iv: View): RAViewHolder {
-                val raviewholder: RAViewHolder = RAViewHolder(iv)
+                val raviewholder = RAViewHolder(iv)
                 raviewholder.imageview = iv.thumbnailimageview
                 raviewholder.titleTextView = iv.thumbnailTitle
                 return raviewholder

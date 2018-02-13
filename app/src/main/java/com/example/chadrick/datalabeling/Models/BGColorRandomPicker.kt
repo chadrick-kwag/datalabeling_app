@@ -11,7 +11,7 @@ class BGColorRandomPicker {
         private val colors: List<String> = listOf("#ff00ff","#00ff00","#0ff0f0","#f00fff")
     }
 
-    public fun getRandomColor() : String {
+    fun getRandomColor() : String {
         val random = Random()
         return colors.get( random.nextInt(colors.size))
     }

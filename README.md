@@ -11,7 +11,7 @@ Backend for this application is not included in this project.
 - user authentication through google account
 
 ## How it looks like
-![alt text](screenshots/Screenshot_20180210-175941.png "some comment")
+<img src="screenshots/Screenshot_20180210-175941.png" width="200">
 
 ## Setup
 - please create `serverinfo.txt` in `/assets` directory which contains a single line of ip address towards the back-end.

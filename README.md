@@ -11,6 +11,8 @@ Backend for this application is not included in this project.
 - user authentication through google account
 
 ## How it looks like
+![](screenshots/dlappscreenshot.png)
+
 Please check `screenshots` directory to get a feeling of how this app looks like.
 
 ## Setup
